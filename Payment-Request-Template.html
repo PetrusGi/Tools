@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Text:ital@0;1&family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/css/flag-icons.min.css">
     <style>
         :root {
             --primary-color: #DC0028;
@@ -43,19 +44,55 @@
             margin: 0 auto;
         }
         
-        .header-wrapper {
+        .language-bar {
             display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
+            justify-content: flex-end;
+            background-color: #000;
+            padding: 4px 20px; /* Reduced height by 50% */
+            border-radius: 8px 8px 0 0;
+            margin-bottom: 10px; /* Added margin to the bottom */
+            width: 100%;
+            position: fixed; /* Changed from absolute to fixed */
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1002;
         }
         
-        .logo-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-right: 30px;
+        .page-wrapper {
+            max-width: 960px;
+            margin: 0 auto;
+            position: relative;
+            padding-top: 40px; /* Add space for the language bar */
+        }
+        
+        body {
+            padding-top: 30px; /* Increased padding to body to account for fixed language bar and margin */
+        }
+        
+        .page-logo {
+            position: absolute;
+            top: 50px;
+            left: 0;
+            z-index: 10;
+        }
+        
+        .page-title {
+            position: absolute;
+            top: 60px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            z-index: 5;
+        }
+        
+        .page-subtitle {
+            position: absolute;
+            top: 120px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            z-index: 5;
         }
         
         .logo {
@@ -82,7 +119,7 @@
         .template-container {
             display: flex;
             gap: 30px;
-            margin-top: 40px;
+            margin-top: 180px; /* Increased to account for absolute positioned header elements */
             flex-wrap: wrap;
         }
         
@@ -326,7 +363,7 @@
         
         .back-button {
             position: fixed;
-            top: 20px;
+            top: 60px; /* Increased to position below the language bar */
             left: 20px;
             width: 50px;
             height: 50px;
@@ -339,7 +376,8 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.2);
             cursor: pointer;
             transition: var(--transition);
-            z-index: 1000;
+            z-index: 1003; /* Increased to be above the language bar */
+            text-decoration: none !important;
         }
         
         .back-button:hover {
@@ -350,21 +388,144 @@
         .material-icons {
             font-size: 24px;
         }
+        
+        /* Language selector styles */
+        .language-selector {
+            margin-left: auto;
+            z-index: 1000;
+        }
+        
+        .language-button {
+            display: flex;
+            align-items: center;
+            background-color: transparent;
+            border-radius: 8px;
+            padding: 8px 12px;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            font-family: 'Roboto', sans-serif;
+            font-size: 14px;
+            color: white;
+        }
+        
+        .language-button:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .country-text {
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+        
+        .flag-icon {
+            margin-right: 8px;
+            width: 20px;
+            height: 15px;
+            border-radius: 2px;
+            display: inline-block;
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        
+        .dropdown-icon {
+            margin-left: 8px;
+            font-size: 18px;
+            color: var(--primary-color);
+        }
+        
+        .language-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 5px;
+            background-color: var(--white);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            width: 220px;
+            display: none;
+            z-index: 1001;
+        }
+        
+        .language-dropdown.show {
+            display: block;
+        }
+        
+        .language-selector:hover .language-dropdown {
+            display: block;
+        }
+        
+        .language-selector:hover .language-dropdown {
+            display: block;
+        }
+        
+        .language-option {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .language-option:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        .language-name {
+            margin-left: 10px;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
     <!-- Back button with arrow_back icon -->
-    <a href="#" class="back-button" onclick="window.close();">
+    <a href="index.html" class="back-button">
         <span class="material-icons">arrow_back</span>
     </a>
     <div class="page-wrapper">
-        <div class="header-wrapper">
-            <div class="logo-container">
-                <img src="https://www.creditexpo.nl/wp-content/uploads/2024/09/Logo-Credit-IQ-CIQ-no-bg-2048x2048.png" alt="Payment Icon" class="logo">
+        <div class="language-bar">
+            <!-- Language Selector -->
+            <div class="language-selector">
+                <button class="language-button" onclick="toggleLanguageDropdown()">
+                    <img src="https://flagicons.lipis.dev/flags/4x3/nl.svg" class="flag-icon" alt="NL">
+                    <span class="country-text">Nederland</span>
+                    <span class="material-icons dropdown-icon">arrow_drop_down</span>
+                </button>
+                <div class="language-dropdown" id="languageDropdown">
+                    <div class="language-option" onclick="changeLanguage('nl')">
+                        <img src="https://flagicons.lipis.dev/flags/4x3/nl.svg" class="flag-icon" alt="NL">
+                        <span class="language-name">Nederland</span>
+                    </div>
+                    <div class="language-option" onclick="changeLanguage('gb')">
+                        <img src="https://flagicons.lipis.dev/flags/4x3/gb.svg" class="flag-icon" alt="GB">
+                        <span class="language-name">Verenigd Koninkrijk</span>
+                    </div>
+                    <div class="language-option" onclick="changeLanguage('us')">
+                        <img src="https://flagicons.lipis.dev/flags/4x3/us.svg" class="flag-icon" alt="US">
+                        <span class="language-name">Verenigde Staten</span>
+                    </div>
+                    <div class="language-option" onclick="changeLanguage('fr')">
+                        <img src="https://flagicons.lipis.dev/flags/4x3/fr.svg" class="flag-icon" alt="FR">
+                        <span class="language-name">Frankrijk</span>
+                    </div>
+                    <div class="language-option" onclick="changeLanguage('pt')">
+                        <img src="https://flagicons.lipis.dev/flags/4x3/pt.svg" class="flag-icon" alt="PT">
+                        <span class="language-name">Portugal</span>
+                    </div>
+                    <div class="language-option" onclick="changeLanguage('es')">
+                        <img src="https://flagicons.lipis.dev/flags/4x3/es.svg" class="flag-icon" alt="ES">
+                        <span class="language-name">Spanje</span>
+                    </div>
+                </div>
             </div>
-            <h2>Betalingsherinnering Template</h2>
-            <p class="subtitle">Genereer vriendelijke herinneringen voor openstaande facturen</p>
         </div>
+        <div class="page-logo">
+            <img src="https://www.creditexpo.nl/wp-content/uploads/2024/09/Logo-Credit-IQ-CIQ-no-bg-2048x2048.png" alt="Payment Icon" class="logo">
+        </div>
+        <h2 class="page-title">Betalingsherinnering Template</h2>
+        <p class="page-subtitle">Genereer vriendelijke herinneringen voor openstaande facturen</p>
 
         <div class="template-container">
             <div class="form-container">
@@ -446,8 +607,8 @@
     </div>
 
     <!-- Add jsPDF library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha512-qZvrmS2ekKPF2mSznTQsxqPgnpkI4DNTlrdUmTzrDgektczlKNRRhy5X5AAOnx5S09ydFYWWNSfcEqDTTHgtNA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoeqMV/TJlSKda6FXzoEyYGjTe+vXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     
     <script>
         // Add invoice to the list
@@ -605,6 +766,13 @@
         
         // Download as PDF
         function downloadTemplate() {
+            // Make sure jsPDF is loaded
+            if (typeof window.jspdf === 'undefined') {
+                console.error('jsPDF library not loaded');
+                alert('PDF library not loaded. Please refresh the page and try again.');
+                return;
+            }
+            
             // Create a clone of the preview container to modify for PDF
             const previewClone = document.getElementById('previewContainer').cloneNode(true);
             
@@ -632,24 +800,29 @@
                 // Remove the temporary container
                 document.body.removeChild(tempContainer);
                 
-                // Initialize jsPDF
-                const { jsPDF } = window.jspdf;
-                const pdf = new jsPDF('p', 'mm', 'a4');
-                
-                // Calculate dimensions to fit the canvas to A4
-                const imgWidth = 210 - 40; // A4 width minus margins
-                const imgHeight = (canvas.height * imgWidth) / canvas.width;
-                
-                // Add the canvas as an image to the PDF
-                const imgData = canvas.toDataURL('image/png');
-                pdf.addImage(imgData, 'PNG', 20, 20, imgWidth, imgHeight);
-                
-                // Get company name for the filename
-                const companyName = document.getElementById('companyName').value.trim() || 'Betalingsherinnering';
-                const fileName = `${companyName.replace(/\s+/g, '-')}-Betalingsherinnering.pdf`;
-                
-                // Save the PDF
-                pdf.save(fileName);
+                try {
+                    // Initialize jsPDF
+                    const { jsPDF } = window.jspdf;
+                    const pdf = new jsPDF('p', 'mm', 'a4');
+                    
+                    // Calculate dimensions to fit the canvas to A4
+                    const imgWidth = 210 - 40; // A4 width minus margins
+                    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                    
+                    // Add the canvas as an image to the PDF
+                    const imgData = canvas.toDataURL('image/png');
+                    pdf.addImage(imgData, 'PNG', 20, 20, imgWidth, imgHeight);
+                    
+                    // Get company name for the filename
+                    const companyName = document.getElementById('companyName').value.trim() || 'Betalingsherinnering';
+                    const fileName = `${companyName.replace(/\s+/g, '-')}-Betalingsherinnering.pdf`;
+                    
+                    // Save the PDF
+                    pdf.save(fileName);
+                } catch (error) {
+                    console.error('Error creating PDF:', error);
+                    alert('Er is een fout opgetreden bij het maken van de PDF. Probeer het opnieuw.');
+                }
             }).catch(error => {
                 console.error('Error generating PDF:', error);
                 alert('Er is een fout opgetreden bij het genereren van de PDF. Probeer het opnieuw.');
@@ -666,6 +839,290 @@
             document.getElementById('invoiceList').innerHTML = '';
             document.getElementById('previewContainer').classList.add('preview-hidden');
         }
+        
+        // Toggle language dropdown
+        function toggleLanguageDropdown() {
+            const dropdown = document.getElementById('languageDropdown');
+            dropdown.classList.toggle('show');
+            
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function closeDropdown(e) {
+                const languageSelector = document.querySelector('.language-selector');
+                if (!languageSelector.contains(e.target)) {
+                    dropdown.classList.remove('show');
+                    document.removeEventListener('click', closeDropdown);
+                }
+            });
+            
+            // Prevent the click from closing the dropdown immediately
+            event.stopPropagation();
+        }
+        
+        // Detect user's language based on browser settings
+        function detectUserLanguage() {
+            const userLang = navigator.language || navigator.userLanguage;
+            let langCode = 'nl'; // Default to Dutch
+            
+            // Map browser language codes to our language codes
+            if (userLang.startsWith('en-GB') || userLang.startsWith('en-UK')) {
+                langCode = 'gb';
+            } else if (userLang.startsWith('en-US') || userLang.startsWith('en')) {
+                langCode = 'us';
+            } else if (userLang.startsWith('fr')) {
+                langCode = 'fr';
+            } else if (userLang.startsWith('pt')) {
+                langCode = 'pt';
+            } else if (userLang.startsWith('es')) {
+                langCode = 'es';
+            } else if (userLang.startsWith('nl')) {
+                langCode = 'nl';
+            }
+            
+            return langCode;
+        }
+        
+        // Change language
+        function changeLanguage(langCode) {
+            // Get current button and update flag and text
+            const button = document.querySelector('.language-button');
+            const dropdown = document.getElementById('languageDropdown');
+            
+            // Update button text and translate page based on language
+            switch(langCode) {
+                case 'nl':
+                    button.innerHTML = `<img src="https://flagicons.lipis.dev/flags/4x3/nl.svg" class="flag-icon" alt="NL"><span class="country-text">Nederland</span><span class="material-icons dropdown-icon">arrow_drop_down</span>`;
+                    document.documentElement.lang = 'nl';
+                    translateToDutch();
+                    break;
+                case 'gb':
+                    button.innerHTML = `<img src="https://flagicons.lipis.dev/flags/4x3/gb.svg" class="flag-icon" alt="GB"><span class="country-text">United Kingdom</span><span class="material-icons dropdown-icon">arrow_drop_down</span>`;
+                    document.documentElement.lang = 'en-GB';
+                    translateToEnglish();
+                    break;
+                case 'us':
+                    button.innerHTML = `<img src="https://flagicons.lipis.dev/flags/4x3/us.svg" class="flag-icon" alt="US"><span class="country-text">United States</span><span class="material-icons dropdown-icon">arrow_drop_down</span>`;
+                    document.documentElement.lang = 'en-US';
+                    translateToEnglish();
+                    break;
+                case 'fr':
+                    button.innerHTML = `<img src="https://flagicons.lipis.dev/flags/4x3/fr.svg" class="flag-icon" alt="FR"><span class="country-text">France</span><span class="material-icons dropdown-icon">arrow_drop_down</span>`;
+                    document.documentElement.lang = 'fr';
+                    translateToFrench();
+                    break;
+                case 'pt':
+                    button.innerHTML = `<img src="https://flagicons.lipis.dev/flags/4x3/pt.svg" class="flag-icon" alt="PT"><span class="country-text">Portugal</span><span class="material-icons dropdown-icon">arrow_drop_down</span>`;
+                    document.documentElement.lang = 'pt';
+                    translateToPortuguese();
+                    break;
+                case 'es':
+                    button.innerHTML = `<img src="https://flagicons.lipis.dev/flags/4x3/es.svg" class="flag-icon" alt="ES"><span class="country-text">España</span><span class="material-icons dropdown-icon">arrow_drop_down</span>`;
+                    document.documentElement.lang = 'es';
+                    translateToSpanish();
+                    break;
+            }
+            
+            // Save language preference to localStorage
+            localStorage.setItem('preferredLanguage', langCode);
+            
+            // Hide dropdown
+            dropdown.classList.remove('show');
+        }
+        
+        // Translation functions
+        function translateToDutch() {
+            document.title = "Betalingsherinnering Template";
+            document.querySelector('.page-title').textContent = "Betalingsherinnering Template";
+            document.querySelector('.page-subtitle').textContent = "Genereer vriendelijke herinneringen voor openstaande facturen";
+            document.querySelector('.form-title').textContent = "Gegevens invoeren";
+            document.querySelectorAll('label')[0].textContent = "Uw bedrijfsnaam";
+            document.querySelectorAll('label')[1].textContent = "Uw vestigingsplaats";
+            document.querySelectorAll('label')[2].textContent = "Uw IBAN";
+            document.querySelectorAll('label')[3].textContent = "Betalingstermijn (dagen)";
+            document.querySelectorAll('label')[4].textContent = "Factuurnummer(s)";
+            document.querySelector('.input-helper').textContent = "Voer uw volledige IBAN in zonder spaties";
+            document.querySelectorAll('.input-helper')[2].textContent = "Voeg alle openstaande factuurnummers toe";
+            document.querySelector('#addInvoiceBtn').textContent = "Toevoegen";
+            document.querySelector('.generate-btn').textContent = "Genereer Betalingsherinnering";
+            document.querySelector('.preview-title').textContent = "Betalingsherinnering Voorbeeld";
+            document.querySelector('#specification').innerHTML = "Overzicht van openstaande facturen:";
+            document.querySelector('.print-btn').textContent = "Afdrukken";
+            document.querySelector('.download-btn').textContent = "Downloaden als PDF";
+            document.querySelector('footer p').innerHTML = 'Betalingsherinnering Template &copy; 2025 | <a href="#" onclick="resetForm()">Formulier resetten</a>';
+            
+            // Update letter content
+            document.querySelector('#letterContent').textContent = `Betalingsherinnering betreffende de onderstaande openstaande factu(u)r(en).
+
+Volgens onze administratie hebben wij nog geen betaling ontvangen voor de hierboven genoemde factu(u)r(en). Mogelijk is de betaling reeds onderweg of heeft u deze factuur over het hoofd gezien.
+
+Wij verzoeken u vriendelijk om het openstaande bedrag binnen [dagen] dagen over te maken op IBAN [iban] ten name van [bedrijfsnaam] te [vestigingsplaats] onder vermelding van het factuurnummer.
+
+Mocht u vragen hebben over deze factuur of als er een reden is waarom de betaling is uitgebleven, neem dan gerust contact met ons op. We denken graag met u mee over een passende oplossing.
+
+Indien u de betaling inmiddels heeft voldaan, kunt u deze herinnering als niet verzonden beschouwen.
+
+Met vriendelijke groet,
+
+[bedrijfsnaam]`;
+        }
+        
+        function translateToEnglish() {
+            document.title = "Payment Reminder Template";
+            document.querySelector('.page-title').textContent = "Payment Reminder Template";
+            document.querySelector('.page-subtitle').textContent = "Generate friendly reminders for outstanding invoices";
+            document.querySelector('.form-title').textContent = "Enter your details";
+            document.querySelectorAll('label')[0].textContent = "Your company name";
+            document.querySelectorAll('label')[1].textContent = "Your location";
+            document.querySelectorAll('label')[2].textContent = "Your IBAN";
+            document.querySelectorAll('label')[3].textContent = "Payment term (days)";
+            document.querySelectorAll('label')[4].textContent = "Invoice number(s)";
+            document.querySelector('.input-helper').textContent = "Enter your full IBAN without spaces";
+            document.querySelectorAll('.input-helper')[2].textContent = "Add all outstanding invoice numbers";
+            document.querySelector('#addInvoiceBtn').textContent = "Add";
+            document.querySelector('.generate-btn').textContent = "Generate Payment Reminder";
+            document.querySelector('.preview-title').textContent = "Payment Reminder Preview";
+            document.querySelector('#specification').innerHTML = "Overview of outstanding invoices:";
+            document.querySelector('.print-btn').textContent = "Print";
+            document.querySelector('.download-btn').textContent = "Download as PDF";
+            document.querySelector('footer p').innerHTML = 'Payment Reminder Template &copy; 2025 | <a href="#" onclick="resetForm()">Reset form</a>';
+            
+            // Update letter content
+            document.querySelector('#letterContent').textContent = `Payment reminder regarding the outstanding invoice(s) listed below.
+
+According to our records, we have not yet received payment for the above-mentioned invoice(s). It is possible that the payment is already on its way or that you have overlooked this invoice.
+
+We kindly request you to transfer the outstanding amount within [dagen] days to IBAN [iban] in the name of [bedrijfsnaam] in [vestigingsplaats], stating the invoice number.
+
+If you have any questions about this invoice or if there is a reason why the payment has been delayed, please do not hesitate to contact us. We are happy to think along with you about a suitable solution.
+
+If you have already made the payment, please consider this reminder as not sent.
+
+Kind regards,
+
+[bedrijfsnaam]`;
+        }
+        
+        function translateToFrench() {
+            document.title = "Modèle de rappel de paiement";
+            document.querySelector('.page-title').textContent = "Modèle de rappel de paiement";
+            document.querySelector('.page-subtitle').textContent = "Générer des rappels amicaux pour les factures impayées";
+            document.querySelector('.form-title').textContent = "Entrez vos coordonnées";
+            document.querySelectorAll('label')[0].textContent = "Nom de votre entreprise";
+            document.querySelectorAll('label')[1].textContent = "Votre emplacement";
+            document.querySelectorAll('label')[2].textContent = "Votre IBAN";
+            document.querySelectorAll('label')[3].textContent = "Délai de paiement (jours)";
+            document.querySelectorAll('label')[4].textContent = "Numéro(s) de facture";
+            document.querySelector('.input-helper').textContent = "Entrez votre IBAN complet sans espaces";
+            document.querySelectorAll('.input-helper')[2].textContent = "Ajoutez tous les numéros de facture impayés";
+            document.querySelector('#addInvoiceBtn').textContent = "Ajouter";
+            document.querySelector('.generate-btn').textContent = "Générer un rappel de paiement";
+            document.querySelector('.preview-title').textContent = "Aperçu du rappel de paiement";
+            document.querySelector('#specification').innerHTML = "Aperçu des factures impayées:";
+            document.querySelector('.print-btn').textContent = "Imprimer";
+            document.querySelector('.download-btn').textContent = "Télécharger en PDF";
+            document.querySelector('footer p').innerHTML = 'Modèle de rappel de paiement &copy; 2025 | <a href="#" onclick="resetForm()">Réinitialiser le formulaire</a>';
+            
+            // Update letter content
+            document.querySelector('#letterContent').textContent = `Rappel de paiement concernant la/les facture(s) impayée(s) listée(s) ci-dessous.
+
+Selon nos registres, nous n'avons pas encore reçu le paiement de la/des facture(s) mentionnée(s) ci-dessus. Il est possible que le paiement soit déjà en cours ou que vous ayez négligé cette facture.
+
+Nous vous demandons de bien vouloir transférer le montant dû dans un délai de [dagen] jours sur l'IBAN [iban] au nom de [bedrijfsnaam] à [vestigingsplaats], en indiquant le numéro de facture.
+
+Si vous avez des questions concernant cette facture ou s'il y a une raison pour laquelle le paiement a été retardé, n'hésitez pas à nous contacter. Nous sommes heureux de réfléchir avec vous à une solution appropriée.
+
+Si vous avez déjà effectué le paiement, veuillez considérer ce rappel comme non envoyé.
+
+Cordialement,
+
+[bedrijfsnaam]`;
+        }
+        
+        function translateToPortuguese() {
+            document.title = "Modelo de Lembrete de Pagamento";
+            document.querySelector('.page-title').textContent = "Modelo de Lembrete de Pagamento";
+            document.querySelector('.page-subtitle').textContent = "Gerar lembretes amigáveis para faturas pendentes";
+            document.querySelector('.form-title').textContent = "Insira seus dados";
+            document.querySelectorAll('label')[0].textContent = "Nome da sua empresa";
+            document.querySelectorAll('label')[1].textContent = "Sua localização";
+            document.querySelectorAll('label')[2].textContent = "Seu IBAN";
+            document.querySelectorAll('label')[3].textContent = "Prazo de pagamento (dias)";
+            document.querySelectorAll('label')[4].textContent = "Número(s) da fatura";
+            document.querySelector('.input-helper').textContent = "Digite seu IBAN completo sem espaços";
+            document.querySelectorAll('.input-helper')[2].textContent = "Adicione todos os números de faturas pendentes";
+            document.querySelector('#addInvoiceBtn').textContent = "Adicionar";
+            document.querySelector('.generate-btn').textContent = "Gerar Lembrete de Pagamento";
+            document.querySelector('.preview-title').textContent = "Visualização do Lembrete de Pagamento";
+            document.querySelector('#specification').innerHTML = "Visão geral das faturas pendentes:";
+            document.querySelector('.print-btn').textContent = "Imprimir";
+            document.querySelector('.download-btn').textContent = "Baixar como PDF";
+            document.querySelector('footer p').innerHTML = 'Modelo de Lembrete de Pagamento &copy; 2025 | <a href="#" onclick="resetForm()">Redefinir formulário</a>';
+            
+            // Update letter content
+            document.querySelector('#letterContent').textContent = `Lembrete de pagamento referente à(s) fatura(s) pendente(s) listada(s) abaixo.
+
+De acordo com nossos registros, ainda não recebemos o pagamento da(s) fatura(s) mencionada(s) acima. É possível que o pagamento já esteja a caminho ou que você tenha esquecido desta fatura.
+
+Solicitamos gentilmente que transfira o valor pendente dentro de [dagen] dias para o IBAN [iban] em nome de [bedrijfsnaam] em [vestigingsplaats], indicando o número da fatura.
+
+Se você tiver alguma dúvida sobre esta fatura ou se houver um motivo pelo qual o pagamento foi adiado, não hesite em nos contatar. Estamos felizes em pensar junto com você sobre uma solução adequada.
+
+Se você já efetuou o pagamento, por favor considere este lembrete como não enviado.
+
+Atenciosamente,
+
+[bedrijfsnaam]`;
+        }
+        
+        function translateToSpanish() {
+            document.title = "Plantilla de Recordatorio de Pago";
+            document.querySelector('.page-title').textContent = "Plantilla de Recordatorio de Pago";
+            document.querySelector('.page-subtitle').textContent = "Generar recordatorios amistosos para facturas pendientes";
+            document.querySelector('.form-title').textContent = "Ingrese sus datos";
+            document.querySelectorAll('label')[0].textContent = "Nombre de su empresa";
+            document.querySelectorAll('label')[1].textContent = "Su ubicación";
+            document.querySelectorAll('label')[2].textContent = "Su IBAN";
+            document.querySelectorAll('label')[3].textContent = "Plazo de pago (días)";
+            document.querySelectorAll('label')[4].textContent = "Número(s) de factura";
+            document.querySelector('.input-helper').textContent = "Ingrese su IBAN completo sin espacios";
+            document.querySelectorAll('.input-helper')[2].textContent = "Agregue todos los números de facturas pendientes";
+            document.querySelector('#addInvoiceBtn').textContent = "Agregar";
+            document.querySelector('.generate-btn').textContent = "Generar Recordatorio de Pago";
+            document.querySelector('.preview-title').textContent = "Vista previa del Recordatorio de Pago";
+            document.querySelector('#specification').innerHTML = "Resumen de facturas pendientes:";
+            document.querySelector('.print-btn').textContent = "Imprimir";
+            document.querySelector('.download-btn').textContent = "Descargar como PDF";
+            document.querySelector('footer p').innerHTML = 'Plantilla de Recordatorio de Pago &copy; 2025 | <a href="#" onclick="resetForm()">Restablecer formulario</a>';
+            
+            // Update letter content
+            document.querySelector('#letterContent').textContent = `Recordatorio de pago con respecto a la(s) factura(s) pendiente(s) que se enumeran a continuación.
+
+Según nuestros registros, aún no hemos recibido el pago de la(s) factura(s) mencionada(s) anteriormente. Es posible que el pago ya esté en camino o que haya pasado por alto esta factura.
+
+Le solicitamos amablemente que transfiera el monto pendiente dentro de [dagen] días al IBAN [iban] a nombre de [bedrijfsnaam] en [vestigingsplaats], indicando el número de factura.
+
+Si tiene alguna pregunta sobre esta factura o si hay alguna razón por la que se ha retrasado el pago, no dude en contactarnos. Estamos encantados de pensar junto con usted en una solución adecuada.
+
+Si ya ha realizado el pago, considere este recordatorio como no enviado.
+
+Saludos cordiales,
+
+[bedrijfsnaam]`;
+        }
+        
+        // Initialize language based on user preference or browser settings
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user has a saved preference
+            const savedLang = localStorage.getItem('preferredLanguage');
+            
+            if (savedLang) {
+                // Use saved preference
+                changeLanguage(savedLang);
+            } else {
+                // Detect and set language based on browser
+                const detectedLang = detectUserLanguage();
+                changeLanguage(detectedLang);
+            }
+        });
     </script>
 </body>
 </html>
