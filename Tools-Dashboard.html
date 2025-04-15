@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Credit IQ - Tools Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Text:ital@0;1&family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #DC0028;
+            --primary-hover: #c00020;
+            --secondary-color: #F5F4F8;
+            --secondary-hover: #E5E4E8;
+            --accent-color: #FFD700;
+            --dark-text: #333333;
+            --light-text: #666666;
+            --lightest-text: #999999;
+            --white: #ffffff;
+            --shadow: 0 4px 12px rgba(0,0,0,0.08);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            color: var(--dark-text);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        
+        .page-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 50px;
+            flex-wrap: wrap;
+        }
+        
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 30px;
+        }
+        
+        .logo {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+        }
+        
+        h2 {
+            font-family: 'DM Serif Text', serif;
+            font-size: 2.8rem;
+            color: var(--primary-color);
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        .subtitle {
+            width: 100%;
+            text-align: center;
+            margin-top: 10px;
+            color: var(--light-text);
+            font-size: 1.1rem;
+        }
+        
+        .cards-container {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+        
+        .card {
+            flex: 1;
+            min-width: 300px;
+            max-width: 350px;
+            height: 300px;
+            background-color: var(--white);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            cursor: pointer;
+            text-decoration: none;
+            color: var(--dark-text);
+        }
+        
+        .card:hover {
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            transform: translateY(-10px);
+        }
+        
+        .card-icon {
+            width: 80px;
+            height: 80px;
+            background-color: var(--secondary-color);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            transition: var(--transition);
+        }
+        
+        .card:hover .card-icon {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+        
+        .material-icons {
+            font-size: 40px;
+        }
+        
+        .card-title {
+            font-family: 'DM Serif Text', serif;
+            font-size: 1.6rem;
+            margin-bottom: 15px;
+            color: var(--dark-text);
+        }
+        
+        .card-description {
+            color: var(--light-text);
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 80px;
+            color: var(--light-text);
+            font-size: 0.9rem;
+        }
+        
+        footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+        
+        footer a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 992px) {
+            .cards-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .card {
+                width: 100%;
+                max-width: 450px;
+            }
+            
+            .logo-container {
+                margin-right: 0;
+                margin-bottom: 20px;
+            }
+            
+            .header-wrapper {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            h2 {
+                font-size: 2.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+        <div class="header-wrapper">
+            <div class="logo-container">
+                <img src="https://www.creditexpo.nl/wp-content/uploads/2024/09/Logo-Credit-IQ-CIQ-no-bg-2048x2048.png" alt="Credit IQ Logo" class="logo">
+            </div>
+            <h2>Credit IQ Tools</h2>
+            <p class="subtitle">Select a tool to get started</p>
+        </div>
+
+        <div class="cards-container">
+            <!-- ROI Calculator Card -->
+            <a href="ROI-Calculator.html" class="card" target="_blank">
+                <div class="card-icon">
+                    <span class="material-icons">calculate</span>
+                </div>
+                <h3 class="card-title">Calculate your return on investment</h3>
+                <p class="card-description">Discover how much you could save with Credit IQ's solutions</p>
+            </a>
+            
+            <!-- Payment Reminder Card -->
+            <a href="Payment-Request-Template.html" class="card" target="_blank">
+                <div class="card-icon">
+                    <span class="material-icons">edit_document</span>
+                </div>
+                <h3 class="card-title">Generate your reminder</h3>
+                <p class="card-description">Create professional payment reminders for outstanding invoices</p>
+            </a>
+            
+            <!-- Credit IQ Website Card -->
+            <a href="https://www.credit-iq.com/" class="card" target="_blank">
+                <div class="card-icon">
+                    <span class="material-icons">arrow_back</span>
+                </div>
+                <h3 class="card-title">Return to Credit IQ</h3>
+                <p class="card-description">Go back to the Credit IQ website for more information</p>
+            </a>
+        </div>
+        
+        <footer>
+            <p>Powered by <a href="https://www.atradiuscollections.com" target="_blank">Atradius Collections</a> | Credit IQ &copy; 2025</p>
+        </footer>
+    </div>
+</body>
+</html>
