@@ -484,6 +484,13 @@
             const button = document.querySelector('.language-button');
             const dropdown = document.getElementById('languageDropdown');
             
+            // Validate language code
+            const validLangCodes = ['nl', 'gb', 'us', 'fr', 'pt', 'es'];
+            if (!validLangCodes.includes(langCode)) {
+                console.error('Invalid language code:', langCode);
+                langCode = 'nl'; // Default to Dutch if invalid
+            }
+            
             // Update button text and translate page based on language
             switch(langCode) {
                 case 'nl':
@@ -520,6 +527,7 @@
             
             // Save language preference to localStorage
             localStorage.setItem('preferredLanguage', langCode);
+            console.log('Language set to:', langCode);
             
             // Hide dropdown
             dropdown.classList.remove('show');
