@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="nl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Credit IQ - ROI Calculator</title>
+    <title>Betalingsherinnering Template</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Text:ital@0;1&family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400&display=swap" rel="stylesheet">
@@ -37,6 +37,11 @@
             line-height: 1.6;
             min-height: 100vh;
             padding: 40px 20px;
+        }
+        
+        .page-wrapper {
+            max-width: 960px;
+            margin: 0 auto;
         }
         
         .language-bar {
@@ -111,7 +116,7 @@
             font-size: 1.1rem;
         }
         
-        .calculator {
+        .template-container {
             display: flex;
             gap: 30px;
             margin-top: 180px; /* Increased to account for absolute positioned header elements */
@@ -132,7 +137,7 @@
             box-shadow: 0 8px 24px rgba(0,0,0,0.12);
         }
         
-        .results-container {
+        .preview-container {
             flex: 1;
             min-width: 300px;
             background-color: var(--white);
@@ -141,10 +146,9 @@
             box-shadow: var(--shadow);
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
         }
         
-        .results-hidden {
+        .preview-hidden {
             display: none;
         }
         
@@ -175,7 +179,8 @@
         }
         
         input[type="text"], 
-        input[type="number"] {
+        input[type="number"],
+        select {
             width: 100%;
             padding: 12px 15px;
             border: 2px solid var(--secondary-color);
@@ -185,69 +190,14 @@
         }
         
         input[type="text"]:focus, 
-        input[type="number"]:focus {
+        input[type="number"]:focus,
+        select:focus {
             border-color: var(--primary-color);
             outline: none;
             box-shadow: 0 0 0 3px rgba(220, 0, 40, 0.1);
         }
         
-        .currency-symbol {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--light-text);
-            font-weight: 500;
-        }
-        
-        .has-currency input {
-            padding-left: 30px;
-        }
-        
-        .percentage-symbol {
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--light-text);
-            font-weight: 500;
-        }
-        
-        .confidence-group {
-            margin-top: 30px;
-        }
-        
-        .confidence-buttons {
-            display: flex;
-            justify-content: space-between;
-            gap: 10px;
-        }
-        
-        .confidence-btn {
-            flex: 1;
-            padding: 12px 5px;
-            background-color: var(--secondary-color);
-            color: var(--dark-text);
-            font-weight: 500;
-            border: 2px solid transparent;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.95rem;
-            transition: var(--transition);
-            text-align: center;
-        }
-        
-        .confidence-btn:hover {
-            background-color: var(--secondary-hover);
-        }
-        
-        .confidence-btn.active {
-            background-color: var(--white);
-            border-color: var(--primary-color);
-            color: var(--primary-color);
-        }
-        
-        .calculate-btn {
+        .generate-btn {
             width: 100%;
             padding: 14px;
             background-color: var(--primary-color);
@@ -261,12 +211,12 @@
             transition: var(--transition);
         }
         
-        .calculate-btn:hover {
+        .generate-btn:hover {
             background-color: var(--primary-hover);
             transform: translateY(-2px);
         }
         
-        .results-title {
+        .preview-title {
             font-family: 'DM Serif Text', serif;
             font-size: 1.6rem;
             margin-bottom: 25px;
@@ -275,68 +225,81 @@
             border-bottom: 1px solid var(--secondary-color);
         }
         
-        .result-card {
+        .letter-content {
+            white-space: pre-line;
+            font-size: 1rem;
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+        
+        .specification {
             background-color: var(--secondary-color);
             padding: 20px;
             border-radius: 8px;
             margin-bottom: 20px;
-            transition: var(--transition);
-        }
-        
-        .result-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow);
-        }
-        
-        .result-card.primary {
-            background-color: var(--primary-color);
-            color: var(--white);
-        }
-        
-        .result-label {
-            font-size: 1rem;
-            font-weight: 500;
-            margin-bottom: 5px;
-        }
-        
-        .result-value {
-            font-family: 'DM Serif Text', serif;
-            font-size: 2.2rem;
-        }
-        
-        .result-value.medium {
-            font-size: 1.8rem;
-        }
-        
-        .result-description {
-            font-size: 0.9rem;
-            color: var(--lightest-text);
-            margin-top: 5px;
-        }
-        
-        .primary .result-description {
-            color: rgba(255, 255, 255, 0.8);
-        }
-        
-        .try-btn {
-            display: block;
-            width: 100%;
-            padding: 14px;
-            background-color: var(--primary-color);
-            color: var(--white);
             font-weight: 700;
-            border: none;
-            border-radius: 8px;
-            text-align: center;
-            font-size: 1.2rem;
-            text-decoration: none;
-            transition: var(--transition);
+        }
+        
+        .invoice-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        .invoice-table th, 
+        .invoice-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--secondary-color);
+        }
+        
+        .invoice-table th {
+            font-weight: 700;
+            color: var(--light-text);
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 15px;
             margin-top: 20px;
         }
         
-        .try-btn:hover {
+        .action-btn {
+            flex: 1;
+            padding: 12px;
+            font-weight: 700;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: var(--transition);
+            text-align: center;
+            text-decoration: none;
+        }
+        
+        .print-btn {
+            background-color: var(--secondary-color);
+            color: var(--dark-text);
+        }
+        
+        .print-btn:hover {
+            background-color: var(--secondary-hover);
+        }
+        
+        .download-btn {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+        
+        .download-btn:hover {
             background-color: var(--primary-hover);
-            transform: translateY(-2px);
+        }
+        
+        .input-helper {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--lightest-text);
+            margin-top: 5px;
         }
         
         footer {
@@ -357,11 +320,45 @@
             text-decoration: underline;
         }
         
-        .input-helper {
-            display: block;
-            font-size: 0.8rem;
-            color: var(--lightest-text);
-            margin-top: 5px;
+        @media (max-width: 768px) {
+            .template-container {
+                flex-direction: column;
+            }
+            
+            .logo-container {
+                margin-right: 0;
+                margin-bottom: 20px;
+            }
+            
+            .header-wrapper {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            h2 {
+                font-size: 2.2rem;
+            }
+        }
+        
+        .currency-symbol {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--light-text);
+            font-weight: 500;
+        }
+        
+        .has-currency input {
+            padding-left: 30px;
+        }
+        
+        .invoice-list {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            border: 1px solid var(--secondary-color);
+            border-radius: 8px;
         }
         
         .back-button {
@@ -380,7 +377,7 @@
             cursor: pointer;
             transition: var(--transition);
             z-index: 1003; /* Increased to be above the language bar */
-            text-decoration: none;
+            text-decoration: none !important;
         }
         
         .back-button:hover {
@@ -396,7 +393,6 @@
         .language-selector {
             margin-left: auto;
             z-index: 1000;
-            position: relative;
         }
         
         .language-button {
@@ -461,6 +457,10 @@
             display: block;
         }
         
+        .language-selector:hover .language-dropdown {
+            display: block;
+        }
+        
         .language-option {
             display: flex;
             align-items: center;
@@ -476,26 +476,6 @@
         .language-name {
             margin-left: 10px;
             font-size: 14px;
-        }
-        
-        @media (max-width: 768px) {
-            .calculator {
-                flex-direction: column;
-            }
-            
-            .logo-container {
-                margin-right: 0;
-                margin-bottom: 20px;
-            }
-            
-            .header-wrapper {
-                flex-direction: column;
-                text-align: center;
-            }
-            
-            h2 {
-                font-size: 2.2rem;
-            }
         }
     </style>
 </head>
@@ -542,239 +522,322 @@
             </div>
         </div>
         <div class="page-logo">
-            <img src="https://www.creditexpo.nl/wp-content/uploads/2024/09/Logo-Credit-IQ-CIQ-no-bg-2048x2048.png" alt="Credit IQ Logo" class="logo">
+            <img src="https://www.creditexpo.nl/wp-content/uploads/2024/09/Logo-Credit-IQ-CIQ-no-bg-2048x2048.png" alt="Payment Icon" class="logo">
         </div>
-        <h2 class="page-title">ROI Calculator</h2>
-        <p class="page-subtitle">Discover how much you could save with Credit IQ</p>
+        <h2 class="page-title">Betalingsherinnering Template</h2>
+        <p class="page-subtitle">Genereer vriendelijke herinneringen voor openstaande facturen</p>
 
-        <div class="calculator">
+        <div class="template-container">
             <div class="form-container">
-                <h3 class="form-title">Enter your details</h3>
+                <h3 class="form-title">Gegevens invoeren</h3>
+                
                 <div class="form-group">
-                    <label for="revenue">Yearly Revenue</label>
-                    <div class="input-wrapper has-currency">
-                        <span class="currency-symbol">€</span>
-                        <input type="text" id="revenue" placeholder="e.g. 1.000.000">
-                    </div>
-                    <span class="input-helper">Enter your company's annual revenue</span>
+                    <label for="companyName">Uw bedrijfsnaam</label>
+                    <input type="text" id="companyName" placeholder="Bijv. Acme B.V.">
                 </div>
                 
                 <div class="form-group">
-                    <label for="dso">Current Days Sales Outstanding (DSO)</label>
-                    <input type="number" id="dso" placeholder="e.g. 45">
-                    <span class="input-helper">Average number of days it takes to collect payment</span>
+                    <label for="location">Uw vestigingsplaats</label>
+                    <input type="text" id="location" placeholder="Bijv. Amsterdam">
                 </div>
                 
                 <div class="form-group">
-                    <label for="eb">Estimated Unrecoverable Debts</label>
+                    <label for="iban">Uw IBAN</label>
+                    <input type="text" id="iban" placeholder="Bijv. NL02ABNA0123456789">
+                    <span class="input-helper">Voer uw volledige IBAN in zonder spaties</span>
+                </div>
+                
+                <div class="form-group">
+                    <label for="days">Betalingstermijn (dagen)</label>
+                    <select id="days">
+                        <option value="3">3 dagen</option>
+                        <option value="5" selected>5 dagen</option>
+                        <option value="7">7 dagen</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="invoiceNumbers">Factuurnummer(s)</label>
                     <div class="input-wrapper">
-                        <input type="number" id="eb" placeholder="e.g. 3">
-                        <span class="percentage-symbol">%</span>
+                        <input type="text" id="invoiceInput" placeholder="Voer factuurnummer in">
                     </div>
-                    <span class="input-helper">Percentage of revenue you expect to be unrecoverable</span>
-                </div>
-                
-                <div class="form-group">
-                    <label for="invoices">Average Monthly Invoices Raised</label>
-                    <input type="number" id="invoices" placeholder="e.g. 100">
-                    <span class="input-helper">Number of invoices you send each month</span>
-                </div>
-                
-                <div class="form-group">
-                    <label for="salary">Yearly Salary of AR Staff</label>
-                    <div class="input-wrapper has-currency">
-                        <span class="currency-symbol">€</span>
-                        <input type="text" id="salary" placeholder="e.g. 50.000">
+                    <button id="addInvoiceBtn" class="print-btn action-btn" style="margin-top: 10px;">Toevoegen</button>
+                    <div class="invoice-list" id="invoiceList">
+                        <!-- Invoices will be added here -->
                     </div>
-                    <span class="input-helper">Total annual cost of accounts receivable staff</span>
+                    <span class="input-helper">Voeg alle openstaande factuurnummers toe</span>
                 </div>
                 
-                <input type="hidden" id="cf" value="45">
-                
-                <div class="confidence-group">
-                    <label>Calculation Confidence</label>
-                    <div class="confidence-buttons">
-                        <button class="confidence-btn" onclick="setConfidence(30, this)">Conservative</button>
-                        <button class="confidence-btn active" onclick="setConfidence(45, this)">Average</button>
-                        <button class="confidence-btn" onclick="setConfidence(60, this)">High</button>
-                    </div>
-                    <span class="input-helper">Select your preferred level of confidence for calculations</span>
-                </div>
-                
-                <button class="calculate-btn" onclick="calculateSavings()">Calculate My Savings</button>
+                <button class="generate-btn" onclick="generateTemplate()">Genereer Betalingsherinnering</button>
             </div>
             
-            <div class="results-container results-hidden" id="resultsContainer">
-                <div>
-                    <h3 class="results-title">Your 1-Year Savings</h3>
-                    
-                    <div class="result-card primary">
-                        <div class="result-label">Total Estimated Savings</div>
-                        <div class="result-value" id="totalSavings">€0,00</div>
-                        <p class="result-description">Combined value of improved cash flow, reduced bad debt, and increased staff efficiency</p>
-                    </div>
-                    
-                    <div class="result-card">
-                        <div class="result-label">Monthly Cost of Delay</div>
-                        <div class="result-value medium" id="monthlyCost">€0,00</div>
-                        <p class="result-description">How much your current DSO costs you each month</p>
-                    </div>
-                    
-                    <div class="result-card">
-                        <div class="result-label">Time Saved Each Month</div>
-                        <div class="result-value medium" id="timeSaved">0 days</div>
-                        <p class="result-description">Reduction in collection time with Credit IQ</p>
-                    </div>
-                    
-                    <div class="result-card">
-                        <div class="result-label">Estimated New DSO</div>
-                        <div class="result-value medium" id="estimatedDSO">0</div>
-                        <p class="result-description">Your projected Days Sales Outstanding with Credit IQ</p>
-                    </div>
+            <div class="preview-container preview-hidden" id="previewContainer">
+                <h3 class="preview-title">Betalingsherinnering Voorbeeld</h3>
+                
+                <div class="specification" id="specification">
+                    Overzicht van openstaande facturen:
                 </div>
                 
-                <a href="https://app.credit-iq.com?prompt=signup" class="try-btn" target="_blank">Try Credit IQ for Free</a>
+                <div class="letter-content" id="letterContent">
+                    Betalingsherinnering betreffende de onderstaande openstaande factu(u)r(en).
+
+                    Volgens onze administratie hebben wij nog geen betaling ontvangen voor de hierboven genoemde factu(u)r(en). Mogelijk is de betaling reeds onderweg of heeft u deze factuur over het hoofd gezien.
+
+                    Wij verzoeken u vriendelijk om het openstaande bedrag binnen [dagen] dagen over te maken op IBAN [iban] ten name van [bedrijfsnaam] te [vestigingsplaats] onder vermelding van het factuurnummer.
+
+                    Mocht u vragen hebben over deze factuur of als er een reden is waarom de betaling is uitgebleven, neem dan gerust contact met ons op. We denken graag met u mee over een passende oplossing.
+
+                    Indien u de betaling inmiddels heeft voldaan, kunt u deze herinnering als niet verzonden beschouwen.
+
+                    Met vriendelijke groet,
+
+                    [bedrijfsnaam]
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="action-btn print-btn" onclick="printTemplate()">Afdrukken</button>
+                    <button class="action-btn download-btn" onclick="downloadTemplate()">Downloaden als PDF</button>
+                </div>
             </div>
         </div>
         
         <footer>
-            <p>Powered by <a href="https://www.atradiuscollections.com" target="_blank">Atradius Collections</a> | Credit IQ &copy; 2025</p>
+            <p>Betalingsherinnering Template &copy; 2025 | <a href="#" onclick="resetForm()">Formulier resetten</a></p>
         </footer>
     </div>
 
+    <!-- Add jsPDF library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha512-qZvrmS2ekKPF2mSznTQsxqPgnpkI4DNTlrdUmTzrDgektczlKNRRhy5X5AAOnx5S09ydFYWWNSfcEqDTTHgtNA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoeqMV/TJlSKda6FXzoEyYGjTe+vXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    
     <script>
-        function formatInput(input) {
-            let value = input.value.replace(/[^\d,]/g, '').replace(/,/g, '');
-            if (!value) return input.value = '';
-            value = parseInt(value, 10).toString();
-            input.value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-        }
-
-        document.getElementById('revenue').addEventListener('input', function() {
-            formatInput(this);
+        // Add invoice to the list
+        document.getElementById('addInvoiceBtn').addEventListener('click', function() {
+            const invoiceInput = document.getElementById('invoiceInput');
+            const invoice = invoiceInput.value.trim();
+            
+            if (invoice) {
+                const invoiceList = document.getElementById('invoiceList');
+                const invoiceItem = document.createElement('div');
+                invoiceItem.style.padding = '10px';
+                invoiceItem.style.borderBottom = '1px solid #E5E4E8';
+                invoiceItem.style.display = 'flex';
+                invoiceItem.style.justifyContent = 'space-between';
+                
+                const invoiceText = document.createElement('span');
+                invoiceText.textContent = invoice;
+                
+                const removeBtn = document.createElement('button');
+                removeBtn.textContent = '×';
+                removeBtn.style.background = 'none';
+                removeBtn.style.border = 'none';
+                removeBtn.style.color = '#DC0028';
+                removeBtn.style.fontSize = '1.2rem';
+                removeBtn.style.cursor = 'pointer';
+                removeBtn.onclick = function() {
+                    invoiceItem.remove();
+                };
+                
+                invoiceItem.appendChild(invoiceText);
+                invoiceItem.appendChild(removeBtn);
+                invoiceList.appendChild(invoiceItem);
+                
+                invoiceInput.value = '';
+            }
         });
-
-        document.getElementById('salary').addEventListener('input', function() {
-            formatInput(this);
+        
+        // Allow Enter key to add invoice
+        document.getElementById('invoiceInput').addEventListener('keyup', function(event) {
+            if (event.key === 'Enter') {
+                document.getElementById('addInvoiceBtn').click();
+            }
         });
-
-        function parseFormattedNumber(value) {
-            return parseFloat(value.replace(/\./g, '').replace(/,/g, '.')) || 0;
-        }
-
-        function setConfidence(value, button) {
-            document.getElementById('cf').value = value;
-            const buttons = document.querySelectorAll('.confidence-btn');
-            buttons.forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
-        }
-
-        function calculateSavings() {
-            const R_y = parseFormattedNumber(document.getElementById('revenue').value);
-            const DSO = parseFloat(document.getElementById('dso').value);
-            const EB = parseFloat(document.getElementById('eb').value) / 100;
-            const CF = parseFloat(document.getElementById('cf').value) / 100;
-            const I_m = parseFloat(document.getElementById('invoices').value);
-            const salary = parseFormattedNumber(document.getElementById('salary').value);
-
-            if (isNaN(R_y) || isNaN(DSO) || isNaN(EB) || isNaN(CF) || isNaN(I_m) || isNaN(salary)) {
-                alert("Please fill in all fields with valid numbers.");
+        
+        // Generate the payment request template
+        function generateTemplate() {
+            const companyName = document.getElementById('companyName').value.trim();
+            const location = document.getElementById('location').value.trim();
+            const iban = document.getElementById('iban').value.trim();
+            const days = document.getElementById('days').value;
+            
+            // Get all invoices
+            const invoiceItems = document.querySelectorAll('#invoiceList > div > span');
+            const invoices = Array.from(invoiceItems).map(item => item.textContent);
+            
+            if (!companyName || !location || !iban || invoices.length === 0) {
+                alert("Vul alle vereiste velden in en voeg ten minste één factuurnummer toe.");
                 return;
             }
-
-            // Calculate accounts receivable
-            const AR = (R_y / 365) * DSO;
             
-            // Calculate savings components
-            const cashFlowSavings = AR * CF;
-            const BDE = AR * EB;
-            const staffEfficiencySavings = (salary / (I_m * 12)) * CF * I_m;
+            // Update specification
+            let specificationText = "Overzicht van openstaande facturen:<br><br>";
+            specificationText += "<table class='invoice-table'>";
+            specificationText += "<tr><th>Factuurnummer</th></tr>";
             
-            // Apply scaling factor to match example case (€21K for the example inputs)
-            const savingsScalingFactor = 0.1741;
-            const totalSavings = (cashFlowSavings + BDE + staffEfficiencySavings) * savingsScalingFactor;
+            invoices.forEach(invoice => {
+                specificationText += `<tr><td>${invoice}</td></tr>`;
+            });
             
-            // Function to get confidence-based scaling factor for monthly cost of delay
-            function getConfidenceScalingFactor(confidenceValue) {
-                // confidenceValue is in decimal form (e.g., 0.45 for 45%)
-                if (confidenceValue === 0.45) {
-                    return 1.0; // 100% for Average
-                } else if (confidenceValue === 0.3) {
-                    return 0.7222; // 72.22% for Conservative
-                } else if (confidenceValue === 0.6) {
-                    return 1.3333; // 133.33% for High
-                } else {
-                    // For any other value, interpolate linearly
-                    return confidenceValue / 0.45; // Scale proportionally to the Average value
-                }
-            }
+            specificationText += "</table>";
+            document.getElementById('specification').innerHTML = specificationText;
             
-            // Calculate monthly cost of delay with scaling factor to match example case (€1,800)
-            const costOfDelayScalingFactor = 0.0809;
-            const confidenceScalingFactor = getConfidenceScalingFactor(CF);
-            const monthlyCostOfDelay = (R_y / 12) * (DSO / 365) * costOfDelayScalingFactor * confidenceScalingFactor;
+            // Update letter content
+            let letterContent = document.getElementById('letterContent').textContent;
+            letterContent = letterContent.replace('[dagen]', days);
+            letterContent = letterContent.replace('[iban]', iban);
+            letterContent = letterContent.replace('[bedrijfsnaam]', companyName);
+            letterContent = letterContent.replace('[vestigingsplaats]', location);
+            letterContent = letterContent.replace('[bedrijfsnaam]', companyName);
             
-            // Function to get confidence-based scaling factor for time saved
-            function getTimeScalingFactor(confidenceValue) {
-                // confidenceValue is in decimal form (e.g., 0.45 for 45%)
-                if (confidenceValue === 0.45) {
-                    return 1.0; // 100% for Average
-                } else if (confidenceValue === 0.3) {
-                    return 0.8001; // 80.01% for Conservative
-                } else if (confidenceValue === 0.6) {
-                    return 1.1999; // 119.99% for High
-                } else {
-                    // For any other value, interpolate linearly
-                    return 0.8001 + ((confidenceValue - 0.3) / (0.6 - 0.3)) * (1.1999 - 0.8001);
-                }
-            }
+            document.getElementById('letterContent').textContent = letterContent;
             
-            // Calculate time saved in hours based on number of invoices
-            // For the example case: 36.11 hours for 50 invoices (0.7222 hours per invoice)
-            const hoursPerInvoice = 0.7222;
-            const timeScalingFactor = getTimeScalingFactor(CF);
-            const timeSavedHours = I_m * hoursPerInvoice * timeScalingFactor;
+            // Show preview
+            document.getElementById('previewContainer').classList.remove('preview-hidden');
             
-            // Function to get confidence-based scaling factor for new DSO
-            function getDsoScalingFactor(confidenceValue) {
-                // confidenceValue is in decimal form (e.g., 0.45 for 45%)
-                if (confidenceValue === 0.45) {
-                    return 1.0; // 100% for Average
-                } else if (confidenceValue === 0.3) {
-                    return 0.8333; // 83.33% for Conservative (to get 48.75 days)
-                } else if (confidenceValue === 0.6) {
-                    return 1.1667; // 116.67% for High (to get 19.50 days)
-                } else {
-                    // For any other value, interpolate linearly
-                    return 0.8333 + ((confidenceValue - 0.3) / (0.6 - 0.3)) * (1.1667 - 0.8333);
-                }
-            }
-            
-            // Calculate new DSO
-            const dsoScalingFactor = getDsoScalingFactor(CF);
-            const dsoReduction = DSO * CF * dsoScalingFactor;
-            const newDSO = DSO - dsoReduction;
-            
-            // Format and display results
-            let formattedSavings;
-            if (totalSavings >= 1000000000) {
-                formattedSavings = `€${(totalSavings / 1000000000).toFixed(2)}B`;
-            } else if (totalSavings >= 1000000) {
-                formattedSavings = `€${(totalSavings / 1000000).toFixed(2)}M`;
-            } else {
-                formattedSavings = `€${Math.round(totalSavings / 1000)}K`;
-            }
-            document.getElementById('totalSavings').innerText = formattedSavings;
-            document.getElementById('monthlyCost').innerText = `€${Math.round(monthlyCostOfDelay).toLocaleString('de-DE')}`;
-            document.getElementById('timeSaved').innerText = `${timeSavedHours.toFixed(2)} hours`;
-            document.getElementById('estimatedDSO').innerText = `${newDSO.toFixed(2)} days`;
-
-            document.getElementById('resultsContainer').classList.remove('results-hidden');
-            
-            // Smooth scroll to results
-            document.getElementById('resultsContainer').scrollIntoView({
+            // Scroll to preview
+            document.getElementById('previewContainer').scrollIntoView({
                 behavior: 'smooth'
             });
+        }
+        
+        // Print the template
+        function printTemplate() {
+            const content = document.getElementById('previewContainer').innerHTML;
+            const printWindow = window.open('', '_blank');
+            
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Betalingsherinnering</title>
+                    <style>
+                        body {
+                            font-family: 'Roboto', Arial, sans-serif;
+                            line-height: 1.6;
+                            color: #333;
+                            padding: 40px;
+                        }
+                        .preview-title {
+                            font-size: 24px;
+                            margin-bottom: 20px;
+                            border-bottom: 1px solid #eee;
+                            padding-bottom: 10px;
+                        }
+                        .specification {
+                            background-color: #f5f5f5;
+                            padding: 20px;
+                            border-radius: 8px;
+                            margin-bottom: 20px;
+                        }
+                        .letter-content {
+                            white-space: pre-line;
+                            line-height: 1.8;
+                        }
+                        .invoice-table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin-bottom: 20px;
+                        }
+                        .invoice-table th, 
+                        .invoice-table td {
+                            padding: 12px;
+                            text-align: left;
+                            border-bottom: 1px solid #eee;
+                        }
+                        .action-buttons {
+                            display: none;
+                        }
+                    </style>
+                </head>
+                <body>
+                    ${content}
+                </body>
+                </html>
+            `);
+            
+            printWindow.document.close();
+            printWindow.focus();
+            
+            // Add small delay to ensure content is loaded
+            setTimeout(() => {
+                printWindow.print();
+            }, 500);
+        }
+        
+        // Download as PDF
+        function downloadTemplate() {
+            // Make sure jsPDF is loaded
+            if (typeof window.jspdf === 'undefined') {
+                console.error('jsPDF library not loaded');
+                alert('PDF library not loaded. Please refresh the page and try again.');
+                return;
+            }
+            
+            // Create a clone of the preview container to modify for PDF
+            const previewClone = document.getElementById('previewContainer').cloneNode(true);
+            
+            // Remove action buttons from the clone
+            const actionButtons = previewClone.querySelector('.action-buttons');
+            if (actionButtons) {
+                previewClone.removeChild(actionButtons);
+            }
+            
+            // Create a temporary container for the PDF content
+            const tempContainer = document.createElement('div');
+            tempContainer.appendChild(previewClone);
+            tempContainer.style.width = '210mm'; // A4 width
+            tempContainer.style.padding = '20mm';
+            tempContainer.style.position = 'absolute';
+            tempContainer.style.left = '-9999px';
+            document.body.appendChild(tempContainer);
+            
+            // Use html2canvas to capture the content
+            html2canvas(previewClone, {
+                scale: 2, // Higher scale for better quality
+                useCORS: true,
+                logging: false
+            }).then(canvas => {
+                // Remove the temporary container
+                document.body.removeChild(tempContainer);
+                
+                try {
+                    // Initialize jsPDF
+                    const { jsPDF } = window.jspdf;
+                    const pdf = new jsPDF('p', 'mm', 'a4');
+                    
+                    // Calculate dimensions to fit the canvas to A4
+                    const imgWidth = 210 - 40; // A4 width minus margins
+                    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                    
+                    // Add the canvas as an image to the PDF
+                    const imgData = canvas.toDataURL('image/png');
+                    pdf.addImage(imgData, 'PNG', 20, 20, imgWidth, imgHeight);
+                    
+                    // Get company name for the filename
+                    const companyName = document.getElementById('companyName').value.trim() || 'Betalingsherinnering';
+                    const fileName = `${companyName.replace(/\s+/g, '-')}-Betalingsherinnering.pdf`;
+                    
+                    // Save the PDF
+                    pdf.save(fileName);
+                } catch (error) {
+                    console.error('Error creating PDF:', error);
+                    alert('Er is een fout opgetreden bij het maken van de PDF. Probeer het opnieuw.');
+                }
+            }).catch(error => {
+                console.error('Error generating PDF:', error);
+                alert('Er is een fout opgetreden bij het genereren van de PDF. Probeer het opnieuw.');
+            });
+        }
+        
+        // Reset the form
+        function resetForm() {
+            document.getElementById('companyName').value = '';
+            document.getElementById('location').value = '';
+            document.getElementById('iban').value = '';
+            document.getElementById('days').value = '5';
+            document.getElementById('invoiceInput').value = '';
+            document.getElementById('invoiceList').innerHTML = '';
+            document.getElementById('previewContainer').classList.add('preview-hidden');
         }
         
         // Toggle language dropdown
@@ -816,177 +879,6 @@
             }
             
             return langCode;
-        }
-        
-        // Translation functions
-        function translateToDutch() {
-            document.title = "Credit IQ - ROI Calculator";
-            document.querySelector('.page-title').textContent = "ROI Calculator";
-            document.querySelector('.page-subtitle').textContent = "Ontdek hoeveel je kunt besparen met Credit IQ";
-            document.querySelector('.form-title').textContent = "Voer je gegevens in";
-            document.querySelectorAll('label')[0].textContent = "Jaarlijkse omzet";
-            document.querySelectorAll('label')[1].textContent = "Huidige Days Sales Outstanding (DSO)";
-            document.querySelectorAll('label')[2].textContent = "Geschatte oninbare vorderingen";
-            document.querySelectorAll('label')[3].textContent = "Gemiddeld aantal maandelijkse facturen";
-            document.querySelectorAll('label')[4].textContent = "Jaarlijkse salariskosten AR-personeel";
-            document.querySelectorAll('label')[5].textContent = "Berekeningsvertrouwen";
-            document.querySelectorAll('.confidence-btn')[0].textContent = "Conservatief";
-            document.querySelectorAll('.confidence-btn')[1].textContent = "Gemiddeld";
-            document.querySelectorAll('.confidence-btn')[2].textContent = "Hoog";
-            document.querySelectorAll('.input-helper')[0].textContent = "Voer de jaarlijkse omzet van je bedrijf in";
-            document.querySelectorAll('.input-helper')[1].textContent = "Gemiddeld aantal dagen dat het duurt om betaling te ontvangen";
-            document.querySelectorAll('.input-helper')[2].textContent = "Percentage van de omzet dat je verwacht niet te kunnen innen";
-            document.querySelectorAll('.input-helper')[3].textContent = "Aantal facturen dat je maandelijks verstuurt";
-            document.querySelectorAll('.input-helper')[4].textContent = "Totale jaarlijkse kosten van debiteurenadministratie personeel";
-            document.querySelectorAll('.input-helper')[5].textContent = "Selecteer je gewenste betrouwbaarheidsniveau voor berekeningen";
-            document.querySelector('.calculate-btn').textContent = "Bereken mijn besparingen";
-            document.querySelector('.results-title').textContent = "Je 1-jarige besparingen";
-            document.querySelectorAll('.result-label')[0].textContent = "Totale geschatte besparingen";
-            document.querySelectorAll('.result-label')[1].textContent = "Maandelijkse kosten van vertraging";
-            document.querySelectorAll('.result-label')[2].textContent = "Tijd bespaard per maand";
-            document.querySelectorAll('.result-label')[3].textContent = "Geschatte nieuwe DSO";
-            document.querySelectorAll('.result-description')[0].textContent = "Gecombineerde waarde van verbeterde cashflow, verminderde oninbare vorderingen en verhoogde personeelsefficiëntie";
-            document.querySelectorAll('.result-description')[1].textContent = "Hoeveel je huidige DSO je elke maand kost";
-            document.querySelectorAll('.result-description')[2].textContent = "Vermindering in incassotijd met Credit IQ";
-            document.querySelectorAll('.result-description')[3].textContent = "Je verwachte Days Sales Outstanding met Credit IQ";
-            document.querySelector('.try-btn').textContent = "Probeer Credit IQ gratis";
-            document.querySelector('footer p').innerHTML = 'Powered by <a href="https://www.atradiuscollections.com" target="_blank">Atradius Collections</a> | Credit IQ &copy; 2025';
-        }
-        
-        function translateToEnglish() {
-            document.title = "Credit IQ - ROI Calculator";
-            document.querySelector('.page-title').textContent = "ROI Calculator";
-            document.querySelector('.page-subtitle').textContent = "Discover how much you could save with Credit IQ";
-            document.querySelector('.form-title').textContent = "Enter your details";
-            document.querySelectorAll('label')[0].textContent = "Yearly Revenue";
-            document.querySelectorAll('label')[1].textContent = "Current Days Sales Outstanding (DSO)";
-            document.querySelectorAll('label')[2].textContent = "Estimated Unrecoverable Debts";
-            document.querySelectorAll('label')[3].textContent = "Average Monthly Invoices Raised";
-            document.querySelectorAll('label')[4].textContent = "Yearly Salary of AR Staff";
-            document.querySelectorAll('label')[5].textContent = "Calculation Confidence";
-            document.querySelectorAll('.confidence-btn')[0].textContent = "Conservative";
-            document.querySelectorAll('.confidence-btn')[1].textContent = "Average";
-            document.querySelectorAll('.confidence-btn')[2].textContent = "High";
-            document.querySelectorAll('.input-helper')[0].textContent = "Enter your company's annual revenue";
-            document.querySelectorAll('.input-helper')[1].textContent = "Average number of days it takes to collect payment";
-            document.querySelectorAll('.input-helper')[2].textContent = "Percentage of revenue you expect to be unrecoverable";
-            document.querySelectorAll('.input-helper')[3].textContent = "Number of invoices you send each month";
-            document.querySelectorAll('.input-helper')[4].textContent = "Total annual cost of accounts receivable staff";
-            document.querySelectorAll('.input-helper')[5].textContent = "Select your preferred level of confidence for calculations";
-            document.querySelector('.calculate-btn').textContent = "Calculate My Savings";
-            document.querySelector('.results-title').textContent = "Your 1-Year Savings";
-            document.querySelectorAll('.result-label')[0].textContent = "Total Estimated Savings";
-            document.querySelectorAll('.result-label')[1].textContent = "Monthly Cost of Delay";
-            document.querySelectorAll('.result-label')[2].textContent = "Time Saved Each Month";
-            document.querySelectorAll('.result-label')[3].textContent = "Estimated New DSO";
-            document.querySelectorAll('.result-description')[0].textContent = "Combined value of improved cash flow, reduced bad debt, and increased staff efficiency";
-            document.querySelectorAll('.result-description')[1].textContent = "How much your current DSO costs you each month";
-            document.querySelectorAll('.result-description')[2].textContent = "Reduction in collection time with Credit IQ";
-            document.querySelectorAll('.result-description')[3].textContent = "Your projected Days Sales Outstanding with Credit IQ";
-            document.querySelector('.try-btn').textContent = "Try Credit IQ for Free";
-            document.querySelector('footer p').innerHTML = 'Powered by <a href="https://www.atradiuscollections.com" target="_blank">Atradius Collections</a> | Credit IQ &copy; 2025';
-        }
-        
-        function translateToFrench() {
-            document.title = "Credit IQ - Calculateur de ROI";
-            document.querySelector('.page-title').textContent = "Calculateur de ROI";
-            document.querySelector('.page-subtitle').textContent = "Découvrez combien vous pourriez économiser avec Credit IQ";
-            document.querySelector('.form-title').textContent = "Entrez vos coordonnées";
-            document.querySelectorAll('label')[0].textContent = "Chiffre d'affaires annuel";
-            document.querySelectorAll('label')[1].textContent = "Délai moyen de paiement actuel (DSO)";
-            document.querySelectorAll('label')[2].textContent = "Dettes estimées irrécouvrables";
-            document.querySelectorAll('label')[3].textContent = "Nombre moyen de factures mensuelles";
-            document.querySelectorAll('label')[4].textContent = "Salaire annuel du personnel AR";
-            document.querySelectorAll('label')[5].textContent = "Confiance de calcul";
-            document.querySelectorAll('.confidence-btn')[0].textContent = "Conservateur";
-            document.querySelectorAll('.confidence-btn')[1].textContent = "Moyen";
-            document.querySelectorAll('.confidence-btn')[2].textContent = "Élevé";
-            document.querySelectorAll('.input-helper')[0].textContent = "Entrez le chiffre d'affaires annuel de votre entreprise";
-            document.querySelectorAll('.input-helper')[1].textContent = "Nombre moyen de jours nécessaires pour recevoir un paiement";
-            document.querySelectorAll('.input-helper')[2].textContent = "Pourcentage du chiffre d'affaires que vous prévoyez ne pas pouvoir recouvrer";
-            document.querySelectorAll('.input-helper')[3].textContent = "Nombre de factures que vous envoyez chaque mois";
-            document.querySelectorAll('.input-helper')[4].textContent = "Coût annuel total du personnel de comptabilité clients";
-            document.querySelectorAll('.input-helper')[5].textContent = "Sélectionnez votre niveau de confiance préféré pour les calculs";
-            document.querySelector('.calculate-btn').textContent = "Calculer mes économies";
-            document.querySelector('.results-title').textContent = "Vos économies sur 1 an";
-            document.querySelectorAll('.result-label')[0].textContent = "Économies totales estimées";
-            document.querySelectorAll('.result-label')[1].textContent = "Coût mensuel du retard";
-            document.querySelectorAll('.result-label')[2].textContent = "Temps économisé chaque mois";
-            document.querySelectorAll('.result-label')[3].textContent = "Nouveau DSO estimé";
-            document.querySelectorAll('.result-description')[0].textContent = "Valeur combinée de l'amélioration des flux de trésorerie, de la réduction des créances douteuses et de l'augmentation de l'efficacité du personnel";
-            document.querySelectorAll('.result-description')[1].textContent = "Combien votre DSO actuel vous coûte chaque mois";
-            document.querySelectorAll('.result-description')[2].textContent = "Réduction du temps de recouvrement avec Credit IQ";
-            document.querySelectorAll('.result-description')[3].textContent = "Votre délai moyen de paiement projeté avec Credit IQ";
-            document.querySelector('.try-btn').textContent = "Essayez Credit IQ gratuitement";
-            document.querySelector('footer p').innerHTML = 'Propulsé par <a href="https://www.atradiuscollections.com" target="_blank">Atradius Collections</a> | Credit IQ &copy; 2025';
-        }
-        
-        function translateToPortuguese() {
-            document.title = "Credit IQ - Calculadora de ROI";
-            document.querySelector('.page-title').textContent = "Calculadora de ROI";
-            document.querySelector('.page-subtitle').textContent = "Descubra quanto você pode economizar com o Credit IQ";
-            document.querySelector('.form-title').textContent = "Insira seus dados";
-            document.querySelectorAll('label')[0].textContent = "Receita anual";
-            document.querySelectorAll('label')[1].textContent = "Prazo médio de recebimento atual (DSO)";
-            document.querySelectorAll('label')[2].textContent = "Dívidas irrecuperáveis estimadas";
-            document.querySelectorAll('label')[3].textContent = "Média mensal de faturas emitidas";
-            document.querySelectorAll('label')[4].textContent = "Salário anual da equipe de contas a receber";
-            document.querySelectorAll('label')[5].textContent = "Confiança de cálculo";
-            document.querySelectorAll('.confidence-btn')[0].textContent = "Conservador";
-            document.querySelectorAll('.confidence-btn')[1].textContent = "Médio";
-            document.querySelectorAll('.confidence-btn')[2].textContent = "Alto";
-            document.querySelectorAll('.input-helper')[0].textContent = "Insira a receita anual da sua empresa";
-            document.querySelectorAll('.input-helper')[1].textContent = "Número médio de dias que leva para receber o pagamento";
-            document.querySelectorAll('.input-helper')[2].textContent = "Porcentagem da receita que você espera não conseguir recuperar";
-            document.querySelectorAll('.input-helper')[3].textContent = "Número de faturas que você envia por mês";
-            document.querySelectorAll('.input-helper')[4].textContent = "Custo anual total da equipe de contas a receber";
-            document.querySelectorAll('.input-helper')[5].textContent = "Selecione seu nível de confiança preferido para os cálculos";
-            document.querySelector('.calculate-btn').textContent = "Calcular minhas economias";
-            document.querySelector('.results-title').textContent = "Suas economias de 1 ano";
-            document.querySelectorAll('.result-label')[0].textContent = "Economia total estimada";
-            document.querySelectorAll('.result-label')[1].textContent = "Custo mensal do atraso";
-            document.querySelectorAll('.result-label')[2].textContent = "Tempo economizado por mês";
-            document.querySelectorAll('.result-label')[3].textContent = "Novo DSO estimado";
-            document.querySelectorAll('.result-description')[0].textContent = "Valor combinado de fluxo de caixa melhorado, redução de dívidas incobráveis e aumento da eficiência da equipe";
-            document.querySelectorAll('.result-description')[1].textContent = "Quanto seu DSO atual custa por mês";
-            document.querySelectorAll('.result-description')[2].textContent = "Redução no tempo de cobrança com o Credit IQ";
-            document.querySelectorAll('.result-description')[3].textContent = "Seu prazo médio de recebimento projetado com o Credit IQ";
-            document.querySelector('.try-btn').textContent = "Experimente o Credit IQ gratuitamente";
-            document.querySelector('footer p').innerHTML = 'Desenvolvido por <a href="https://www.atradiuscollections.com" target="_blank">Atradius Collections</a> | Credit IQ &copy; 2025';
-        }
-        
-        function translateToSpanish() {
-            document.title = "Credit IQ - Calculadora de ROI";
-            document.querySelector('.page-title').textContent = "Calculadora de ROI";
-            document.querySelector('.page-subtitle').textContent = "Descubra cuánto podría ahorrar con Credit IQ";
-            document.querySelector('.form-title').textContent = "Ingrese sus datos";
-            document.querySelectorAll('label')[0].textContent = "Ingresos anuales";
-            document.querySelectorAll('label')[1].textContent = "Días actuales de ventas pendientes (DSO)";
-            document.querySelectorAll('label')[2].textContent = "Deudas irrecuperables estimadas";
-            document.querySelectorAll('label')[3].textContent = "Promedio mensual de facturas emitidas";
-            document.querySelectorAll('label')[4].textContent = "Salario anual del personal de cuentas por cobrar";
-            document.querySelectorAll('label')[5].textContent = "Confianza de cálculo";
-            document.querySelectorAll('.confidence-btn')[0].textContent = "Conservador";
-            document.querySelectorAll('.confidence-btn')[1].textContent = "Promedio";
-            document.querySelectorAll('.confidence-btn')[2].textContent = "Alto";
-            document.querySelectorAll('.input-helper')[0].textContent = "Ingrese los ingresos anuales de su empresa";
-            document.querySelectorAll('.input-helper')[1].textContent = "Número promedio de días que tarda en recibir el pago";
-            document.querySelectorAll('.input-helper')[2].textContent = "Porcentaje de ingresos que espera no poder recuperar";
-            document.querySelectorAll('.input-helper')[3].textContent = "Número de facturas que envía cada mes";
-            document.querySelectorAll('.input-helper')[4].textContent = "Costo anual total del personal de cuentas por cobrar";
-            document.querySelectorAll('.input-helper')[5].textContent = "Seleccione su nivel de confianza preferido para los cálculos";
-            document.querySelector('.calculate-btn').textContent = "Calcular mis ahorros";
-            document.querySelector('.results-title').textContent = "Sus ahorros de 1 año";
-            document.querySelectorAll('.result-label')[0].textContent = "Ahorro total estimado";
-            document.querySelectorAll('.result-label')[1].textContent = "Costo mensual de la demora";
-            document.querySelectorAll('.result-label')[2].textContent = "Tiempo ahorrado cada mes";
-            document.querySelectorAll('.result-label')[3].textContent = "Nuevo DSO estimado";
-            document.querySelectorAll('.result-description')[0].textContent = "Valor combinado de flujo de caja mejorado, reducción de deudas incobrables y mayor eficiencia del personal";
-            document.querySelectorAll('.result-description')[1].textContent = "Cuánto le cuesta su DSO actual cada mes";
-            document.querySelectorAll('.result-description')[2].textContent = "Reducción en el tiempo de cobro con Credit IQ";
-            document.querySelectorAll('.result-description')[3].textContent = "Sus días de ventas pendientes proyectados con Credit IQ";
-            document.querySelector('.try-btn').textContent = "Pruebe Credit IQ gratis";
-            document.querySelector('footer p').innerHTML = 'Desarrollado por <a href="https://www.atradiuscollections.com" target="_blank">Atradius Collections</a> | Credit IQ &copy; 2025';
         }
         
         // Change language
@@ -1036,6 +928,187 @@
             dropdown.classList.remove('show');
         }
         
+        // Translation functions
+        function translateToDutch() {
+            document.title = "Betalingsherinnering Template";
+            document.querySelector('.page-title').textContent = "Betalingsherinnering Template";
+            document.querySelector('.page-subtitle').textContent = "Genereer vriendelijke herinneringen voor openstaande facturen";
+            document.querySelector('.form-title').textContent = "Gegevens invoeren";
+            document.querySelectorAll('label')[0].textContent = "Uw bedrijfsnaam";
+            document.querySelectorAll('label')[1].textContent = "Uw vestigingsplaats";
+            document.querySelectorAll('label')[2].textContent = "Uw IBAN";
+            document.querySelectorAll('label')[3].textContent = "Betalingstermijn (dagen)";
+            document.querySelectorAll('label')[4].textContent = "Factuurnummer(s)";
+            document.querySelector('.input-helper').textContent = "Voer uw volledige IBAN in zonder spaties";
+            document.querySelectorAll('.input-helper')[2].textContent = "Voeg alle openstaande factuurnummers toe";
+            document.querySelector('#addInvoiceBtn').textContent = "Toevoegen";
+            document.querySelector('.generate-btn').textContent = "Genereer Betalingsherinnering";
+            document.querySelector('.preview-title').textContent = "Betalingsherinnering Voorbeeld";
+            document.querySelector('#specification').innerHTML = "Overzicht van openstaande facturen:";
+            document.querySelector('.print-btn').textContent = "Afdrukken";
+            document.querySelector('.download-btn').textContent = "Downloaden als PDF";
+            document.querySelector('footer p').innerHTML = 'Betalingsherinnering Template &copy; 2025 | <a href="#" onclick="resetForm()">Formulier resetten</a>';
+            
+            // Update letter content
+            document.querySelector('#letterContent').textContent = `Betalingsherinnering betreffende de onderstaande openstaande factu(u)r(en).
+
+Volgens onze administratie hebben wij nog geen betaling ontvangen voor de hierboven genoemde factu(u)r(en). Mogelijk is de betaling reeds onderweg of heeft u deze factuur over het hoofd gezien.
+
+Wij verzoeken u vriendelijk om het openstaande bedrag binnen [dagen] dagen over te maken op IBAN [iban] ten name van [bedrijfsnaam] te [vestigingsplaats] onder vermelding van het factuurnummer.
+
+Mocht u vragen hebben over deze factuur of als er een reden is waarom de betaling is uitgebleven, neem dan gerust contact met ons op. We denken graag met u mee over een passende oplossing.
+
+Indien u de betaling inmiddels heeft voldaan, kunt u deze herinnering als niet verzonden beschouwen.
+
+Met vriendelijke groet,
+
+[bedrijfsnaam]`;
+        }
+        
+        function translateToEnglish() {
+            document.title = "Payment Reminder Template";
+            document.querySelector('.page-title').textContent = "Payment Reminder Template";
+            document.querySelector('.page-subtitle').textContent = "Generate friendly reminders for outstanding invoices";
+            document.querySelector('.form-title').textContent = "Enter your details";
+            document.querySelectorAll('label')[0].textContent = "Your company name";
+            document.querySelectorAll('label')[1].textContent = "Your location";
+            document.querySelectorAll('label')[2].textContent = "Your IBAN";
+            document.querySelectorAll('label')[3].textContent = "Payment term (days)";
+            document.querySelectorAll('label')[4].textContent = "Invoice number(s)";
+            document.querySelector('.input-helper').textContent = "Enter your full IBAN without spaces";
+            document.querySelectorAll('.input-helper')[2].textContent = "Add all outstanding invoice numbers";
+            document.querySelector('#addInvoiceBtn').textContent = "Add";
+            document.querySelector('.generate-btn').textContent = "Generate Payment Reminder";
+            document.querySelector('.preview-title').textContent = "Payment Reminder Preview";
+            document.querySelector('#specification').innerHTML = "Overview of outstanding invoices:";
+            document.querySelector('.print-btn').textContent = "Print";
+            document.querySelector('.download-btn').textContent = "Download as PDF";
+            document.querySelector('footer p').innerHTML = 'Payment Reminder Template &copy; 2025 | <a href="#" onclick="resetForm()">Reset form</a>';
+            
+            // Update letter content
+            document.querySelector('#letterContent').textContent = `Payment reminder regarding the outstanding invoice(s) listed below.
+
+According to our records, we have not yet received payment for the above-mentioned invoice(s). It is possible that the payment is already on its way or that you have overlooked this invoice.
+
+We kindly request you to transfer the outstanding amount within [dagen] days to IBAN [iban] in the name of [bedrijfsnaam] in [vestigingsplaats], stating the invoice number.
+
+If you have any questions about this invoice or if there is a reason why the payment has been delayed, please do not hesitate to contact us. We are happy to think along with you about a suitable solution.
+
+If you have already made the payment, please consider this reminder as not sent.
+
+Kind regards,
+
+[bedrijfsnaam]`;
+        }
+        
+        function translateToFrench() {
+            document.title = "Modèle de rappel de paiement";
+            document.querySelector('.page-title').textContent = "Modèle de rappel de paiement";
+            document.querySelector('.page-subtitle').textContent = "Générer des rappels amicaux pour les factures impayées";
+            document.querySelector('.form-title').textContent = "Entrez vos coordonnées";
+            document.querySelectorAll('label')[0].textContent = "Nom de votre entreprise";
+            document.querySelectorAll('label')[1].textContent = "Votre emplacement";
+            document.querySelectorAll('label')[2].textContent = "Votre IBAN";
+            document.querySelectorAll('label')[3].textContent = "Délai de paiement (jours)";
+            document.querySelectorAll('label')[4].textContent = "Numéro(s) de facture";
+            document.querySelector('.input-helper').textContent = "Entrez votre IBAN complet sans espaces";
+            document.querySelectorAll('.input-helper')[2].textContent = "Ajoutez tous les numéros de facture impayés";
+            document.querySelector('#addInvoiceBtn').textContent = "Ajouter";
+            document.querySelector('.generate-btn').textContent = "Générer un rappel de paiement";
+            document.querySelector('.preview-title').textContent = "Aperçu du rappel de paiement";
+            document.querySelector('#specification').innerHTML = "Aperçu des factures impayées:";
+            document.querySelector('.print-btn').textContent = "Imprimer";
+            document.querySelector('.download-btn').textContent = "Télécharger en PDF";
+            document.querySelector('footer p').innerHTML = 'Modèle de rappel de paiement &copy; 2025 | <a href="#" onclick="resetForm()">Réinitialiser le formulaire</a>';
+            
+            // Update letter content
+            document.querySelector('#letterContent').textContent = `Rappel de paiement concernant la/les facture(s) impayée(s) listée(s) ci-dessous.
+
+Selon nos registres, nous n'avons pas encore reçu le paiement de la/des facture(s) mentionnée(s) ci-dessus. Il est possible que le paiement soit déjà en cours ou que vous ayez négligé cette facture.
+
+Nous vous demandons de bien vouloir transférer le montant dû dans un délai de [dagen] jours sur l'IBAN [iban] au nom de [bedrijfsnaam] à [vestigingsplaats], en indiquant le numéro de facture.
+
+Si vous avez des questions concernant cette facture ou s'il y a une raison pour laquelle le paiement a été retardé, n'hésitez pas à nous contacter. Nous sommes heureux de réfléchir avec vous à une solution appropriée.
+
+Si vous avez déjà effectué le paiement, veuillez considérer ce rappel comme non envoyé.
+
+Cordialement,
+
+[bedrijfsnaam]`;
+        }
+        
+        function translateToPortuguese() {
+            document.title = "Modelo de Lembrete de Pagamento";
+            document.querySelector('.page-title').textContent = "Modelo de Lembrete de Pagamento";
+            document.querySelector('.page-subtitle').textContent = "Gerar lembretes amigáveis para faturas pendentes";
+            document.querySelector('.form-title').textContent = "Insira seus dados";
+            document.querySelectorAll('label')[0].textContent = "Nome da sua empresa";
+            document.querySelectorAll('label')[1].textContent = "Sua localização";
+            document.querySelectorAll('label')[2].textContent = "Seu IBAN";
+            document.querySelectorAll('label')[3].textContent = "Prazo de pagamento (dias)";
+            document.querySelectorAll('label')[4].textContent = "Número(s) da fatura";
+            document.querySelector('.input-helper').textContent = "Digite seu IBAN completo sem espaços";
+            document.querySelectorAll('.input-helper')[2].textContent = "Adicione todos os números de faturas pendentes";
+            document.querySelector('#addInvoiceBtn').textContent = "Adicionar";
+            document.querySelector('.generate-btn').textContent = "Gerar Lembrete de Pagamento";
+            document.querySelector('.preview-title').textContent = "Visualização do Lembrete de Pagamento";
+            document.querySelector('#specification').innerHTML = "Visão geral das faturas pendentes:";
+            document.querySelector('.print-btn').textContent = "Imprimir";
+            document.querySelector('.download-btn').textContent = "Baixar como PDF";
+            document.querySelector('footer p').innerHTML = 'Modelo de Lembrete de Pagamento &copy; 2025 | <a href="#" onclick="resetForm()">Redefinir formulário</a>';
+            
+            // Update letter content
+            document.querySelector('#letterContent').textContent = `Lembrete de pagamento referente à(s) fatura(s) pendente(s) listada(s) abaixo.
+
+De acordo com nossos registros, ainda não recebemos o pagamento da(s) fatura(s) mencionada(s) acima. É possível que o pagamento já esteja a caminho ou que você tenha esquecido desta fatura.
+
+Solicitamos gentilmente que transfira o valor pendente dentro de [dagen] dias para o IBAN [iban] em nome de [bedrijfsnaam] em [vestigingsplaats], indicando o número da fatura.
+
+Se você tiver alguma dúvida sobre esta fatura ou se houver um motivo pelo qual o pagamento foi adiado, não hesite em nos contatar. Estamos felizes em pensar junto com você sobre uma solução adequada.
+
+Se você já efetuou o pagamento, por favor considere este lembrete como não enviado.
+
+Atenciosamente,
+
+[bedrijfsnaam]`;
+        }
+        
+        function translateToSpanish() {
+            document.title = "Plantilla de Recordatorio de Pago";
+            document.querySelector('.page-title').textContent = "Plantilla de Recordatorio de Pago";
+            document.querySelector('.page-subtitle').textContent = "Generar recordatorios amistosos para facturas pendientes";
+            document.querySelector('.form-title').textContent = "Ingrese sus datos";
+            document.querySelectorAll('label')[0].textContent = "Nombre de su empresa";
+            document.querySelectorAll('label')[1].textContent = "Su ubicación";
+            document.querySelectorAll('label')[2].textContent = "Su IBAN";
+            document.querySelectorAll('label')[3].textContent = "Plazo de pago (días)";
+            document.querySelectorAll('label')[4].textContent = "Número(s) de factura";
+            document.querySelector('.input-helper').textContent = "Ingrese su IBAN completo sin espacios";
+            document.querySelectorAll('.input-helper')[2].textContent = "Agregue todos los números de facturas pendientes";
+            document.querySelector('#addInvoiceBtn').textContent = "Agregar";
+            document.querySelector('.generate-btn').textContent = "Generar Recordatorio de Pago";
+            document.querySelector('.preview-title').textContent = "Vista previa del Recordatorio de Pago";
+            document.querySelector('#specification').innerHTML = "Resumen de facturas pendientes:";
+            document.querySelector('.print-btn').textContent = "Imprimir";
+            document.querySelector('.download-btn').textContent = "Descargar como PDF";
+            document.querySelector('footer p').innerHTML = 'Plantilla de Recordatorio de Pago &copy; 2025 | <a href="#" onclick="resetForm()">Restablecer formulario</a>';
+            
+            // Update letter content
+            document.querySelector('#letterContent').textContent = `Recordatorio de pago con respecto a la(s) factura(s) pendiente(s) que se enumeran a continuación.
+
+Según nuestros registros, aún no hemos recibido el pago de la(s) factura(s) mencionada(s) anteriormente. Es posible que el pago ya esté en camino o que haya pasado por alto esta factura.
+
+Le solicitamos amablemente que transfiera el monto pendiente dentro de [dagen] días al IBAN [iban] a nombre de [bedrijfsnaam] en [vestigingsplaats], indicando el número de factura.
+
+Si tiene alguna pregunta sobre esta factura o si hay alguna razón por la que se ha retrasado el pago, no dude en contactarnos. Estamos encantados de pensar junto con usted en una solución adecuada.
+
+Si ya ha realizado el pago, considere este recordatorio como no enviado.
+
+Saludos cordiales,
+
+[bedrijfsnaam]`;
+        }
+        
         // Initialize language based on user preference or browser settings
         document.addEventListener('DOMContentLoaded', function() {
             // Check if user has a saved preference
@@ -1051,3 +1124,5 @@
             }
         });
     </script>
+</body>
+</html>
