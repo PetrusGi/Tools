@@ -985,6 +985,30 @@ Met vriendelijke groet,
             document.querySelector('.download-btn').textContent = "Download as PDF";
             document.querySelector('footer p').innerHTML = 'Payment Reminder Template &copy; 2025 | <a href="#" onclick="resetForm()">Reset form</a>';
             
+            // Update days dropdown options
+            const daysDropdown = document.getElementById('days');
+            const selectedValue = daysDropdown.value; // Save current selection
+            
+            // Clear existing options
+            daysDropdown.innerHTML = '';
+            
+            // Add new options with English text
+            const daysOptions = {
+                "3": "3 days",
+                "5": "5 days",
+                "7": "7 days"
+            };
+            
+            Object.keys(daysOptions).forEach(value => {
+                const option = document.createElement('option');
+                option.value = value;
+                option.textContent = daysOptions[value];
+                daysDropdown.appendChild(option);
+            });
+            
+            // Restore selected value
+            daysDropdown.value = selectedValue;
+            
             // Update letter content
             document.querySelector('#letterContent').textContent = `Payment reminder regarding the outstanding invoice(s) listed below.
 
@@ -1020,6 +1044,30 @@ Kind regards,
             document.querySelector('.print-btn').textContent = "Imprimer";
             document.querySelector('.download-btn').textContent = "Télécharger en PDF";
             document.querySelector('footer p').innerHTML = 'Modèle de rappel de paiement &copy; 2025 | <a href="#" onclick="resetForm()">Réinitialiser le formulaire</a>';
+            
+            // Update days dropdown options
+            const daysDropdown = document.getElementById('days');
+            const selectedValue = daysDropdown.value; // Save current selection
+            
+            // Clear existing options
+            daysDropdown.innerHTML = '';
+            
+            // Add new options with French text
+            const daysOptions = {
+                "3": "3 jours",
+                "5": "5 jours",
+                "7": "7 jours"
+            };
+            
+            Object.keys(daysOptions).forEach(value => {
+                const option = document.createElement('option');
+                option.value = value;
+                option.textContent = daysOptions[value];
+                daysDropdown.appendChild(option);
+            });
+            
+            // Restore selected value
+            daysDropdown.value = selectedValue;
             
             // Update letter content
             document.querySelector('#letterContent').textContent = `Rappel de paiement concernant la/les facture(s) impayée(s) listée(s) ci-dessous.
@@ -1057,6 +1105,30 @@ Cordialement,
             document.querySelector('.download-btn').textContent = "Baixar como PDF";
             document.querySelector('footer p').innerHTML = 'Modelo de Lembrete de Pagamento &copy; 2025 | <a href="#" onclick="resetForm()">Redefinir formulário</a>';
             
+            // Update days dropdown options
+            const daysDropdown = document.getElementById('days');
+            const selectedValue = daysDropdown.value; // Save current selection
+            
+            // Clear existing options
+            daysDropdown.innerHTML = '';
+            
+            // Add new options with Portuguese text
+            const daysOptions = {
+                "3": "3 dias",
+                "5": "5 dias",
+                "7": "7 dias"
+            };
+            
+            Object.keys(daysOptions).forEach(value => {
+                const option = document.createElement('option');
+                option.value = value;
+                option.textContent = daysOptions[value];
+                daysDropdown.appendChild(option);
+            });
+            
+            // Restore selected value
+            daysDropdown.value = selectedValue;
+            
             // Update letter content
             document.querySelector('#letterContent').textContent = `Lembrete de pagamento referente à(s) fatura(s) pendente(s) listada(s) abaixo.
 
@@ -1092,6 +1164,30 @@ Atenciosamente,
             document.querySelector('.print-btn').textContent = "Imprimir";
             document.querySelector('.download-btn').textContent = "Descargar como PDF";
             document.querySelector('footer p').innerHTML = 'Plantilla de Recordatorio de Pago &copy; 2025 | <a href="#" onclick="resetForm()">Restablecer formulario</a>';
+            
+            // Update days dropdown options
+            const daysDropdown = document.getElementById('days');
+            const selectedValue = daysDropdown.value; // Save current selection
+            
+            // Clear existing options
+            daysDropdown.innerHTML = '';
+            
+            // Add new options with Spanish text
+            const daysOptions = {
+                "3": "3 días",
+                "5": "5 días",
+                "7": "7 días"
+            };
+            
+            Object.keys(daysOptions).forEach(value => {
+                const option = document.createElement('option');
+                option.value = value;
+                option.textContent = daysOptions[value];
+                daysDropdown.appendChild(option);
+            });
+            
+            // Restore selected value
+            daysDropdown.value = selectedValue;
             
             // Update letter content
             document.querySelector('#letterContent').textContent = `Recordatorio de pago con respecto a la(s) factura(s) pendiente(s) que se enumeran a continuación.
