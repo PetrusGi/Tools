@@ -675,6 +675,19 @@
                 changeLanguage(detectedLang);
             }
         });
+        
+        // Add event listeners to tool links to ensure they maintain language preference
+        document.addEventListener('DOMContentLoaded', function() {
+            const toolLinks = document.querySelectorAll('.card[href]');
+            toolLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    // No need to prevent default as we want the navigation to happen
+                    // Just ensure the language preference is saved before navigation
+                    const currentLang = localStorage.getItem('preferredLanguage') || 'nl';
+                    localStorage.setItem('preferredLanguage', currentLang);
+                });
+            });
+        });
     </script>
 </body>
 </html>

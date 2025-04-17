@@ -851,6 +851,18 @@
             document.querySelectorAll('.result-description')[3].textContent = "Je verwachte Days Sales Outstanding met Credit IQ";
             document.querySelector('.try-btn').textContent = "Probeer Credit IQ gratis";
             document.querySelector('footer p').innerHTML = 'Powered by <a href="https://www.atradiuscollections.com" target="_blank">Atradius Collections</a> | Credit IQ &copy; 2025';
+            
+            // Update placeholders with Dutch examples
+            document.getElementById('revenue').placeholder = "bijv. 1.000.000";
+            document.getElementById('dso').placeholder = "bijv. 45";
+            document.getElementById('eb').placeholder = "bijv. 3";
+            document.getElementById('invoices').placeholder = "bijv. 100";
+            document.getElementById('salary').placeholder = "bijv. 50.000";
+            
+            // Set currency symbol to Euro
+            document.querySelectorAll('.currency-symbol').forEach(symbol => {
+                symbol.textContent = '€';
+            });
         }
         
         function translateToEnglish() {
@@ -885,6 +897,31 @@
             document.querySelectorAll('.result-description')[3].textContent = "Your projected Days Sales Outstanding with Credit IQ";
             document.querySelector('.try-btn').textContent = "Try Credit IQ for Free";
             document.querySelector('footer p').innerHTML = 'Powered by <a href="https://www.atradiuscollections.com" target="_blank">Atradius Collections</a> | Credit IQ &copy; 2025';
+            
+            // Update placeholders with English examples
+            const isUK = document.documentElement.lang === 'en-GB';
+            document.getElementById('revenue').placeholder = isUK ? "e.g. 1,000,000" : "e.g. 1,000,000";
+            document.getElementById('dso').placeholder = "e.g. 45";
+            document.getElementById('eb').placeholder = "e.g. 3";
+            document.getElementById('invoices').placeholder = "e.g. 100";
+            document.getElementById('salary').placeholder = isUK ? "e.g. 50,000" : "e.g. 50,000";
+            
+            // Set currency symbol based on UK or US English
+            const currencySymbol = isUK ? '£' : '$';
+            document.querySelectorAll('.currency-symbol').forEach(symbol => {
+                symbol.textContent = currencySymbol;
+            });
+            
+            // Update result values with the correct currency symbol
+            const totalSavings = document.getElementById('totalSavings').innerText;
+            if (totalSavings && totalSavings !== '€0,00') {
+                document.getElementById('totalSavings').innerText = totalSavings.replace('€', currencySymbol);
+            }
+            
+            const monthlyCost = document.getElementById('monthlyCost').innerText;
+            if (monthlyCost && monthlyCost !== '€0,00') {
+                document.getElementById('monthlyCost').innerText = monthlyCost.replace('€', currencySymbol);
+            }
         }
         
         function translateToFrench() {
@@ -919,6 +956,18 @@
             document.querySelectorAll('.result-description')[3].textContent = "Votre délai moyen de paiement projeté avec Credit IQ";
             document.querySelector('.try-btn').textContent = "Essayez Credit IQ gratuitement";
             document.querySelector('footer p').innerHTML = 'Propulsé par <a href="https://www.atradiuscollections.com" target="_blank">Atradius Collections</a> | Credit IQ &copy; 2025';
+            
+            // Update placeholders with French examples
+            document.getElementById('revenue').placeholder = "ex. 1 000 000";
+            document.getElementById('dso').placeholder = "ex. 45";
+            document.getElementById('eb').placeholder = "ex. 3";
+            document.getElementById('invoices').placeholder = "ex. 100";
+            document.getElementById('salary').placeholder = "ex. 50 000";
+            
+            // Set currency symbol to Euro
+            document.querySelectorAll('.currency-symbol').forEach(symbol => {
+                symbol.textContent = '€';
+            });
         }
         
         function translateToPortuguese() {
@@ -953,6 +1002,18 @@
             document.querySelectorAll('.result-description')[3].textContent = "Seu prazo médio de recebimento projetado com o Credit IQ";
             document.querySelector('.try-btn').textContent = "Experimente o Credit IQ gratuitamente";
             document.querySelector('footer p').innerHTML = 'Desenvolvido por <a href="https://www.atradiuscollections.com" target="_blank">Atradius Collections</a> | Credit IQ &copy; 2025';
+            
+            // Update placeholders with Portuguese examples
+            document.getElementById('revenue').placeholder = "ex. 1.000.000";
+            document.getElementById('dso').placeholder = "ex. 45";
+            document.getElementById('eb').placeholder = "ex. 3";
+            document.getElementById('invoices').placeholder = "ex. 100";
+            document.getElementById('salary').placeholder = "ex. 50.000";
+            
+            // Set currency symbol to Euro
+            document.querySelectorAll('.currency-symbol').forEach(symbol => {
+                symbol.textContent = '€';
+            });
         }
         
         function translateToSpanish() {
@@ -987,6 +1048,18 @@
             document.querySelectorAll('.result-description')[3].textContent = "Sus días de ventas pendientes proyectados con Credit IQ";
             document.querySelector('.try-btn').textContent = "Pruebe Credit IQ gratis";
             document.querySelector('footer p').innerHTML = 'Desarrollado por <a href="https://www.atradiuscollections.com" target="_blank">Atradius Collections</a> | Credit IQ &copy; 2025';
+            
+            // Update placeholders with Spanish examples
+            document.getElementById('revenue').placeholder = "ej. 1.000.000";
+            document.getElementById('dso').placeholder = "ej. 45";
+            document.getElementById('eb').placeholder = "ej. 3";
+            document.getElementById('invoices').placeholder = "ej. 100";
+            document.getElementById('salary').placeholder = "ej. 50.000";
+            
+            // Set currency symbol to Euro
+            document.querySelectorAll('.currency-symbol').forEach(symbol => {
+                symbol.textContent = '€';
+            });
         }
         
         // Change language

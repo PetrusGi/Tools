@@ -949,6 +949,36 @@
             document.querySelector('.download-btn').textContent = "Downloaden als PDF";
             document.querySelector('footer p').innerHTML = 'Betalingsherinnering Template &copy; 2025 | <a href="#" onclick="resetForm()">Formulier resetten</a>';
             
+            // Update placeholder text with Dutch location
+            document.getElementById('companyName').placeholder = "Bijv. Acme B.V.";
+            document.getElementById('location').placeholder = "Bijv. Amsterdam";
+            document.getElementById('iban').placeholder = "Bijv. NL02ABNA0123456789";
+            document.getElementById('invoiceInput').placeholder = "Voer factuurnummer in";
+            
+            // Update days dropdown with Dutch text
+            const daysDropdown = document.getElementById('days');
+            const selectedValue = daysDropdown.value; // Save current selection
+            
+            // Clear existing options
+            daysDropdown.innerHTML = '';
+            
+            // Add new options with Dutch text
+            const daysOptions = {
+                "3": "3 dagen",
+                "5": "5 dagen",
+                "7": "7 dagen"
+            };
+            
+            Object.keys(daysOptions).forEach(value => {
+                const option = document.createElement('option');
+                option.value = value;
+                option.textContent = daysOptions[value];
+                daysDropdown.appendChild(option);
+            });
+            
+            // Restore selected value
+            daysDropdown.value = selectedValue;
+            
             // Update letter content
             document.querySelector('#letterContent').textContent = `Betalingsherinnering betreffende de onderstaande openstaande factu(u)r(en).
 
@@ -984,6 +1014,13 @@ Met vriendelijke groet,
             document.querySelector('.print-btn').textContent = "Print";
             document.querySelector('.download-btn').textContent = "Download as PDF";
             document.querySelector('footer p').innerHTML = 'Payment Reminder Template &copy; 2025 | <a href="#" onclick="resetForm()">Reset form</a>';
+            
+            // Update placeholder text with English location
+            const isUK = document.documentElement.lang === 'en-GB';
+            document.getElementById('companyName').placeholder = "e.g. Acme Ltd.";
+            document.getElementById('location').placeholder = isUK ? "e.g. London" : "e.g. New York";
+            document.getElementById('iban').placeholder = isUK ? "e.g. GB29NWBK60161331926819" : "e.g. US33BUKB20201555555555";
+            document.getElementById('invoiceInput').placeholder = "Enter invoice number";
             
             // Update days dropdown options
             const daysDropdown = document.getElementById('days');
@@ -1045,6 +1082,12 @@ Kind regards,
             document.querySelector('.download-btn').textContent = "Télécharger en PDF";
             document.querySelector('footer p').innerHTML = 'Modèle de rappel de paiement &copy; 2025 | <a href="#" onclick="resetForm()">Réinitialiser le formulaire</a>';
             
+            // Update placeholder text with French location
+            document.getElementById('companyName').placeholder = "ex. Acme SARL";
+            document.getElementById('location').placeholder = "ex. Paris";
+            document.getElementById('iban').placeholder = "ex. FR7630006000011234567890189";
+            document.getElementById('invoiceInput').placeholder = "Entrez le numéro de facture";
+            
             // Update days dropdown options
             const daysDropdown = document.getElementById('days');
             const selectedValue = daysDropdown.value; // Save current selection
@@ -1105,6 +1148,12 @@ Cordialement,
             document.querySelector('.download-btn').textContent = "Baixar como PDF";
             document.querySelector('footer p').innerHTML = 'Modelo de Lembrete de Pagamento &copy; 2025 | <a href="#" onclick="resetForm()">Redefinir formulário</a>';
             
+            // Update placeholder text with Portuguese location
+            document.getElementById('companyName').placeholder = "ex. Acme Lda.";
+            document.getElementById('location').placeholder = "ex. Lisboa";
+            document.getElementById('iban').placeholder = "ex. PT50000201231234567890154";
+            document.getElementById('invoiceInput').placeholder = "Insira o número da fatura";
+            
             // Update days dropdown options
             const daysDropdown = document.getElementById('days');
             const selectedValue = daysDropdown.value; // Save current selection
@@ -1164,6 +1213,12 @@ Atenciosamente,
             document.querySelector('.print-btn').textContent = "Imprimir";
             document.querySelector('.download-btn').textContent = "Descargar como PDF";
             document.querySelector('footer p').innerHTML = 'Plantilla de Recordatorio de Pago &copy; 2025 | <a href="#" onclick="resetForm()">Restablecer formulario</a>';
+            
+            // Update placeholder text with Spanish location
+            document.getElementById('companyName').placeholder = "ej. Acme S.L.";
+            document.getElementById('location').placeholder = "ej. Madrid";
+            document.getElementById('iban').placeholder = "ej. ES9121000418450200051332";
+            document.getElementById('invoiceInput').placeholder = "Ingrese el número de factura";
             
             // Update days dropdown options
             const daysDropdown = document.getElementById('days');
