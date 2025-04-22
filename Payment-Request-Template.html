@@ -393,6 +393,7 @@
         .language-selector {
             margin-left: auto;
             z-index: 1000;
+            position: relative; /* Added for dropdown positioning */
         }
         
         .language-button {
@@ -453,10 +454,7 @@
             display: block;
         }
         
-        .language-selector:hover .language-dropdown {
-            display: block;
-        }
-        
+        /* Keep dropdown open on hover */
         .language-selector:hover .language-dropdown {
             display: block;
         }
@@ -516,7 +514,7 @@
                     </div>
                     <div class="language-option" onclick="changeLanguage('es')">
                         <img src="https://flagicons.lipis.dev/flags/4x3/es.svg" class="flag-icon" alt="ES">
-                        <span class="language-name">Spanje</span>
+                        <span class="language-name">Spain</span>
                     </div>
                 </div>
             </div>
@@ -533,17 +531,17 @@
                 
                 <div class="form-group">
                     <label for="companyName">Uw bedrijfsnaam</label>
-                    <input type="text" id="companyName" placeholder="Bijv. Acme B.V.">
+                    <input type="text" id="companyName" placeholder="Bijv. Acme B.V." data-translate-placeholder="company_placeholder">
                 </div>
                 
                 <div class="form-group">
                     <label for="location">Uw vestigingsplaats</label>
-                    <input type="text" id="location" placeholder="Bijv. Amsterdam">
+                    <input type="text" id="location" placeholder="Bijv. Amsterdam" data-translate-placeholder="location_placeholder">
                 </div>
                 
                 <div class="form-group">
                     <label for="iban">Uw IBAN</label>
-                    <input type="text" id="iban" placeholder="Bijv. NL02ABNA0123456789">
+                    <input type="text" id="iban" placeholder="Bijv. NL02ABNA0123456789" data-translate-placeholder="iban_placeholder">
                     <span class="input-helper">Voer uw volledige IBAN in zonder spaties</span>
                 </div>
                 
@@ -559,7 +557,7 @@
                 <div class="form-group">
                     <label for="invoiceNumbers">Factuurnummer(s)</label>
                     <div class="input-wrapper">
-                        <input type="text" id="invoiceInput" placeholder="Voer factuurnummer in">
+                        <input type="text" id="invoiceInput" placeholder="Voer factuurnummer in" data-translate-placeholder="invoice_placeholder">
                     </div>
                     <button id="addInvoiceBtn" class="print-btn action-btn" style="margin-top: 10px;">Toevoegen</button>
                     <div class="invoice-list" id="invoiceList">
@@ -579,21 +577,7 @@
                 </div>
                 
                 <div class="letter-content" id="letterContent">
-                    Geachte klant,
-
-                    Wij schrijven u om u te herinneren aan een openstaand saldo op uw rekening bij ons.
-
-                    Volgens onze administratie hebben wij nog geen betaling ontvangen voor de hierboven genoemde factu(u)r(en). Op het moment van schrijven zijn wij niet op de hoogte van eventuele discrepanties of fouten in de rekening die betaling zouden kunnen verhinderen.
-
-                    Wij waarderen onze relatie met u, maar zolang de rekening onbetaald blijft, moeten wij mogelijk verdere actie overwegen. Dit is iets wat wij niet wensen te doen, maar wij moeten ervoor zorgen dat betalingen tijdig worden gedaan.
-
-                    Wij verzoeken u vriendelijk om het openstaande bedrag binnen [dagen] dagen over te maken op IBAN [iban] ten name van [bedrijfsnaam] te [vestigingsplaats] onder vermelding van het factuurnummer.
-
-                    Dank u voor uw snelle aandacht voor deze kwestie. Wij kijken uit naar uw betaling en het voortzetten van onze zakelijke relatie.
-
-                    Met vriendelijke groet,
-
-                    [bedrijfsnaam]
+                    <!-- Base template content will be loaded by JS -->
                 </div>
                 
                 <div class="action-buttons">
@@ -613,6 +597,139 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoeqMV/TJlSKda6FXzoEyYGjTe+vXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     
     <script>
+        // Base letter templates with bold placeholders
+        const letterTemplates = {
+            nl: `Geachte klant,
+
+Wij schrijven u om u te herinneren aan een openstaand saldo op uw rekening bij ons.
+
+Volgens onze administratie hebben wij nog geen betaling ontvangen voor de hierboven genoemde factu(u)r(en). Op het moment van schrijven zijn wij niet op de hoogte van eventuele discrepanties of fouten in de rekening die betaling zouden kunnen verhinderen.
+
+Wij waarderen onze relatie met u, maar zolang de rekening onbetaald blijft, moeten wij mogelijk verdere actie overwegen. Dit is iets wat wij niet wensen te doen, maar wij moeten ervoor zorgen dat betalingen tijdig worden gedaan.
+
+Wij verzoeken u vriendelijk om het openstaande bedrag binnen <b>[dagen]</b> dagen over te maken op IBAN <b>[iban]</b> ten name van <b>[bedrijfsnaam]</b> te <b>[vestigingsplaats]</b> onder vermelding van het factuurnummer <b>[factuurnummer]</b>.
+
+Dank u voor uw snelle aandacht voor deze kwestie. Wij kijken uit naar uw betaling en het voortzetten van onze zakelijke relatie.
+
+Met vriendelijke groet,
+
+<b>[bedrijfsnaam]</b>`,
+            en: `Dear Customer,
+
+We are writing to remind you about an outstanding balance on your account with us.
+
+Our records indicate that payment for the invoice(s) listed above has not yet been received. At the time of writing, we are not aware of any discrepancies or errors in the account that would prevent payment from being made.
+
+We do value our relationship with you, but whilst the account remains unpaid, we may have to consider further action, which is something we do not wish to do, but we do need to ensure payments are made in a timely manner.
+
+Please could you arrange payment of the overdue invoice within <b>[dagen]</b> days to IBAN <b>[iban]</b> in the name of <b>[bedrijfsnaam]</b> in <b>[vestigingsplaats]</b>, stating the invoice number <b>[factuurnummer]</b>.
+
+Thank you for your prompt attention to this matter. We look forward to receiving your payment and continuing our business relationship.
+
+Best regards,
+
+<b>[bedrijfsnaam]</b>`,
+            fr: `Cher client,
+
+Nous vous écrivons pour vous rappeler un solde impayé sur votre compte chez nous.
+
+Selon nos registres, nous n'avons pas encore reçu le paiement de la/des facture(s) mentionnée(s) ci-dessus. Au moment de la rédaction, nous n'avons connaissance d'aucune divergence ou erreur dans le compte qui empêcherait le paiement d'être effectué.
+
+Nous apprécions notre relation avec vous, mais tant que le compte reste impayé, nous pourrions devoir envisager d'autres mesures, ce que nous ne souhaitons pas faire, mais nous devons nous assurer que les paiements sont effectués en temps opportun.
+
+Nous vous demandons de bien vouloir transférer le montant dû dans un délai de <b>[dagen]</b> jours sur l'IBAN <b>[iban]</b> au nom de <b>[bedrijfsnaam]</b> à <b>[vestigingsplaats]</b>, en indiquant le numéro de facture <b>[factuurnummer]</b>.
+
+Nous vous remercions de votre attention rapide à cette question. Nous attendons avec impatience de recevoir votre paiement et de poursuivre notre relation commerciale.
+
+Cordialement,
+
+<b>[bedrijfsnaam]</b>`,
+            pt: `Prezado Cliente,
+
+Estamos escrevendo para lembrá-lo sobre um saldo pendente em sua conta conosco.
+
+Nossos registros indicam que o pagamento da(s) fatura(s) listada(s) acima ainda não foi recebido. No momento da redação, não temos conhecimento de quaisquer discrepâncias ou erros na conta que impediriam a realização do pagamento.
+
+Valorizamos nosso relacionamento com você, mas enquanto a conta permanecer não paga, podemos ter que considerar outras ações, o que é algo que não desejamos fazer, mas precisamos garantir que os pagamentos sejam feitos em tempo hábil.
+
+Solicitamos gentilmente que transfira o valor pendente dentro de <b>[dagen]</b> dias para o IBAN <b>[iban]</b> em nome de <b>[bedrijfsnaam]</b> em <b>[vestigingsplaats]</b>, indicando o número da fatura <b>[factuurnummer]</b>.
+
+Agradecemos sua pronta atenção a este assunto. Esperamos receber seu pagamento e continuar nosso relacionamento comercial.
+
+Atenciosamente,
+
+<b>[bedrijfsnaam]</b>`,
+            es: `Estimado Cliente,
+
+Le escribimos para recordarle sobre un saldo pendiente en su cuenta con nosotros.
+
+Nuestros registros indican que el pago de la(s) factura(s) mencionada(s) anteriormente aún no ha sido recibido. Al momento de escribir, no tenemos conocimiento de ninguna discrepancia o error en la cuenta que pudiera impedir que se realice el pago.
+
+Valoramos nuestra relación con usted, pero mientras la cuenta permanezca sin pagar, es posible que tengamos que considerar acciones adicionales, lo cual es algo que no deseamos hacer, pero necesitamos asegurarnos de que los pagos se realicen de manera oportuna.
+
+Le solicitamos amablemente que transfiera el monto pendiente dentro de <b>[dagen]</b> días al IBAN <b>[iban]</b> a nombre de <b>[bedrijfsnaam]</b> en <b>[vestigingsplaats]</b>, indicando el número de factura <b>[factuurnummer]</b>.
+
+Gracias por su pronta atención a este asunto. Esperamos recibir su pago y continuar nuestra relación comercial.
+
+Saludos cordiales,
+
+<b>[bedrijfsnaam]</b>`
+        };
+
+        // Placeholder translations
+        const placeholderTranslations = {
+            nl: {
+                company_placeholder: "Bijv. Acme B.V.",
+                location_placeholder: "Bijv. Amsterdam",
+                iban_placeholder: "Bijv. NL02ABNA0123456789",
+                invoice_placeholder: "Voer factuurnummer in"
+            },
+            en_gb: {
+                company_placeholder: "e.g. Acme Ltd.",
+                location_placeholder: "e.g. London",
+                iban_placeholder: "e.g. GB29NWBK60161331926819",
+                invoice_placeholder: "Enter invoice number"
+            },
+            en_us: {
+                company_placeholder: "e.g. Acme Inc.",
+                location_placeholder: "e.g. New York",
+                iban_placeholder: "e.g. US33BUKB20201555555555",
+                invoice_placeholder: "Enter invoice number"
+            },
+            fr: {
+                company_placeholder: "ex. Acme SARL",
+                location_placeholder: "ex. Paris",
+                iban_placeholder: "ex. FR7630006000011234567890189",
+                invoice_placeholder: "Entrez le numéro de facture"
+            },
+            pt: {
+                company_placeholder: "ex. Acme Lda.",
+                location_placeholder: "ex. Lisboa",
+                iban_placeholder: "ex. PT50000201231234567890154",
+                invoice_placeholder: "Insira o número da fatura"
+            },
+            es: {
+                company_placeholder: "ej. Acme S.L.",
+                location_placeholder: "ej. Madrid",
+                iban_placeholder: "ej. ES9121000418450200051332",
+                invoice_placeholder: "Ingrese el número de factura"
+            }
+        };
+
+        // Function to update placeholders based on language key (e.g., 'nl', 'en_gb')
+        function updatePlaceholders(langKey) {
+            const translations = placeholderTranslations[langKey];
+            if (!translations) return;
+
+            const inputs = document.querySelectorAll('input[data-translate-placeholder]');
+            inputs.forEach(input => {
+                const key = input.dataset.translatePlaceholder;
+                if (translations[key]) {
+                    input.placeholder = translations[key];
+                }
+            });
+        }
+
         // Add invoice to the list
         document.getElementById('addInvoiceBtn').addEventListener('click', function() {
             const invoiceInput = document.getElementById('invoiceInput');
@@ -661,20 +778,38 @@
             const location = document.getElementById('location').value.trim();
             const iban = document.getElementById('iban').value.trim();
             const days = document.getElementById('days').value;
+            const lang = document.documentElement.lang.split('-')[0]; // Get base language (nl, en, fr, etc.)
             
             // Get all invoices
             const invoiceItems = document.querySelectorAll('#invoiceList > div > span');
             const invoices = Array.from(invoiceItems).map(item => item.textContent);
+            const invoiceNumbersString = invoices.join(', '); // Join for display in letter
             
             if (!companyName || !location || !iban || invoices.length === 0) {
-                alert("Vul alle vereiste velden in en voeg ten minste één factuurnummer toe.");
+                // Use translated alert message
+                const alertMessages = {
+                    nl: "Vul alle vereiste velden in en voeg ten minste één factuurnummer toe.",
+                    en: "Please fill in all required fields and add at least one invoice number.",
+                    fr: "Veuillez remplir tous les champs obligatoires et ajouter au moins un numéro de facture.",
+                    pt: "Por favor, preencha todos os campos obrigatórios e adicione pelo menos um número de fatura.",
+                    es: "Por favor, complete todos los campos obligatorios y agregue al menos un número de factura."
+                };
+                alert(alertMessages[lang] || alertMessages['en']);
                 return;
             }
             
-            // Update specification
-            let specificationText = "Overzicht van openstaande facturen:<br><br>";
+            // Update specification table header based on language
+            const specHeaders = {
+                nl: "Factuurnummer",
+                en: "Invoice Number",
+                fr: "Numéro de facture",
+                pt: "Número da Fatura",
+                es: "Número de Factura"
+            };
+            const specTitle = document.querySelector('.preview-title').textContent; // Get translated title
+            let specificationText = `${specTitle}:<br><br>`; // Use translated title
             specificationText += "<table class='invoice-table'>";
-            specificationText += "<tr><th>Factuurnummer</th></tr>";
+            specificationText += `<tr><th>${specHeaders[lang] || specHeaders['en']}</th></tr>`;
             
             invoices.forEach(invoice => {
                 specificationText += `<tr><td>${invoice}</td></tr>`;
@@ -683,15 +818,17 @@
             specificationText += "</table>";
             document.getElementById('specification').innerHTML = specificationText;
             
-            // Update letter content
-            let letterContent = document.getElementById('letterContent').textContent;
-            letterContent = letterContent.replace('[dagen]', days);
-            letterContent = letterContent.replace('[iban]', iban);
-            letterContent = letterContent.replace('[bedrijfsnaam]', companyName);
-            letterContent = letterContent.replace('[vestigingsplaats]', location);
-            letterContent = letterContent.replace('[bedrijfsnaam]', companyName);
+            // Get the correct base template
+            let baseLetterContent = letterTemplates[lang] || letterTemplates['en'];
             
-            document.getElementById('letterContent').textContent = letterContent;
+            // Replace placeholders with bolded values
+            let letterContentHTML = baseLetterContent.replace('[dagen]', `<b>${days}</b>`);
+            letterContentHTML = letterContentHTML.replace('[iban]', `<b>${iban}</b>`);
+            letterContentHTML = letterContentHTML.replace(/\[bedrijfsnaam\]/g, `<b>${companyName}</b>`); // Use regex for global replace
+            letterContentHTML = letterContentHTML.replace('[vestigingsplaats]', `<b>${location}</b>`);
+            letterContentHTML = letterContentHTML.replace('[factuurnummer]', `<b>${invoiceNumbersString}</b>`); // Add invoice number replacement
+            
+            document.getElementById('letterContent').innerHTML = letterContentHTML; // Use innerHTML to render bold tags
             
             // Show preview
             document.getElementById('previewContainer').classList.remove('preview-hidden');
@@ -704,55 +841,35 @@
         
         // Print the template
         function printTemplate() {
-            const content = document.getElementById('previewContainer').innerHTML;
+            const previewContent = document.getElementById('previewContainer');
+            const contentClone = previewContent.cloneNode(true); // Clone to avoid modifying original
+            
+            // Remove action buttons from clone
+            const actionButtons = contentClone.querySelector('.action-buttons');
+            if (actionButtons) {
+                actionButtons.remove();
+            }
+
             const printWindow = window.open('', '_blank');
             
             printWindow.document.write(`
                 <!DOCTYPE html>
                 <html>
                 <head>
-                    <title>Betalingsherinnering</title>
+                    <title>${document.querySelector('.preview-title').textContent}</title> 
                     <style>
-                        body {
-                            font-family: 'Roboto', Arial, sans-serif;
-                            line-height: 1.6;
-                            color: #333;
-                            padding: 40px;
-                        }
-                        .preview-title {
-                            font-size: 24px;
-                            margin-bottom: 20px;
-                            border-bottom: 1px solid #eee;
-                            padding-bottom: 10px;
-                        }
-                        .specification {
-                            background-color: #f5f5f5;
-                            padding: 20px;
-                            border-radius: 8px;
-                            margin-bottom: 20px;
-                        }
-                        .letter-content {
-                            white-space: pre-line;
-                            line-height: 1.8;
-                        }
-                        .invoice-table {
-                            width: 100%;
-                            border-collapse: collapse;
-                            margin-bottom: 20px;
-                        }
-                        .invoice-table th, 
-                        .invoice-table td {
-                            padding: 12px;
-                            text-align: left;
-                            border-bottom: 1px solid #eee;
-                        }
-                        .action-buttons {
-                            display: none;
-                        }
+                        body { font-family: 'Roboto', Arial, sans-serif; line-height: 1.6; color: #333; padding: 40px; }
+                        .preview-title { font-size: 24px; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+                        .specification { background-color: #f5f5f5; padding: 20px; border-radius: 8px; margin-bottom: 20px; font-weight: normal; } /* Removed bold */
+                        .letter-content { white-space: pre-line; line-height: 1.8; }
+                        .invoice-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+                        .invoice-table th, .invoice-table td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
+                        .invoice-table th { font-weight: bold; color: #666; } /* Made header bold */
+                        b { font-weight: bold; } /* Ensure bold tags work */
                     </style>
                 </head>
                 <body>
-                    ${content}
+                    ${contentClone.innerHTML}
                 </body>
                 </html>
             `);
@@ -760,7 +877,6 @@
             printWindow.document.close();
             printWindow.focus();
             
-            // Add small delay to ensure content is loaded
             setTimeout(() => {
                 printWindow.print();
             }, 500);
@@ -768,66 +884,66 @@
         
         // Download as PDF
         function downloadTemplate() {
-            // Make sure jsPDF is loaded
-            if (typeof window.jspdf === 'undefined') {
-                console.error('jsPDF library not loaded');
-                alert('PDF library not loaded. Please refresh the page and try again.');
+            if (typeof window.jspdf === 'undefined' || typeof window.html2canvas === 'undefined') {
+                console.error('jsPDF or html2canvas library not loaded');
+                alert('Required PDF library not loaded. Please refresh the page and try again.');
                 return;
             }
             
-            // Create a clone of the preview container to modify for PDF
-            const previewClone = document.getElementById('previewContainer').cloneNode(true);
+            const previewElement = document.getElementById('previewContainer');
+            const previewClone = previewElement.cloneNode(true);
             
-            // Remove action buttons from the clone
             const actionButtons = previewClone.querySelector('.action-buttons');
             if (actionButtons) {
-                previewClone.removeChild(actionButtons);
+                actionButtons.remove();
             }
             
-            // Create a temporary container for the PDF content
-            const tempContainer = document.createElement('div');
-            tempContainer.appendChild(previewClone);
-            tempContainer.style.width = '210mm'; // A4 width
-            tempContainer.style.padding = '20mm';
-            tempContainer.style.position = 'absolute';
-            tempContainer.style.left = '-9999px';
-            document.body.appendChild(tempContainer);
-            
-            // Use html2canvas to capture the content
-            html2canvas(previewClone, {
-                scale: 2, // Higher scale for better quality
-                useCORS: true,
-                logging: false
-            }).then(canvas => {
-                // Remove the temporary container
-                document.body.removeChild(tempContainer);
+            // Temporarily append clone to body for rendering (off-screen)
+            previewClone.style.position = 'absolute';
+            previewClone.style.left = '-9999px';
+            previewClone.style.width = previewElement.offsetWidth + 'px'; // Match original width
+            document.body.appendChild(previewClone);
+
+            html2canvas(previewClone, { scale: 2, useCORS: true, logging: false }).then(canvas => {
+                document.body.removeChild(previewClone); // Clean up clone
                 
                 try {
-                    // Initialize jsPDF
                     const { jsPDF } = window.jspdf;
                     const pdf = new jsPDF('p', 'mm', 'a4');
-                    
-                    // Calculate dimensions to fit the canvas to A4
-                    const imgWidth = 210 - 40; // A4 width minus margins
+                    const pdfWidth = pdf.internal.pageSize.getWidth();
+                    const pdfHeight = pdf.internal.pageSize.getHeight();
+                    const margin = 15; // mm
+                    const imgWidth = pdfWidth - 2 * margin;
                     const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                    let heightLeft = imgHeight;
+                    let position = margin;
+
+                    pdf.addImage(canvas.toDataURL('image/png'), 'PNG', margin, position, imgWidth, imgHeight);
+                    heightLeft -= (pdfHeight - 2 * margin);
+
+                    while (heightLeft > 0) {
+                        position = heightLeft - imgHeight + margin; // Recalculate position for next page
+                        pdf.addPage();
+                        pdf.addImage(canvas.toDataURL('image/png'), 'PNG', margin, position, imgWidth, imgHeight);
+                        heightLeft -= (pdfHeight - 2 * margin);
+                    }
                     
-                    // Add the canvas as an image to the PDF
-                    const imgData = canvas.toDataURL('image/png');
-                    pdf.addImage(imgData, 'PNG', 20, 20, imgWidth, imgHeight);
+                    const companyName = document.getElementById('companyName').value.trim() || 'Payment-Reminder';
+                    const lang = document.documentElement.lang.split('-')[0];
+                    const fileNames = {
+                        nl: "Betalingsherinnering", en: "Payment-Reminder", fr: "Rappel-de-Paiement", pt: "Lembrete-de-Pagamento", es: "Recordatorio-de-Pago"
+                    };
+                    const fileName = `${companyName.replace(/\s+/g, '-')}-${fileNames[lang] || fileNames['en']}.pdf`;
                     
-                    // Get company name for the filename
-                    const companyName = document.getElementById('companyName').value.trim() || 'Betalingsherinnering';
-                    const fileName = `${companyName.replace(/\s+/g, '-')}-Betalingsherinnering.pdf`;
-                    
-                    // Save the PDF
                     pdf.save(fileName);
                 } catch (error) {
                     console.error('Error creating PDF:', error);
-                    alert('Er is een fout opgetreden bij het maken van de PDF. Probeer het opnieuw.');
+                    alert('An error occurred while creating the PDF. Please try again.');
                 }
             }).catch(error => {
-                console.error('Error generating PDF:', error);
-                alert('Er is een fout opgetreden bij het genereren van de PDF. Probeer het opnieuw.');
+                document.body.removeChild(previewClone); // Clean up clone on error
+                console.error('Error generating PDF canvas:', error);
+                alert('An error occurred while generating the PDF. Please try again.');
             });
         }
         
@@ -840,6 +956,8 @@
             document.getElementById('invoiceInput').value = '';
             document.getElementById('invoiceList').innerHTML = '';
             document.getElementById('previewContainer').classList.add('preview-hidden');
+            // Optionally reset to default language if needed
+            // changeLanguage(detectUserLanguage()); 
         }
         
         // Toggle language dropdown
@@ -850,13 +968,14 @@
             // Close dropdown when clicking outside
             document.addEventListener('click', function closeDropdown(e) {
                 const languageSelector = document.querySelector('.language-selector');
-                if (!languageSelector.contains(e.target)) {
+                // Check if the click is outside the selector AND the dropdown itself
+                if (!languageSelector.contains(e.target) && !dropdown.contains(e.target)) {
                     dropdown.classList.remove('show');
                     document.removeEventListener('click', closeDropdown);
                 }
-            });
-            
-            // Prevent the click from closing the dropdown immediately
+            }, { capture: true }); // Use capture phase to handle clicks properly
+
+            // Prevent the button click from immediately closing the dropdown
             event.stopPropagation();
         }
         
@@ -865,602 +984,252 @@
             const userLang = navigator.language || navigator.userLanguage;
             let langCode = 'nl'; // Default to Dutch
             
-            // Map browser language codes to our language codes
-            if (userLang.startsWith('en-GB') || userLang.startsWith('en-UK')) {
-                langCode = 'gb';
-            } else if (userLang.startsWith('en-US') || userLang.startsWith('en')) {
-                langCode = 'us';
-            } else if (userLang.startsWith('fr')) {
-                langCode = 'fr';
-            } else if (userLang.startsWith('pt')) {
-                langCode = 'pt';
-            } else if (userLang.startsWith('es')) {
-                langCode = 'es';
-            } else if (userLang.startsWith('nl')) {
-                langCode = 'nl';
-            }
+            if (userLang.startsWith('en-GB') || userLang.startsWith('en-UK')) langCode = 'gb';
+            else if (userLang.startsWith('en-US') || userLang.startsWith('en')) langCode = 'us';
+            else if (userLang.startsWith('fr')) langCode = 'fr';
+            else if (userLang.startsWith('pt')) langCode = 'pt';
+            else if (userLang.startsWith('es')) langCode = 'es';
+            else if (userLang.startsWith('nl')) langCode = 'nl';
             
             return langCode;
         }
         
         // Change language
         function changeLanguage(langCode) {
-            console.log('Changing language to:', langCode);
-            
-            // Get current button and update flag and text
             const button = document.querySelector('.language-button');
             const dropdown = document.getElementById('languageDropdown');
-            
-            // Validate language code
             const validLangCodes = ['nl', 'gb', 'us', 'fr', 'pt', 'es'];
+            
             if (!validLangCodes.includes(langCode)) {
                 console.error('Invalid language code:', langCode);
-                langCode = 'nl'; // Default to Dutch if invalid
+                langCode = 'nl'; 
             }
-            
-            // First update the HTML lang attribute and button
+
+            let langKey = langCode; // Used for placeholder lookups
+            let htmlLang = langCode;
+            let countryText = '';
+
             switch(langCode) {
                 case 'nl':
-                    button.innerHTML = `<img src="https://flagicons.lipis.dev/flags/4x3/nl.svg" class="flag-icon" alt="NL"><span class="country-text">Nederland</span><span class="material-icons dropdown-icon">arrow_drop_down</span>`;
-                    document.documentElement.lang = 'nl';
+                    countryText = 'Nederland';
+                    htmlLang = 'nl';
                     break;
                 case 'gb':
-                    button.innerHTML = `<img src="https://flagicons.lipis.dev/flags/4x3/gb.svg" class="flag-icon" alt="GB"><span class="country-text">United Kingdom</span><span class="material-icons dropdown-icon">arrow_drop_down</span>`;
-                    document.documentElement.lang = 'en-GB';
+                    countryText = 'United Kingdom';
+                    htmlLang = 'en-GB';
+                    langKey = 'en_gb'; // Key for placeholders
                     break;
                 case 'us':
-                    button.innerHTML = `<img src="https://flagicons.lipis.dev/flags/4x3/us.svg" class="flag-icon" alt="US"><span class="country-text">United States</span><span class="material-icons dropdown-icon">arrow_drop_down</span>`;
-                    document.documentElement.lang = 'en-US';
+                    countryText = 'United States';
+                    htmlLang = 'en-US';
+                    langKey = 'en_us'; // Key for placeholders
                     break;
                 case 'fr':
-                    button.innerHTML = `<img src="https://flagicons.lipis.dev/flags/4x3/fr.svg" class="flag-icon" alt="FR"><span class="country-text">France</span><span class="material-icons dropdown-icon">arrow_drop_down</span>`;
-                    document.documentElement.lang = 'fr';
+                    countryText = 'France';
+                    htmlLang = 'fr';
                     break;
                 case 'pt':
-                    button.innerHTML = `<img src="https://flagicons.lipis.dev/flags/4x3/pt.svg" class="flag-icon" alt="PT"><span class="country-text">Portugal</span><span class="material-icons dropdown-icon">arrow_drop_down</span>`;
-                    document.documentElement.lang = 'pt';
+                    countryText = 'Portugal';
+                    htmlLang = 'pt';
                     break;
                 case 'es':
-                    button.innerHTML = `<img src="https://flagicons.lipis.dev/flags/4x3/es.svg" class="flag-icon" alt="ES"><span class="country-text">España</span><span class="material-icons dropdown-icon">arrow_drop_down</span>`;
-                    document.documentElement.lang = 'es';
+                    countryText = 'Spain'; // Keep button text in English
+                    htmlLang = 'es';
                     break;
             }
+
+            button.innerHTML = `<img src="https://flagicons.lipis.dev/flags/4x3/${langCode}.svg" class="flag-icon" alt="${langCode.toUpperCase()}"><span class="country-text">${countryText}</span><span class="material-icons dropdown-icon">arrow_drop_down</span>`;
+            document.documentElement.lang = htmlLang;
             
-            // Save language preference to localStorage before translation
             localStorage.setItem('preferredLanguage', langCode);
-            console.log('Language preference saved to localStorage:', langCode);
             
-            // Then apply the translation with a small delay to ensure DOM updates
-            setTimeout(() => {
-                switch(langCode) {
-                    case 'nl':
-                        translateToDutch();
-                        break;
-                    case 'gb':
-                    case 'us':
-                        translateToEnglish();
-                        break;
-                    case 'fr':
-                        translateToFrench();
-                        break;
-                    case 'pt':
-                        translateToPortuguese();
-                        break;
-                    case 'es':
-                        translateToSpanish();
-                        break;
-                }
-                
-                // Update placeholders again after translation to ensure they're set correctly
-                updatePlaceholders(langCode);
-                
-                console.log('Translation completed for:', langCode);
-            }, 50);
+            // Apply translations
+            switch(langCode) {
+                case 'nl': translateToDutch(); break;
+                case 'gb': case 'us': translateToEnglish(); break;
+                case 'fr': translateToFrench(); break;
+                case 'pt': translateToPortuguese(); break;
+                case 'es': translateToSpanish(); break;
+            }
+
+            // Update placeholders using the correct key
+            updatePlaceholders(langKey);
             
-            // Hide dropdown
+            // Ensure country names in dropdown remain English
+            updateCountryNames(); 
+
             dropdown.classList.remove('show');
         }
         
-        // Helper function to update placeholders based on language
-        function updatePlaceholders(langCode) {
-            console.log('Updating placeholders for language:', langCode);
-            
-            switch(langCode) {
-                case 'nl':
-                    document.getElementById('companyName').placeholder = "Bijv. Acme B.V.";
-                    document.getElementById('location').placeholder = "Bijv. Amsterdam";
-                    document.getElementById('iban').placeholder = "Bijv. NL02ABNA0123456789";
-                    document.getElementById('invoiceInput').placeholder = "Voer factuurnummer in";
-                    break;
-                case 'gb':
-                    document.getElementById('companyName').placeholder = "e.g. Acme Ltd.";
-                    document.getElementById('location').placeholder = "e.g. London";
-                    document.getElementById('iban').placeholder = "e.g. GB29NWBK60161331926819";
-                    document.getElementById('invoiceInput').placeholder = "Enter invoice number";
-                    break;
-                case 'us':
-                    document.getElementById('companyName').placeholder = "e.g. Acme Inc.";
-                    document.getElementById('location').placeholder = "e.g. New York";
-                    document.getElementById('iban').placeholder = "e.g. US33BUKB20201555555555";
-                    document.getElementById('invoiceInput').placeholder = "Enter invoice number";
-                    break;
-                case 'fr':
-                    document.getElementById('companyName').placeholder = "ex. Acme SARL";
-                    document.getElementById('location').placeholder = "ex. Paris";
-                    document.getElementById('iban').placeholder = "ex. FR7630006000011234567890189";
-                    document.getElementById('invoiceInput').placeholder = "Entrez le numéro de facture";
-                    break;
-                case 'pt':
-                    document.getElementById('companyName').placeholder = "ex. Acme Lda.";
-                    document.getElementById('location').placeholder = "ex. Lisboa";
-                    document.getElementById('iban').placeholder = "ex. PT50000201231234567890154";
-                    document.getElementById('invoiceInput').placeholder = "Insira o número da fatura";
-                    break;
-                case 'es':
-                    document.getElementById('companyName').placeholder = "ej. Acme S.L.";
-                    document.getElementById('location').placeholder = "ej. Madrid";
-                    document.getElementById('iban').placeholder = "ej. ES9121000418450200051332";
-                    document.getElementById('invoiceInput').placeholder = "Ingrese el número de factura";
-                    break;
-            }
-        }
-        
-        // Translation functions
+        // Translation functions (Main content update)
         function translateToDutch() {
-            console.log('Translating to Dutch');
-            
-            // Update page title and main elements
             document.title = "Betalingsherinnering Template";
             document.querySelector('.page-title').textContent = "Betalingsherinnering Template";
             document.querySelector('.page-subtitle').textContent = "Genereer vriendelijke herinneringen voor openstaande facturen";
             document.querySelector('.form-title').textContent = "Gegevens invoeren";
-            
-            // Update form labels
             document.querySelectorAll('label')[0].textContent = "Uw bedrijfsnaam";
             document.querySelectorAll('label')[1].textContent = "Uw vestigingsplaats";
             document.querySelectorAll('label')[2].textContent = "Uw IBAN";
             document.querySelectorAll('label')[3].textContent = "Betalingstermijn (dagen)";
             document.querySelectorAll('label')[4].textContent = "Factuurnummer(s)";
-            
-            // Update helper text
             document.querySelectorAll('.input-helper')[0].textContent = "Voer uw volledige IBAN in zonder spaties";
-            document.querySelectorAll('.input-helper')[2].textContent = "Voeg alle openstaande factuurnummers toe";
-            
-            // Update buttons and other UI elements
+            document.querySelectorAll('.input-helper')[1].textContent = "Voeg alle openstaande factuurnummers toe"; // Adjusted index
             document.querySelector('#addInvoiceBtn').textContent = "Toevoegen";
             document.querySelector('.generate-btn').textContent = "Genereer Betalingsherinnering";
             document.querySelector('.preview-title').textContent = "Betalingsherinnering";
-            document.querySelector('#specification').innerHTML = "Overzicht van openstaande facturen:";
+            document.querySelector('#specification').innerHTML = "Overzicht van openstaande facturen:"; // Reset spec title
             document.querySelector('.print-btn').textContent = "Afdrukken";
             document.querySelector('.download-btn').textContent = "Downloaden als PDF";
             document.querySelector('footer p').innerHTML = 'Betalingsherinnering Template &copy; 2025 | <a href="#" onclick="resetForm()">Formulier resetten</a>';
-            
-            // Update placeholder text with Dutch location
-            document.getElementById('companyName').placeholder = "Bijv. Acme B.V.";
-            document.getElementById('location').placeholder = "Bijv. Amsterdam";
-            document.getElementById('iban').placeholder = "Bijv. NL02ABNA0123456789";
-            document.getElementById('invoiceInput').placeholder = "Voer factuurnummer in";
-            
-            // Update days dropdown with Dutch text
-            const daysDropdown = document.getElementById('days');
-            const selectedValue = daysDropdown.value; // Save current selection
-            
-            // Clear existing options
-            daysDropdown.innerHTML = '';
-            
-            // Add new options with Dutch text
-            const daysOptions = {
-                "3": "3 dagen",
-                "5": "5 dagen",
-                "7": "7 dagen"
-            };
-            
-            Object.keys(daysOptions).forEach(value => {
-                const option = document.createElement('option');
-                option.value = value;
-                option.textContent = daysOptions[value];
-                daysDropdown.appendChild(option);
-            });
-            
-            // Restore selected value
-            daysDropdown.value = selectedValue;
-            
-            // Update letter content
-            document.querySelector('#letterContent').textContent = `Geachte klant,
-
-Wij schrijven u om u te herinneren aan een openstaand saldo op uw rekening bij ons.
-
-Volgens onze administratie hebben wij nog geen betaling ontvangen voor de hierboven genoemde factu(u)r(en). Op het moment van schrijven zijn wij niet op de hoogte van eventuele discrepanties of fouten in de rekening die betaling zouden kunnen verhinderen.
-
-Wij waarderen onze relatie met u, maar zolang de rekening onbetaald blijft, moeten wij mogelijk verdere actie overwegen. Dit is iets wat wij niet wensen te doen, maar wij moeten ervoor zorgen dat betalingen tijdig worden gedaan.
-
-Wij verzoeken u vriendelijk om het openstaande bedrag binnen [dagen] dagen over te maken op IBAN [iban] ten name van [bedrijfsnaam] te [vestigingsplaats] onder vermelding van het factuurnummer.
-
-Dank u voor uw snelle aandacht voor deze kwestie. Wij kijken uit naar uw betaling en het voortzetten van onze zakelijke relatie.
-
-Met vriendelijke groet,
-
-[bedrijfsnaam]`;
+            updateDaysDropdown({ "3": "3 dagen", "5": "5 dagen", "7": "7 dagen" });
+            document.getElementById('letterContent').innerHTML = letterTemplates.nl; // Set base template
         }
         
         function translateToEnglish() {
-            console.log('Translating to English');
-            
-            // Update page title and main elements
             document.title = "Payment Reminder Template";
             document.querySelector('.page-title').textContent = "Payment Reminder Template";
             document.querySelector('.page-subtitle').textContent = "Generate friendly reminders for outstanding invoices";
             document.querySelector('.form-title').textContent = "Enter your details";
-            
-            // Update form labels
             document.querySelectorAll('label')[0].textContent = "Your company name";
             document.querySelectorAll('label')[1].textContent = "Your location";
             document.querySelectorAll('label')[2].textContent = "Your IBAN";
             document.querySelectorAll('label')[3].textContent = "Payment term (days)";
             document.querySelectorAll('label')[4].textContent = "Invoice number(s)";
-            
-            // Update helper text
             document.querySelectorAll('.input-helper')[0].textContent = "Enter your full IBAN without spaces";
-            document.querySelectorAll('.input-helper')[2].textContent = "Add all outstanding invoice numbers";
-            
-            // Update buttons and other UI elements
+            document.querySelectorAll('.input-helper')[1].textContent = "Add all outstanding invoice numbers"; // Adjusted index
             document.querySelector('#addInvoiceBtn').textContent = "Add";
             document.querySelector('.generate-btn').textContent = "Generate Payment Reminder";
             document.querySelector('.preview-title').textContent = "Payment Reminder";
-            document.querySelector('#specification').innerHTML = "Overview of outstanding invoices:";
+            document.querySelector('#specification').innerHTML = "Overview of outstanding invoices:"; // Reset spec title
             document.querySelector('.print-btn').textContent = "Print";
             document.querySelector('.download-btn').textContent = "Download as PDF";
             document.querySelector('footer p').innerHTML = 'Payment Reminder Template &copy; 2025 | <a href="#" onclick="resetForm()">Reset form</a>';
-            
-            // Update placeholder text with English location
-            const isUK = document.documentElement.lang === 'en-GB';
-            document.getElementById('companyName').placeholder = "e.g. Acme Ltd.";
-            document.getElementById('location').placeholder = isUK ? "e.g. London" : "e.g. New York";
-            document.getElementById('iban').placeholder = isUK ? "e.g. GB29NWBK60161331926819" : "e.g. US33BUKB20201555555555";
-            document.getElementById('invoiceInput').placeholder = "Enter invoice number";
-            
-            // Update days dropdown options
-            const daysDropdown = document.getElementById('days');
-            const selectedValue = daysDropdown.value; // Save current selection
-            
-            // Clear existing options
-            daysDropdown.innerHTML = '';
-            
-            // Add new options with English text
-            const daysOptions = {
-                "3": "3 days",
-                "5": "5 days",
-                "7": "7 days"
-            };
-            
-            Object.keys(daysOptions).forEach(value => {
-                const option = document.createElement('option');
-                option.value = value;
-                option.textContent = daysOptions[value];
-                daysDropdown.appendChild(option);
-            });
-            
-            // Restore selected value
-            daysDropdown.value = selectedValue;
-            
-            // Update letter content
-            document.querySelector('#letterContent').textContent = `Dear Customer,
-
-We are writing to remind you about an outstanding balance on your account with us.
-
-Our records indicate that payment for the invoice(s) listed above has not yet been received. At the time of writing, we are not aware of any discrepancies or errors in the account that would prevent payment from being made.
-
-We do value our relationship with you, but whilst the account remains unpaid, we may have to consider further action, which is something we do not wish to do, but we do need to ensure payments are made in a timely manner.
-
-Please could you arrange payment of the overdue invoice within [dagen] days to IBAN [iban] in the name of [bedrijfsnaam] in [vestigingsplaats], stating the invoice number.
-
-Thank you for your prompt attention to this matter. We look forward to receiving your payment and continuing our business relationship.
-
-Best regards,
-
-[bedrijfsnaam]`;
+            updateDaysDropdown({ "3": "3 days", "5": "5 days", "7": "7 days" });
+            document.getElementById('letterContent').innerHTML = letterTemplates.en; // Set base template
         }
         
         function translateToFrench() {
-            console.log('Translating to French');
-            
-            // Update page title and main elements
             document.title = "Modèle de rappel de paiement";
             document.querySelector('.page-title').textContent = "Modèle de rappel de paiement";
             document.querySelector('.page-subtitle').textContent = "Générer des rappels amicaux pour les factures impayées";
             document.querySelector('.form-title').textContent = "Entrez vos coordonnées";
-            
-            // Update form labels
             document.querySelectorAll('label')[0].textContent = "Nom de votre entreprise";
             document.querySelectorAll('label')[1].textContent = "Votre emplacement";
             document.querySelectorAll('label')[2].textContent = "Votre IBAN";
             document.querySelectorAll('label')[3].textContent = "Délai de paiement (jours)";
             document.querySelectorAll('label')[4].textContent = "Numéro(s) de facture";
-            
-            // Update helper text
             document.querySelectorAll('.input-helper')[0].textContent = "Entrez votre IBAN complet sans espaces";
-            document.querySelectorAll('.input-helper')[2].textContent = "Ajoutez tous les numéros de facture impayés";
-            
-            // Update buttons and other UI elements
+            document.querySelectorAll('.input-helper')[1].textContent = "Ajoutez tous les numéros de facture impayés"; // Adjusted index
             document.querySelector('#addInvoiceBtn').textContent = "Ajouter";
             document.querySelector('.generate-btn').textContent = "Générer un rappel de paiement";
             document.querySelector('.preview-title').textContent = "Rappel de paiement";
-            document.querySelector('#specification').innerHTML = "Aperçu des factures impayées:";
+            document.querySelector('#specification').innerHTML = "Aperçu des factures impayées:"; // Reset spec title
             document.querySelector('.print-btn').textContent = "Imprimer";
             document.querySelector('.download-btn').textContent = "Télécharger en PDF";
             document.querySelector('footer p').innerHTML = 'Modèle de rappel de paiement &copy; 2025 | <a href="#" onclick="resetForm()">Réinitialiser le formulaire</a>';
-            
-            // Update placeholder text with French location
-            document.getElementById('companyName').placeholder = "ex. Acme SARL";
-            document.getElementById('location').placeholder = "ex. Paris";
-            document.getElementById('iban').placeholder = "ex. FR7630006000011234567890189";
-            document.getElementById('invoiceInput').placeholder = "Entrez le numéro de facture";
-            
-            // Update days dropdown options
-            const daysDropdown = document.getElementById('days');
-            const selectedValue = daysDropdown.value; // Save current selection
-            
-            // Clear existing options
-            daysDropdown.innerHTML = '';
-            
-            // Add new options with French text
-            const daysOptions = {
-                "3": "3 jours",
-                "5": "5 jours",
-                "7": "7 jours"
-            };
-            
-            Object.keys(daysOptions).forEach(value => {
-                const option = document.createElement('option');
-                option.value = value;
-                option.textContent = daysOptions[value];
-                daysDropdown.appendChild(option);
-            });
-            
-            // Restore selected value
-            daysDropdown.value = selectedValue;
-            
-            // Update letter content
-            document.querySelector('#letterContent').textContent = `Cher client,
-
-Nous vous écrivons pour vous rappeler un solde impayé sur votre compte chez nous.
-
-Selon nos registres, nous n'avons pas encore reçu le paiement de la/des facture(s) mentionnée(s) ci-dessus. Au moment de la rédaction, nous n'avons connaissance d'aucune divergence ou erreur dans le compte qui empêcherait le paiement d'être effectué.
-
-Nous apprécions notre relation avec vous, mais tant que le compte reste impayé, nous pourrions devoir envisager d'autres mesures, ce que nous ne souhaitons pas faire, mais nous devons nous assurer que les paiements sont effectués en temps opportun.
-
-Nous vous demandons de bien vouloir transférer le montant dû dans un délai de [dagen] jours sur l'IBAN [iban] au nom de [bedrijfsnaam] à [vestigingsplaats], en indiquant le numéro de facture.
-
-Nous vous remercions de votre attention rapide à cette question. Nous attendons avec impatience de recevoir votre paiement et de poursuivre notre relation commerciale.
-
-Cordialement,
-
-[bedrijfsnaam]`;
+            updateDaysDropdown({ "3": "3 jours", "5": "5 jours", "7": "7 jours" });
+            document.getElementById('letterContent').innerHTML = letterTemplates.fr; // Set base template
         }
         
         function translateToPortuguese() {
-            console.log('Translating to Portuguese');
-            
-            // Update page title and main elements
             document.title = "Modelo de Lembrete de Pagamento";
             document.querySelector('.page-title').textContent = "Modelo de Lembrete de Pagamento";
             document.querySelector('.page-subtitle').textContent = "Gerar lembretes amigáveis para faturas pendentes";
             document.querySelector('.form-title').textContent = "Insira seus dados";
-            
-            // Update form labels
             document.querySelectorAll('label')[0].textContent = "Nome da sua empresa";
             document.querySelectorAll('label')[1].textContent = "Sua localização";
             document.querySelectorAll('label')[2].textContent = "Seu IBAN";
             document.querySelectorAll('label')[3].textContent = "Prazo de pagamento (dias)";
             document.querySelectorAll('label')[4].textContent = "Número(s) da fatura";
-            
-            // Update helper text
             document.querySelectorAll('.input-helper')[0].textContent = "Digite seu IBAN completo sem espaços";
-            document.querySelectorAll('.input-helper')[2].textContent = "Adicione todos os números de faturas pendentes";
-            
-            // Update buttons and other UI elements
+            document.querySelectorAll('.input-helper')[1].textContent = "Adicione todos os números de faturas pendentes"; // Adjusted index
             document.querySelector('#addInvoiceBtn').textContent = "Adicionar";
             document.querySelector('.generate-btn').textContent = "Gerar Lembrete de Pagamento";
             document.querySelector('.preview-title').textContent = "Lembrete de Pagamento";
-            document.querySelector('#specification').innerHTML = "Visão geral das faturas pendentes:";
+            document.querySelector('#specification').innerHTML = "Visão geral das faturas pendentes:"; // Reset spec title
             document.querySelector('.print-btn').textContent = "Imprimir";
             document.querySelector('.download-btn').textContent = "Baixar como PDF";
             document.querySelector('footer p').innerHTML = 'Modelo de Lembrete de Pagamento &copy; 2025 | <a href="#" onclick="resetForm()">Redefinir formulário</a>';
-            
-            // Update placeholder text with Portuguese location
-            document.getElementById('companyName').placeholder = "ex. Acme Lda.";
-            document.getElementById('location').placeholder = "ex. Lisboa";
-            document.getElementById('iban').placeholder = "ex. PT50000201231234567890154";
-            document.getElementById('invoiceInput').placeholder = "Insira o número da fatura";
-            
-            // Update days dropdown options
-            const daysDropdown = document.getElementById('days');
-            const selectedValue = daysDropdown.value; // Save current selection
-            
-            // Clear existing options
-            daysDropdown.innerHTML = '';
-            
-            // Add new options with Portuguese text
-            const daysOptions = {
-                "3": "3 dias",
-                "5": "5 dias",
-                "7": "7 dias"
-            };
-            
-            Object.keys(daysOptions).forEach(value => {
-                const option = document.createElement('option');
-                option.value = value;
-                option.textContent = daysOptions[value];
-                daysDropdown.appendChild(option);
-            });
-            
-            // Restore selected value
-            daysDropdown.value = selectedValue;
-            
-            // Update letter content
-            document.querySelector('#letterContent').textContent = `Prezado Cliente,
-
-Estamos escrevendo para lembrá-lo sobre um saldo pendente em sua conta conosco.
-
-Nossos registros indicam que o pagamento da(s) fatura(s) listada(s) acima ainda não foi recebido. No momento da redação, não temos conhecimento de quaisquer discrepâncias ou erros na conta que impediriam a realização do pagamento.
-
-Valorizamos nosso relacionamento com você, mas enquanto a conta permanecer não paga, podemos ter que considerar outras ações, o que é algo que não desejamos fazer, mas precisamos garantir que os pagamentos sejam feitos em tempo hábil.
-
-Solicitamos gentilmente que transfira o valor pendente dentro de [dagen] dias para o IBAN [iban] em nome de [bedrijfsnaam] em [vestigingsplaats], indicando o número da fatura.
-
-Agradecemos sua pronta atenção a este assunto. Esperamos receber seu pagamento e continuar nosso relacionamento comercial.
-
-Atenciosamente,
-
-[bedrijfsnaam]`;
+            updateDaysDropdown({ "3": "3 dias", "5": "5 dias", "7": "7 dias" });
+            document.getElementById('letterContent').innerHTML = letterTemplates.pt; // Set base template
         }
         
         function translateToSpanish() {
-            console.log('Translating to Spanish');
-            
-            // Update page title and main elements
             document.title = "Plantilla de Recordatorio de Pago";
             document.querySelector('.page-title').textContent = "Plantilla de Recordatorio de Pago";
             document.querySelector('.page-subtitle').textContent = "Generar recordatorios amistosos para facturas pendientes";
             document.querySelector('.form-title').textContent = "Ingrese sus datos";
-            
-            // Update form labels
             document.querySelectorAll('label')[0].textContent = "Nombre de su empresa";
             document.querySelectorAll('label')[1].textContent = "Su ubicación";
             document.querySelectorAll('label')[2].textContent = "Su IBAN";
             document.querySelectorAll('label')[3].textContent = "Plazo de pago (días)";
             document.querySelectorAll('label')[4].textContent = "Número(s) de factura";
-            
-            // Update helper text
             document.querySelectorAll('.input-helper')[0].textContent = "Ingrese su IBAN completo sin espacios";
-            document.querySelectorAll('.input-helper')[2].textContent = "Agregue todos los números de facturas pendientes";
-            
-            // Update buttons and other UI elements
+            document.querySelectorAll('.input-helper')[1].textContent = "Agregue todos los números de facturas pendientes"; // Adjusted index
             document.querySelector('#addInvoiceBtn').textContent = "Agregar";
             document.querySelector('.generate-btn').textContent = "Generar Recordatorio de Pago";
             document.querySelector('.preview-title').textContent = "Recordatorio de Pago";
-            document.querySelector('#specification').innerHTML = "Resumen de facturas pendientes:";
+            document.querySelector('#specification').innerHTML = "Resumen de facturas pendientes:"; // Reset spec title
             document.querySelector('.print-btn').textContent = "Imprimir";
             document.querySelector('.download-btn').textContent = "Descargar como PDF";
             document.querySelector('footer p').innerHTML = 'Plantilla de Recordatorio de Pago &copy; 2025 | <a href="#" onclick="resetForm()">Restablecer formulario</a>';
-            
-            // Update placeholder text with Spanish location
-            document.getElementById('companyName').placeholder = "ej. Acme S.L.";
-            document.getElementById('location').placeholder = "ej. Madrid";
-            document.getElementById('iban').placeholder = "ej. ES9121000418450200051332";
-            document.getElementById('invoiceInput').placeholder = "Ingrese el número de factura";
-            
-            // Update days dropdown options
+            updateDaysDropdown({ "3": "3 días", "5": "5 días", "7": "7 días" });
+            document.getElementById('letterContent').innerHTML = letterTemplates.es; // Set base template
+        }
+
+        // Helper function to update days dropdown options
+        function updateDaysDropdown(optionsMap) {
             const daysDropdown = document.getElementById('days');
-            const selectedValue = daysDropdown.value; // Save current selection
+            const selectedValue = daysDropdown.value; 
+            daysDropdown.innerHTML = ''; // Clear existing
             
-            // Clear existing options
-            daysDropdown.innerHTML = '';
-            
-            // Add new options with Spanish text
-            const daysOptions = {
-                "3": "3 días",
-                "5": "5 días",
-                "7": "7 días"
-            };
-            
-            Object.keys(daysOptions).forEach(value => {
+            Object.keys(optionsMap).forEach(value => {
                 const option = document.createElement('option');
                 option.value = value;
-                option.textContent = daysOptions[value];
+                option.textContent = optionsMap[value];
                 daysDropdown.appendChild(option);
             });
             
-            // Restore selected value
-            daysDropdown.value = selectedValue;
+            // Restore selected value if it exists in the new options
+            if (optionsMap[selectedValue]) {
+                daysDropdown.value = selectedValue;
+            } else {
+                // Default to '5' if previous selection is no longer valid (e.g., during initial load)
+                daysDropdown.value = '5'; 
+            }
+        }
+
+        // Keep country names in English for all languages in the dropdown
+        function updateCountryNames() {
+            const countryNames = {
+                nl: 'Netherlands',
+                gb: 'United Kingdom',
+                us: 'United States',
+                fr: 'France',
+                pt: 'Portugal',
+                es: 'Spain'
+            };
             
-            // Update letter content
-            document.querySelector('#letterContent').textContent = `Estimado Cliente,
-
-Le escribimos para recordarle sobre un saldo pendiente en su cuenta con nosotros.
-
-Nuestros registros indican que el pago de la(s) factura(s) mencionada(s) anteriormente aún no ha sido recibido. Al momento de escribir, no tenemos conocimiento de ninguna discrepancia o error en la cuenta que pudiera impedir que se realice el pago.
-
-Valoramos nuestra relación con usted, pero mientras la cuenta permanezca sin pagar, es posible que tengamos que considerar acciones adicionales, lo cual es algo que no deseamos hacer, pero necesitamos asegurarnos de que los pagos se realicen de manera oportuna.
-
-Le solicitamos amablemente que transfiera el monto pendiente dentro de [dagen] días al IBAN [iban] a nombre de [bedrijfsnaam] en [vestigingsplaats], indicando el número de factura.
-
-Gracias por su pronta atención a este asunto. Esperamos recibir su pago y continuar nuestra relación comercial.
-
-Saludos cordiales,
-
-[bedrijfsnaam]`;
+            const options = document.querySelectorAll('.language-option');
+            
+            options.forEach(option => {
+                const countryCode = option.getAttribute('onclick').match(/'([^']+)'/)[1];
+                const nameSpan = option.querySelector('.language-name');
+                if (nameSpan && countryNames[countryCode]) { // Check if nameSpan exists
+                   nameSpan.textContent = countryNames[countryCode];
+                }
+            });
         }
         
         // Initialize language based on user preference or browser settings
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('DOM fully loaded, initializing language');
-            
-            // Check if user has a saved preference
             const savedLang = localStorage.getItem('preferredLanguage');
-            console.log('Saved language preference:', savedLang);
+            const initialLang = (savedLang && ['nl', 'gb', 'us', 'fr', 'pt', 'es'].includes(savedLang)) ? savedLang : detectUserLanguage();
             
-            if (savedLang && ['nl', 'gb', 'us', 'fr', 'pt', 'es'].includes(savedLang)) {
-                // Use saved preference
-                console.log('Using saved language preference:', savedLang);
-                
-                // Update the language button first
-                const button = document.querySelector('.language-button');
-                switch(savedLang) {
-                    case 'nl':
-                        button.innerHTML = `<img src="https://flagicons.lipis.dev/flags/4x3/nl.svg" class="flag-icon" alt="NL"><span class="country-text">Nederland</span><span class="material-icons dropdown-icon">arrow_drop_down</span>`;
-                        document.documentElement.lang = 'nl';
-                        break;
-                    case 'gb':
-                        button.innerHTML = `<img src="https://flagicons.lipis.dev/flags/4x3/gb.svg" class="flag-icon" alt="GB"><span class="country-text">United Kingdom</span><span class="material-icons dropdown-icon">arrow_drop_down</span>`;
-                        document.documentElement.lang = 'en-GB';
-                        break;
-                    case 'us':
-                        button.innerHTML = `<img src="https://flagicons.lipis.dev/flags/4x3/us.svg" class="flag-icon" alt="US"><span class="country-text">United States</span><span class="material-icons dropdown-icon">arrow_drop_down</span>`;
-                        document.documentElement.lang = 'en-US';
-                        break;
-                    case 'fr':
-                        button.innerHTML = `<img src="https://flagicons.lipis.dev/flags/4x3/fr.svg" class="flag-icon" alt="FR"><span class="country-text">France</span><span class="material-icons dropdown-icon">arrow_drop_down</span>`;
-                        document.documentElement.lang = 'fr';
-                        break;
-                    case 'pt':
-                        button.innerHTML = `<img src="https://flagicons.lipis.dev/flags/4x3/pt.svg" class="flag-icon" alt="PT"><span class="country-text">Portugal</span><span class="material-icons dropdown-icon">arrow_drop_down</span>`;
-                        document.documentElement.lang = 'pt';
-                        break;
-                    case 'es':
-                        button.innerHTML = `<img src="https://flagicons.lipis.dev/flags/4x3/es.svg" class="flag-icon" alt="ES"><span class="country-text">España</span><span class="material-icons dropdown-icon">arrow_drop_down</span>`;
-                        document.documentElement.lang = 'es';
-                        break;
-                }
-                
-                // Then apply the translation
-                setTimeout(() => {
-                    switch(savedLang) {
-                        case 'nl':
-                            translateToDutch();
-                            break;
-                        case 'gb':
-                        case 'us':
-                            translateToEnglish();
-                            break;
-                        case 'fr':
-                            translateToFrench();
-                            break;
-                        case 'pt':
-                            translateToPortuguese();
-                            break;
-                        case 'es':
-                            translateToSpanish();
-                            break;
-                    }
-                }, 100); // Small delay to ensure DOM is fully processed
-            } else {
-                // Detect and set language based on browser
-                const detectedLang = detectUserLanguage();
-                console.log('Detected language:', detectedLang);
-                changeLanguage(detectedLang);
-            }
+            changeLanguage(initialLang); // Apply initial language settings
+            updateCountryNames(); // Ensure dropdown names are English on load
         });
+        
     </script>
 </body>
 </html>

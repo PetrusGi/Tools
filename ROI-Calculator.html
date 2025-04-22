@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Credit IQ - ROI Calculator</title>
+    <title>Credit-IQ - ROI Calculator</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Text:ital@0;1&family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400&display=swap" rel="stylesheet">
@@ -542,10 +542,10 @@
             </div>
         </div>
         <div class="page-logo">
-            <img src="https://www.creditexpo.nl/wp-content/uploads/2024/09/Logo-Credit-IQ-CIQ-no-bg-2048x2048.png" alt="Credit IQ Logo" class="logo">
+            <img src="https://www.creditexpo.nl/wp-content/uploads/2024/09/Logo-Credit-IQ-CIQ-no-bg-2048x2048.png" alt="Credit-IQ Logo" class="logo">
         </div>
         <h2 class="page-title">ROI Calculator</h2>
-        <p class="page-subtitle">Discover how much you could save with Credit IQ</p>
+        <p class="page-subtitle">Discover how much you could save with Credit-IQ</p>
 
         <div class="calculator">
             <div class="form-container">
@@ -554,21 +554,21 @@
                     <label for="revenue">Yearly Revenue</label>
                     <div class="input-wrapper has-currency">
                         <span class="currency-symbol">€</span>
-                        <input type="text" id="revenue" placeholder="e.g. 1.000.000">
+                        <input type="text" id="revenue" placeholder="e.g. 1.000.000" data-translate-placeholder="revenue_placeholder">
                     </div>
                     <span class="input-helper">Enter your company's annual revenue</span>
                 </div>
                 
                 <div class="form-group">
                     <label for="dso">Current Days Sales Outstanding (DSO)</label>
-                    <input type="number" id="dso" placeholder="e.g. 45">
+                    <input type="number" id="dso" placeholder="e.g. 45" data-translate-placeholder="dso_placeholder">
                     <span class="input-helper">Average number of days it takes to collect payment</span>
                 </div>
                 
                 <div class="form-group">
                     <label for="eb">Estimated Unrecoverable Debts</label>
                     <div class="input-wrapper">
-                        <input type="number" id="eb" placeholder="e.g. 3">
+                        <input type="number" id="eb" placeholder="e.g. 3" data-translate-placeholder="eb_placeholder">
                         <span class="percentage-symbol">%</span>
                     </div>
                     <span class="input-helper">Percentage of revenue you expect to be unrecoverable</span>
@@ -576,7 +576,7 @@
                 
                 <div class="form-group">
                     <label for="invoices">Average Monthly Invoices Raised</label>
-                    <input type="number" id="invoices" placeholder="e.g. 100">
+                    <input type="number" id="invoices" placeholder="e.g. 100" data-translate-placeholder="invoices_placeholder">
                     <span class="input-helper">Number of invoices you send each month</span>
                 </div>
                 
@@ -584,7 +584,7 @@
                     <label for="salary">Yearly Salary of AR Staff</label>
                     <div class="input-wrapper has-currency">
                         <span class="currency-symbol">€</span>
-                        <input type="text" id="salary" placeholder="e.g. 50.000">
+                        <input type="text" id="salary" placeholder="e.g. 50.000" data-translate-placeholder="salary_placeholder">
                     </div>
                     <span class="input-helper">Total annual cost of accounts receivable staff</span>
                 </div>
@@ -623,22 +623,22 @@
                     <div class="result-card">
                         <div class="result-label">Time Saved Each Month</div>
                         <div class="result-value medium" id="timeSaved">0 days</div>
-                        <p class="result-description">Reduction in collection time with Credit IQ</p>
+                        <p class="result-description">Reduction in collection time with Credit-IQ</p>
                     </div>
                     
                     <div class="result-card">
                         <div class="result-label">Estimated New DSO</div>
                         <div class="result-value medium" id="estimatedDSO">0</div>
-                        <p class="result-description">Your projected Days Sales Outstanding with Credit IQ</p>
+                        <p class="result-description">Your projected Days Sales Outstanding with Credit-IQ</p>
                     </div>
                 </div>
                 
-                <a href="https://app.credit-iq.com?prompt=signup" class="try-btn" target="_blank">Try Credit IQ for Free</a>
+                <a href="https://app.credit-iq.com?prompt=signup" class="try-btn" target="_blank">Try Credit-IQ for Free</a>
             </div>
         </div>
         
         <footer>
-            <p>Powered by <a href="https://www.atradiuscollections.com" target="_blank">Atradius Collections</a> | Credit IQ &copy; 2025</p>
+            <p>Powered by <a href="https://www.atradiuscollections.com" target="_blank">Atradius Collections</a> | Credit-IQ &copy; 2025</p>
         </footer>
     </div>
 
@@ -776,6 +776,86 @@
                 behavior: 'smooth'
             });
         }
+
+        // Keep country names in English for all languages
+        function updateCountryNames() {
+            const countryNames = {
+                nl: 'Netherlands',
+                gb: 'United Kingdom',
+                us: 'United States',
+                fr: 'France',
+                pt: 'Portugal',
+                es: 'Spain'
+            };
+            
+            const options = document.querySelectorAll('.language-option');
+            
+            options.forEach(option => {
+                const countryCode = option.getAttribute('onclick').match(/'([^']+)'/)[1];
+                const nameSpan = option.querySelector('.language-name');
+                nameSpan.textContent = countryNames[countryCode];
+            });
+        }
+
+        // Placeholder translations
+        const placeholderTranslations = {
+            nl: {
+                revenue_placeholder: "bijv. 1.000.000",
+                dso_placeholder: "bijv. 45",
+                eb_placeholder: "bijv. 3",
+                invoices_placeholder: "bijv. 100",
+                salary_placeholder: "bijv. 50.000"
+            },
+            en_gb: {
+                revenue_placeholder: "e.g. 1,000,000",
+                dso_placeholder: "e.g. 45",
+                eb_placeholder: "e.g. 3",
+                invoices_placeholder: "e.g. 100",
+                salary_placeholder: "e.g. 50,000"
+            },
+            en_us: {
+                revenue_placeholder: "e.g. 1,000,000",
+                dso_placeholder: "e.g. 45",
+                eb_placeholder: "e.g. 3",
+                invoices_placeholder: "e.g. 100",
+                salary_placeholder: "e.g. 50,000"
+            },
+            fr: {
+                revenue_placeholder: "ex. 1 000 000",
+                dso_placeholder: "ex. 45",
+                eb_placeholder: "ex. 3",
+                invoices_placeholder: "ex. 100",
+                salary_placeholder: "ex. 50 000"
+            },
+            pt: {
+                revenue_placeholder: "ex. 1.000.000",
+                dso_placeholder: "ex. 45",
+                eb_placeholder: "ex. 3",
+                invoices_placeholder: "ex. 100",
+                salary_placeholder: "ex. 50.000"
+            },
+            es: {
+                revenue_placeholder: "ej. 1.000.000",
+                dso_placeholder: "ej. 45",
+                eb_placeholder: "ej. 3",
+                invoices_placeholder: "ej. 100",
+                salary_placeholder: "ej. 50.000"
+            }
+        };
+
+        // Function to update placeholders based on language
+        function updatePlaceholders(langKey) {
+            const translations = placeholderTranslations[langKey];
+            if (!translations) return;
+
+            const inputs = document.querySelectorAll('input[data-translate-placeholder]');
+            inputs.forEach(input => {
+                const key = input.dataset.translatePlaceholder;
+                if (translations[key]) {
+                    input.placeholder = translations[key];
+                }
+            });
+        }
         
         // Toggle language dropdown
         function toggleLanguageDropdown() {
@@ -820,9 +900,9 @@
         
         // Translation functions
         function translateToDutch() {
-            document.title = "Credit IQ - ROI Calculator";
+            document.title = "Credit-IQ - ROI Calculator";
             document.querySelector('.page-title').textContent = "ROI Calculator";
-            document.querySelector('.page-subtitle').textContent = "Ontdek hoeveel je kunt besparen met Credit IQ";
+            document.querySelector('.page-subtitle').textContent = "Ontdek hoeveel je kunt besparen met Credit-IQ";
             document.querySelector('.form-title').textContent = "Voer je gegevens in";
             document.querySelectorAll('label')[0].textContent = "Jaarlijkse omzet";
             document.querySelectorAll('label')[1].textContent = "Huidige Days Sales Outstanding (DSO)";
@@ -847,28 +927,27 @@
             document.querySelectorAll('.result-label')[3].textContent = "Geschatte nieuwe DSO";
             document.querySelectorAll('.result-description')[0].textContent = "Gecombineerde waarde van verbeterde cashflow, verminderde oninbare vorderingen en verhoogde personeelsefficiëntie";
             document.querySelectorAll('.result-description')[1].textContent = "Hoeveel je huidige DSO je elke maand kost";
-            document.querySelectorAll('.result-description')[2].textContent = "Vermindering in incassotijd met Credit IQ";
-            document.querySelectorAll('.result-description')[3].textContent = "Je verwachte Days Sales Outstanding met Credit IQ";
-            document.querySelector('.try-btn').textContent = "Probeer Credit IQ gratis";
-            document.querySelector('footer p').innerHTML = 'Powered by <a href="https://www.atradiuscollections.com" target="_blank">Atradius Collections</a> | Credit IQ &copy; 2025';
+            document.querySelectorAll('.result-description')[2].textContent = "Vermindering in incassotijd met Credit-IQ";
+            document.querySelectorAll('.result-description')[3].textContent = "Je verwachte Days Sales Outstanding met Credit-IQ";
+            document.querySelector('.try-btn').textContent = "Probeer Credit-IQ gratis";
+            document.querySelector('footer p').innerHTML = 'Powered by <a href="https://www.atradiuscollections.com" target="_blank">Atradius Collections</a> | Credit-IQ &copy; 2025';
             
-            // Update placeholders with Dutch examples
-            document.getElementById('revenue').placeholder = "bijv. 1.000.000";
-            document.getElementById('dso').placeholder = "bijv. 45";
-            document.getElementById('eb').placeholder = "bijv. 3";
-            document.getElementById('invoices').placeholder = "bijv. 100";
-            document.getElementById('salary').placeholder = "bijv. 50.000";
+            // Update placeholders
+            updatePlaceholders('nl');
             
             // Set currency symbol to Euro
             document.querySelectorAll('.currency-symbol').forEach(symbol => {
                 symbol.textContent = '€';
             });
+
+            // Update country names in dropdown
+            updateCountryNames();
         }
         
         function translateToEnglish() {
-            document.title = "Credit IQ - ROI Calculator";
+            document.title = "Credit-IQ - ROI Calculator";
             document.querySelector('.page-title').textContent = "ROI Calculator";
-            document.querySelector('.page-subtitle').textContent = "Discover how much you could save with Credit IQ";
+            document.querySelector('.page-subtitle').textContent = "Discover how much you could save with Credit-IQ";
             document.querySelector('.form-title').textContent = "Enter your details";
             document.querySelectorAll('label')[0].textContent = "Yearly Revenue";
             document.querySelectorAll('label')[1].textContent = "Current Days Sales Outstanding (DSO)";
@@ -893,18 +972,14 @@
             document.querySelectorAll('.result-label')[3].textContent = "Estimated New DSO";
             document.querySelectorAll('.result-description')[0].textContent = "Combined value of improved cash flow, reduced bad debt, and increased staff efficiency";
             document.querySelectorAll('.result-description')[1].textContent = "How much your current DSO costs you each month";
-            document.querySelectorAll('.result-description')[2].textContent = "Reduction in collection time with Credit IQ";
-            document.querySelectorAll('.result-description')[3].textContent = "Your projected Days Sales Outstanding with Credit IQ";
-            document.querySelector('.try-btn').textContent = "Try Credit IQ for Free";
-            document.querySelector('footer p').innerHTML = 'Powered by <a href="https://www.atradiuscollections.com" target="_blank">Atradius Collections</a> | Credit IQ &copy; 2025';
+            document.querySelectorAll('.result-description')[2].textContent = "Reduction in collection time with Credit-IQ";
+            document.querySelectorAll('.result-description')[3].textContent = "Your projected Days Sales Outstanding with Credit-IQ";
+            document.querySelector('.try-btn').textContent = "Try Credit-IQ for Free";
+            document.querySelector('footer p').innerHTML = 'Powered by <a href="https://www.atradiuscollections.com" target="_blank">Atradius Collections</a> | Credit-IQ &copy; 2025';
             
-            // Update placeholders with English examples
+            // Update placeholders based on specific English variant
             const isUK = document.documentElement.lang === 'en-GB';
-            document.getElementById('revenue').placeholder = isUK ? "e.g. 1,000,000" : "e.g. 1,000,000";
-            document.getElementById('dso').placeholder = "e.g. 45";
-            document.getElementById('eb').placeholder = "e.g. 3";
-            document.getElementById('invoices').placeholder = "e.g. 100";
-            document.getElementById('salary').placeholder = isUK ? "e.g. 50,000" : "e.g. 50,000";
+            updatePlaceholders(isUK ? 'en_gb' : 'en_us');
             
             // Set currency symbol based on UK or US English
             const currencySymbol = isUK ? '£' : '$';
@@ -922,27 +997,30 @@
             if (monthlyCost && monthlyCost !== '€0,00') {
                 document.getElementById('monthlyCost').innerText = monthlyCost.replace('€', currencySymbol);
             }
+
+            // Update country names in dropdown
+            updateCountryNames();
         }
         
         function translateToFrench() {
-            document.title = "Credit IQ - Calculateur de ROI";
+            document.title = "Credit-IQ - Calculateur de ROI";
             document.querySelector('.page-title').textContent = "Calculateur de ROI";
-            document.querySelector('.page-subtitle').textContent = "Découvrez combien vous pourriez économiser avec Credit IQ";
-            document.querySelector('.form-title').textContent = "Entrez vos coordonnées";
+            document.querySelector('.page-subtitle').textContent = "Découvrez combien vous pourriez économiser avec Credit-IQ";
+            document.querySelector('.form-title').textContent = "Entrez vos détails"; // Corrected
             document.querySelectorAll('label')[0].textContent = "Chiffre d'affaires annuel";
             document.querySelectorAll('label')[1].textContent = "Délai moyen de paiement actuel (DSO)";
-            document.querySelectorAll('label')[2].textContent = "Dettes estimées irrécouvrables";
-            document.querySelectorAll('label')[3].textContent = "Nombre moyen de factures mensuelles";
-            document.querySelectorAll('label')[4].textContent = "Salaire annuel du personnel AR";
-            document.querySelectorAll('label')[5].textContent = "Confiance de calcul";
+            document.querySelectorAll('label')[2].textContent = "Créances irrécouvrables estimées"; // Corrected
+            document.querySelectorAll('label')[3].textContent = "Nombre moyen de factures émises mensuellement"; // Corrected
+            document.querySelectorAll('label')[4].textContent = "Salaire annuel du personnel des comptes clients"; // Corrected
+            document.querySelectorAll('label')[5].textContent = "Confiance du calcul"; // Corrected
             document.querySelectorAll('.confidence-btn')[0].textContent = "Conservateur";
             document.querySelectorAll('.confidence-btn')[1].textContent = "Moyen";
             document.querySelectorAll('.confidence-btn')[2].textContent = "Élevé";
             document.querySelectorAll('.input-helper')[0].textContent = "Entrez le chiffre d'affaires annuel de votre entreprise";
-            document.querySelectorAll('.input-helper')[1].textContent = "Nombre moyen de jours nécessaires pour recevoir un paiement";
-            document.querySelectorAll('.input-helper')[2].textContent = "Pourcentage du chiffre d'affaires que vous prévoyez ne pas pouvoir recouvrer";
+            document.querySelectorAll('.input-helper')[1].textContent = "Nombre moyen de jours nécessaires pour recouvrer le paiement"; // Corrected
+            document.querySelectorAll('.input-helper')[2].textContent = "Pourcentage du chiffre d'affaires que vous prévoyez être irrécouvrable"; // Corrected
             document.querySelectorAll('.input-helper')[3].textContent = "Nombre de factures que vous envoyez chaque mois";
-            document.querySelectorAll('.input-helper')[4].textContent = "Coût annuel total du personnel de comptabilité clients";
+            document.querySelectorAll('.input-helper')[4].textContent = "Coût annuel total du personnel des comptes clients"; // Corrected
             document.querySelectorAll('.input-helper')[5].textContent = "Sélectionnez votre niveau de confiance préféré pour les calculs";
             document.querySelector('.calculate-btn').textContent = "Calculer mes économies";
             document.querySelector('.results-title').textContent = "Vos économies sur 1 an";
@@ -950,30 +1028,29 @@
             document.querySelectorAll('.result-label')[1].textContent = "Coût mensuel du retard";
             document.querySelectorAll('.result-label')[2].textContent = "Temps économisé chaque mois";
             document.querySelectorAll('.result-label')[3].textContent = "Nouveau DSO estimé";
-            document.querySelectorAll('.result-description')[0].textContent = "Valeur combinée de l'amélioration des flux de trésorerie, de la réduction des créances douteuses et de l'augmentation de l'efficacité du personnel";
+            document.querySelectorAll('.result-description')[0].textContent = "Valeur combinée de l'amélioration de la trésorerie, de la réduction des créances irrécouvrables et de l'augmentation de l'efficacité du personnel"; // Corrected
             document.querySelectorAll('.result-description')[1].textContent = "Combien votre DSO actuel vous coûte chaque mois";
-            document.querySelectorAll('.result-description')[2].textContent = "Réduction du temps de recouvrement avec Credit IQ";
-            document.querySelectorAll('.result-description')[3].textContent = "Votre délai moyen de paiement projeté avec Credit IQ";
-            document.querySelector('.try-btn').textContent = "Essayez Credit IQ gratuitement";
-            document.querySelector('footer p').innerHTML = 'Propulsé par <a href="https://www.atradiuscollections.com" target="_blank">Atradius Collections</a> | Credit IQ &copy; 2025';
+            document.querySelectorAll('.result-description')[2].textContent = "Réduction du temps de recouvrement avec Credit-IQ";
+            document.querySelectorAll('.result-description')[3].textContent = "Votre délai moyen de paiement projeté avec Credit-IQ";
+            document.querySelector('.try-btn').textContent = "Essayez Credit-IQ gratuitement";
+            document.querySelector('footer p').innerHTML = 'Propulsé par <a href="https://www.atradiuscollections.com" target="_blank">Atradius Collections</a> | Credit-IQ &copy; 2025';
             
-            // Update placeholders with French examples
-            document.getElementById('revenue').placeholder = "ex. 1 000 000";
-            document.getElementById('dso').placeholder = "ex. 45";
-            document.getElementById('eb').placeholder = "ex. 3";
-            document.getElementById('invoices').placeholder = "ex. 100";
-            document.getElementById('salary').placeholder = "ex. 50 000";
+            // Update placeholders
+            updatePlaceholders('fr');
             
             // Set currency symbol to Euro
             document.querySelectorAll('.currency-symbol').forEach(symbol => {
                 symbol.textContent = '€';
             });
+
+            // Update country names in dropdown
+            updateCountryNames();
         }
         
         function translateToPortuguese() {
-            document.title = "Credit IQ - Calculadora de ROI";
+            document.title = "Credit-IQ - Calculadora de ROI";
             document.querySelector('.page-title').textContent = "Calculadora de ROI";
-            document.querySelector('.page-subtitle').textContent = "Descubra quanto você pode economizar com o Credit IQ";
+            document.querySelector('.page-subtitle').textContent = "Descubra quanto você pode economizar com o Credit-IQ";
             document.querySelector('.form-title').textContent = "Insira seus dados";
             document.querySelectorAll('label')[0].textContent = "Receita anual";
             document.querySelectorAll('label')[1].textContent = "Prazo médio de recebimento atual (DSO)";
@@ -998,28 +1075,27 @@
             document.querySelectorAll('.result-label')[3].textContent = "Novo DSO estimado";
             document.querySelectorAll('.result-description')[0].textContent = "Valor combinado de fluxo de caixa melhorado, redução de dívidas incobráveis e aumento da eficiência da equipe";
             document.querySelectorAll('.result-description')[1].textContent = "Quanto seu DSO atual custa por mês";
-            document.querySelectorAll('.result-description')[2].textContent = "Redução no tempo de cobrança com o Credit IQ";
-            document.querySelectorAll('.result-description')[3].textContent = "Seu prazo médio de recebimento projetado com o Credit IQ";
-            document.querySelector('.try-btn').textContent = "Experimente o Credit IQ gratuitamente";
-            document.querySelector('footer p').innerHTML = 'Desenvolvido por <a href="https://www.atradiuscollections.com" target="_blank">Atradius Collections</a> | Credit IQ &copy; 2025';
+            document.querySelectorAll('.result-description')[2].textContent = "Redução no tempo de cobrança com o Credit-IQ";
+            document.querySelectorAll('.result-description')[3].textContent = "Seu prazo médio de recebimento projetado com o Credit-IQ";
+            document.querySelector('.try-btn').textContent = "Experimente o Credit-IQ gratuitamente";
+            document.querySelector('footer p').innerHTML = 'Desenvolvido por <a href="https://www.atradiuscollections.com" target="_blank">Atradius Collections</a> | Credit-IQ &copy; 2025';
             
-            // Update placeholders with Portuguese examples
-            document.getElementById('revenue').placeholder = "ex. 1.000.000";
-            document.getElementById('dso').placeholder = "ex. 45";
-            document.getElementById('eb').placeholder = "ex. 3";
-            document.getElementById('invoices').placeholder = "ex. 100";
-            document.getElementById('salary').placeholder = "ex. 50.000";
+            // Update placeholders
+            updatePlaceholders('pt');
             
             // Set currency symbol to Euro
             document.querySelectorAll('.currency-symbol').forEach(symbol => {
                 symbol.textContent = '€';
             });
+
+            // Update country names in dropdown
+            updateCountryNames();
         }
         
         function translateToSpanish() {
-            document.title = "Credit IQ - Calculadora de ROI";
+            document.title = "Credit-IQ - Calculadora de ROI";
             document.querySelector('.page-title').textContent = "Calculadora de ROI";
-            document.querySelector('.page-subtitle').textContent = "Descubra cuánto podría ahorrar con Credit IQ";
+            document.querySelector('.page-subtitle').textContent = "Descubra cuánto podría ahorrar con Credit-IQ";
             document.querySelector('.form-title').textContent = "Ingrese sus datos";
             document.querySelectorAll('label')[0].textContent = "Ingresos anuales";
             document.querySelectorAll('label')[1].textContent = "Días actuales de ventas pendientes (DSO)";
@@ -1044,22 +1120,21 @@
             document.querySelectorAll('.result-label')[3].textContent = "Nuevo DSO estimado";
             document.querySelectorAll('.result-description')[0].textContent = "Valor combinado de flujo de caja mejorado, reducción de deudas incobrables y mayor eficiencia del personal";
             document.querySelectorAll('.result-description')[1].textContent = "Cuánto le cuesta su DSO actual cada mes";
-            document.querySelectorAll('.result-description')[2].textContent = "Reducción en el tiempo de cobro con Credit IQ";
-            document.querySelectorAll('.result-description')[3].textContent = "Sus días de ventas pendientes proyectados con Credit IQ";
-            document.querySelector('.try-btn').textContent = "Pruebe Credit IQ gratis";
-            document.querySelector('footer p').innerHTML = 'Desarrollado por <a href="https://www.atradiuscollections.com" target="_blank">Atradius Collections</a> | Credit IQ &copy; 2025';
+            document.querySelectorAll('.result-description')[2].textContent = "Reducción en el tiempo de cobro con Credit-IQ";
+            document.querySelectorAll('.result-description')[3].textContent = "Sus días de ventas pendientes proyectados con Credit-IQ";
+            document.querySelector('.try-btn').textContent = "Pruebe Credit-IQ gratis";
+            document.querySelector('footer p').innerHTML = 'Desarrollado por <a href="https://www.atradiuscollections.com" target="_blank">Atradius Collections</a> | Credit-IQ &copy; 2025';
             
-            // Update placeholders with Spanish examples
-            document.getElementById('revenue').placeholder = "ej. 1.000.000";
-            document.getElementById('dso').placeholder = "ej. 45";
-            document.getElementById('eb').placeholder = "ej. 3";
-            document.getElementById('invoices').placeholder = "ej. 100";
-            document.getElementById('salary').placeholder = "ej. 50.000";
+            // Update placeholders
+            updatePlaceholders('es');
             
             // Set currency symbol to Euro
             document.querySelectorAll('.currency-symbol').forEach(symbol => {
                 symbol.textContent = '€';
             });
+
+            // Update country names in dropdown
+            updateCountryNames();
         }
         
         // Change language
@@ -1119,16 +1194,11 @@
         
         // Initialize language based on user preference or browser settings
         document.addEventListener('DOMContentLoaded', function() {
-            // Check if user has a saved preference
             const savedLang = localStorage.getItem('preferredLanguage');
+            // Ensure savedLang is one of the valid codes before using it
+            const initialLang = (savedLang && ['nl', 'gb', 'us', 'fr', 'pt', 'es'].includes(savedLang)) ? savedLang : detectUserLanguage();
             
-            if (savedLang) {
-                // Use saved preference
-                changeLanguage(savedLang);
-            } else {
-                // Detect and set language based on browser
-                const detectedLang = detectUserLanguage();
-                changeLanguage(detectedLang);
-            }
+            changeLanguage(initialLang); // Apply initial language settings
+            updateCountryNames(); // Ensure dropdown names are English on load
         });
     </script>

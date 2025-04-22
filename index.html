@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Credit IQ - Tools Dashboard</title>
+    <title>Credit-IQ - Tools Dashboard</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Text:ital@0;1&family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400&display=swap" rel="stylesheet">
@@ -400,9 +400,9 @@
             </div>
         </div>
         <div class="page-logo">
-            <img src="https://www.creditexpo.nl/wp-content/uploads/2024/09/Logo-Credit-IQ-CIQ-no-bg-2048x2048.png" alt="Credit IQ Logo" class="logo">
+            <img src="https://www.creditexpo.nl/wp-content/uploads/2024/09/Logo-Credit-IQ-CIQ-no-bg-2048x2048.png" alt="Credit-IQ Logo" class="logo">
         </div>
-        <h2 class="page-title">Credit IQ Tools</h2>
+        <h2 class="page-title">Credit-IQ Tools</h2>
         <p class="page-subtitle">Select a tool to get started</p>
 
         <div class="cards-container">
@@ -412,7 +412,7 @@
                     <span class="material-icons">calculate</span>
                 </div>
                 <h3 class="card-title">Calculate your return on investment</h3>
-                <p class="card-description">Discover how much you could save with Credit IQ's solutions</p>
+                <p class="card-description">Discover how much you could save with Credit-IQ's solutions</p>
             </a>
             
             <!-- Payment Reminder Card -->
@@ -424,18 +424,18 @@
                 <p class="card-description">Create professional payment reminders for outstanding invoices</p>
             </a>
             
-            <!-- Credit IQ Website Card -->
+            <!-- Credit-IQ Website Card -->
             <a href="#" class="card" onclick="window.close();">
                 <div class="card-icon">
                     <span class="material-icons">arrow_back</span>
                 </div>
-                <h3 class="card-title">Return to Credit IQ</h3>
-                <p class="card-description">Go back to the Credit IQ website for more information</p>
+                <h3 class="card-title">Return to Credit-IQ</h3>
+                <p class="card-description">Go back to the Credit-IQ website for more information</p>
             </a>
         </div>
         
         <footer>
-            <p>Powered by <a href="https://www.atradiuscollections.com" target="_blank">Atradius Collections</a> | Credit IQ &copy; 2025</p>
+            <p>Powered by <a href="https://www.atradiuscollections.com" target="_blank">Atradius Collections</a> | Credit-IQ &copy; 2025</p>
         </footer>
     </div>
 
@@ -533,159 +533,137 @@
             dropdown.classList.remove('show');
         }
         
-        // Update country names in dropdown based on language
-        function updateCountryNames(language) {
+        // Keep country names in English for all languages
+        function updateCountryNames() {
             const countryNames = {
-                nl: {
-                    nl: 'Nederland',
-                    gb: 'Verenigd Koninkrijk',
-                    us: 'Verenigde Staten',
-                    fr: 'Frankrijk',
-                    pt: 'Portugal',
-                    es: 'Spanje'
-                },
-                en: {
-                    nl: 'Netherlands',
-                    gb: 'United Kingdom',
-                    us: 'United States',
-                    fr: 'France',
-                    pt: 'Portugal',
-                    es: 'Spain'
-                },
-                fr: {
-                    nl: 'Pays-Bas',
-                    gb: 'Royaume-Uni',
-                    us: 'États-Unis',
-                    fr: 'France',
-                    pt: 'Portugal',
-                    es: 'Espagne'
-                },
-                pt: {
-                    nl: 'Países Baixos',
-                    gb: 'Reino Unido',
-                    us: 'Estados Unidos',
-                    fr: 'França',
-                    pt: 'Portugal',
-                    es: 'Espanha'
-                },
-                es: {
-                    nl: 'Países Bajos',
-                    gb: 'Reino Unido',
-                    us: 'Estados Unidos',
-                    fr: 'Francia',
-                    pt: 'Portugal',
-                    es: 'España'
-                }
+                nl: 'Netherlands',
+                gb: 'United Kingdom',
+                us: 'United States',
+                fr: 'France',
+                pt: 'Portugal',
+                es: 'Spain'
             };
             
-            const names = countryNames[language];
             const options = document.querySelectorAll('.language-option');
             
             options.forEach(option => {
                 const countryCode = option.getAttribute('onclick').match(/'([^']+)'/)[1];
                 const nameSpan = option.querySelector('.language-name');
-                nameSpan.textContent = names[countryCode];
+                nameSpan.textContent = countryNames[countryCode];
             });
         }
         
         // Translation functions
         function translateToDutch() {
-            document.title = "Credit IQ - Tools Dashboard";
-            document.querySelector('.page-title').textContent = "Credit IQ Tools";
+            document.title = "Credit-IQ - Tools Dashboard";
+            document.querySelector('.page-title').textContent = "Credit-IQ Tools";
             document.querySelector('.page-subtitle').textContent = "Selecteer een tool om te beginnen";
             document.querySelectorAll('.card-title')[0].textContent = "Bereken uw rendement op investering";
             document.querySelectorAll('.card-title')[1].textContent = "Genereer uw herinnering";
-            document.querySelectorAll('.card-title')[2].textContent = "Terug naar Credit IQ";
-            document.querySelectorAll('.card-description')[0].textContent = "Ontdek hoeveel u kunt besparen met Credit IQ's oplossingen";
+            document.querySelectorAll('.card-title')[2].textContent = "Terug naar Credit-IQ";
+            document.querySelectorAll('.card-description')[0].textContent = "Ontdek hoeveel u kunt besparen met Credit-IQ's oplossingen";
             document.querySelectorAll('.card-description')[1].textContent = "Maak professionele betalingsherinneringen voor openstaande facturen";
-            document.querySelectorAll('.card-description')[2].textContent = "Ga terug naar de Credit IQ website voor meer informatie";
-            document.querySelector('footer p').innerHTML = 'Powered by <a href="https://www.atradiuscollections.com" target="_blank">Atradius Collections</a> | Credit IQ &copy; 2025';
+            document.querySelectorAll('.card-description')[2].textContent = "Ga terug naar de Credit-IQ website voor meer informatie";
+            document.querySelector('footer p').innerHTML = 'Powered by <a href="https://www.atradiuscollections.com" target="_blank">Atradius Collections</a> | Credit-IQ &copy; 2025';
             
+            // Update placeholders if any (Example)
+            // const inputs = document.querySelectorAll('input[data-translate-placeholder]');
+            // inputs.forEach(input => { input.placeholder = translationsNL[input.dataset.translatePlaceholder]; });
+
             // Update country names in dropdown
-            updateCountryNames('nl');
+            updateCountryNames();
         }
         
         function translateToEnglish() {
-            document.title = "Credit IQ - Tools Dashboard";
-            document.querySelector('.page-title').textContent = "Credit IQ Tools";
+            document.title = "Credit-IQ - Tools Dashboard";
+            document.querySelector('.page-title').textContent = "Credit-IQ Tools";
             document.querySelector('.page-subtitle').textContent = "Select a tool to get started";
             document.querySelectorAll('.card-title')[0].textContent = "Calculate your return on investment";
             document.querySelectorAll('.card-title')[1].textContent = "Generate your reminder";
-            document.querySelectorAll('.card-title')[2].textContent = "Return to Credit IQ";
-            document.querySelectorAll('.card-description')[0].textContent = "Discover how much you could save with Credit IQ's solutions";
+            document.querySelectorAll('.card-title')[2].textContent = "Return to Credit-IQ";
+            document.querySelectorAll('.card-description')[0].textContent = "Discover how much you could save with Credit-IQ's solutions";
             document.querySelectorAll('.card-description')[1].textContent = "Create professional payment reminders for outstanding invoices";
-            document.querySelectorAll('.card-description')[2].textContent = "Go back to the Credit IQ website for more information";
-            document.querySelector('footer p').innerHTML = 'Powered by <a href="https://www.atradiuscollections.com" target="_blank">Atradius Collections</a> | Credit IQ &copy; 2025';
+            document.querySelectorAll('.card-description')[2].textContent = "Go back to the Credit-IQ website for more information";
+            document.querySelector('footer p').innerHTML = 'Powered by <a href="https://www.atradiuscollections.com" target="_blank">Atradius Collections</a> | Credit-IQ &copy; 2025';
+
+            // Update placeholders if any (Example)
+            // const inputs = document.querySelectorAll('input[data-translate-placeholder]');
+            // inputs.forEach(input => { input.placeholder = translationsEN[input.dataset.translatePlaceholder]; });
             
             // Update country names in dropdown
-            updateCountryNames('en');
+            updateCountryNames();
         }
         
         function translateToFrench() {
-            document.title = "Credit IQ - Tableau de bord des outils";
-            document.querySelector('.page-title').textContent = "Outils Credit IQ";
+            document.title = "Credit-IQ - Tableau de bord des outils";
+            document.querySelector('.page-title').textContent = "Outils Credit-IQ";
             document.querySelector('.page-subtitle').textContent = "Sélectionnez un outil pour commencer";
             document.querySelectorAll('.card-title')[0].textContent = "Calculez votre retour sur investissement";
             document.querySelectorAll('.card-title')[1].textContent = "Générez votre rappel";
-            document.querySelectorAll('.card-title')[2].textContent = "Retour à Credit IQ";
-            document.querySelectorAll('.card-description')[0].textContent = "Découvrez combien vous pourriez économiser avec les solutions de Credit IQ";
+            document.querySelectorAll('.card-title')[2].textContent = "Retour à Credit-IQ";
+            document.querySelectorAll('.card-description')[0].textContent = "Découvrez combien vous pourriez économiser avec les solutions de Credit-IQ";
             document.querySelectorAll('.card-description')[1].textContent = "Créez des rappels de paiement professionnels pour les factures impayées";
-            document.querySelectorAll('.card-description')[2].textContent = "Retournez au site web de Credit IQ pour plus d'informations";
-            document.querySelector('footer p').innerHTML = 'Propulsé par <a href="https://www.atradiuscollections.com" target="_blank">Atradius Collections</a> | Credit IQ &copy; 2025';
+            document.querySelectorAll('.card-description')[2].textContent = "Retournez au site web de Credit-IQ pour plus d'informations";
+            document.querySelector('footer p').innerHTML = 'Propulsé par <a href="https://www.atradiuscollections.com" target="_blank">Atradius Collections</a> | Credit-IQ &copy; 2025';
+
+            // Update placeholders if any (Example)
+            // const inputs = document.querySelectorAll('input[data-translate-placeholder]');
+            // inputs.forEach(input => { input.placeholder = translationsFR[input.dataset.translatePlaceholder]; });
             
             // Update country names in dropdown
-            updateCountryNames('fr');
+            updateCountryNames();
         }
         
         function translateToPortuguese() {
-            document.title = "Credit IQ - Painel de Ferramentas";
-            document.querySelector('.page-title').textContent = "Ferramentas Credit IQ";
+            document.title = "Credit-IQ - Painel de Ferramentas";
+            document.querySelector('.page-title').textContent = "Ferramentas Credit-IQ";
             document.querySelector('.page-subtitle').textContent = "Selecione uma ferramenta para começar";
             document.querySelectorAll('.card-title')[0].textContent = "Calcule seu retorno sobre investimento";
             document.querySelectorAll('.card-title')[1].textContent = "Gere seu lembrete";
-            document.querySelectorAll('.card-title')[2].textContent = "Voltar para Credit IQ";
-            document.querySelectorAll('.card-description')[0].textContent = "Descubra quanto você pode economizar com as soluções da Credit IQ";
+            document.querySelectorAll('.card-title')[2].textContent = "Voltar para Credit-IQ";
+            document.querySelectorAll('.card-description')[0].textContent = "Descubra quanto você pode economizar com as soluções da Credit-IQ";
             document.querySelectorAll('.card-description')[1].textContent = "Crie lembretes de pagamento profissionais para faturas pendentes";
-            document.querySelectorAll('.card-description')[2].textContent = "Volte ao site da Credit IQ para mais informações";
-            document.querySelector('footer p').innerHTML = 'Desenvolvido por <a href="https://www.atradiuscollections.com" target="_blank">Atradius Collections</a> | Credit IQ &copy; 2025';
+            document.querySelectorAll('.card-description')[2].textContent = "Volte ao site da Credit-IQ para mais informações";
+            document.querySelector('footer p').innerHTML = 'Desenvolvido por <a href="https://www.atradiuscollections.com" target="_blank">Atradius Collections</a> | Credit-IQ &copy; 2025';
+
+            // Update placeholders if any (Example)
+            // const inputs = document.querySelectorAll('input[data-translate-placeholder]');
+            // inputs.forEach(input => { input.placeholder = translationsPT[input.dataset.translatePlaceholder]; });
             
             // Update country names in dropdown
-            updateCountryNames('pt');
+            updateCountryNames();
         }
         
         function translateToSpanish() {
-            document.title = "Credit IQ - Panel de Herramientas";
-            document.querySelector('.page-title').textContent = "Herramientas de Credit IQ";
+            document.title = "Credit-IQ - Panel de Herramientas";
+            document.querySelector('.page-title').textContent = "Herramientas Credit-IQ"; // Corrected Title
             document.querySelector('.page-subtitle').textContent = "Seleccione una herramienta para comenzar";
-            document.querySelectorAll('.card-title')[0].textContent = "Calcule su retorno de inversión";
+            document.querySelectorAll('.card-title')[0].textContent = "Calcule su retorno de la inversión"; // Corrected Card Title 1
             document.querySelectorAll('.card-title')[1].textContent = "Genere su recordatorio";
-            document.querySelectorAll('.card-title')[2].textContent = "Volver a Credit IQ";
-            document.querySelectorAll('.card-description')[0].textContent = "Descubra cuánto podría ahorrar con las soluciones de Credit IQ";
+            document.querySelectorAll('.card-title')[2].textContent = "Volver a Credit-IQ";
+            document.querySelectorAll('.card-description')[0].textContent = "Descubra cuánto podría ahorrar con las soluciones de Credit-IQ";
             document.querySelectorAll('.card-description')[1].textContent = "Cree recordatorios de pago profesionales para facturas pendientes";
-            document.querySelectorAll('.card-description')[2].textContent = "Regrese al sitio web de Credit IQ para más información";
-            document.querySelector('footer p').innerHTML = 'Desarrollado por <a href="https://www.atradiuscollections.com" target="_blank">Atradius Collections</a> | Credit IQ &copy; 2025';
+            document.querySelectorAll('.card-description')[2].textContent = "Vuelva al sitio web de Credit-IQ para obtener más información"; // Corrected Card Description 3
+            document.querySelector('footer p').innerHTML = 'Desarrollado por <a href="https://www.atradiuscollections.com" target="_blank">Atradius Collections</a> | Credit-IQ &copy; 2025';
+
+            // Update placeholders if any (Example)
+            // const inputs = document.querySelectorAll('input[data-translate-placeholder]');
+            // inputs.forEach(input => { input.placeholder = translationsES[input.dataset.translatePlaceholder]; });
             
             // Update country names in dropdown
-            updateCountryNames('es');
+            updateCountryNames();
         }
         
         // Initialize language based on user preference or browser settings
         document.addEventListener('DOMContentLoaded', function() {
-            // Check if user has a saved preference
             const savedLang = localStorage.getItem('preferredLanguage');
+            // Ensure savedLang is one of the valid codes before using it
+            const initialLang = (savedLang && ['nl', 'gb', 'us', 'fr', 'pt', 'es'].includes(savedLang)) ? savedLang : detectUserLanguage();
             
-            if (savedLang) {
-                // Use saved preference
-                changeLanguage(savedLang);
-            } else {
-                // Detect and set language based on browser
-                const detectedLang = detectUserLanguage();
-                changeLanguage(detectedLang);
-            }
-        });
-        
-        // Add event listeners to tool links to ensure they maintain language preference
-        document.addEventListener('DOMContentLoaded', function() {
+            changeLanguage(initialLang); // Apply initial language settings
+            updateCountryNames(); // Ensure dropdown names are English on load
+
+            // Add event listeners to tool links AFTER initial language is set
             const toolLinks = document.querySelectorAll('.card[href]');
             toolLinks.forEach(link => {
                 link.addEventListener('click', function(e) {
