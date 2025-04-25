@@ -882,69 +882,128 @@ Saludos cordiales,
             }, 500);
         }
         
-        // Download as PDF
+        // Download as PDF - Text-based approach
         function downloadTemplate() {
-            if (typeof window.jspdf === 'undefined' || typeof window.html2canvas === 'undefined') {
-                console.error('jsPDF or html2canvas library not loaded');
+            if (typeof window.jspdf === 'undefined') {
+                console.error('jsPDF library not loaded');
                 alert('Required PDF library not loaded. Please refresh the page and try again.');
                 return;
             }
             
-            const previewElement = document.getElementById('previewContainer');
-            const previewClone = previewElement.cloneNode(true);
-            
-            const actionButtons = previewClone.querySelector('.action-buttons');
-            if (actionButtons) {
-                actionButtons.remove();
-            }
-            
-            // Temporarily append clone to body for rendering (off-screen)
-            previewClone.style.position = 'absolute';
-            previewClone.style.left = '-9999px';
-            previewClone.style.width = previewElement.offsetWidth + 'px'; // Match original width
-            document.body.appendChild(previewClone);
-
-            html2canvas(previewClone, { scale: 2, useCORS: true, logging: false }).then(canvas => {
-                document.body.removeChild(previewClone); // Clean up clone
+            try {
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                const margin = 15; // mm
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const pdfHeight = pdf.internal.pageSize.getHeight();
+                const maxLineWidth = pdfWidth - 2 * margin;
+                let currentY = margin;
+                const lineHeight = 7; // mm
+                const fontSize = 11; // points
                 
-                try {
-                    const { jsPDF } = window.jspdf;
-                    const pdf = new jsPDF('p', 'mm', 'a4');
-                    const pdfWidth = pdf.internal.pageSize.getWidth();
-                    const pdfHeight = pdf.internal.pageSize.getHeight();
-                    const margin = 15; // mm
-                    const imgWidth = pdfWidth - 2 * margin;
-                    const imgHeight = (canvas.height * imgWidth) / canvas.width;
-                    let heightLeft = imgHeight;
-                    let position = margin;
-
-                    pdf.addImage(canvas.toDataURL('image/png'), 'PNG', margin, position, imgWidth, imgHeight);
-                    heightLeft -= (pdfHeight - 2 * margin);
-
-                    while (heightLeft > 0) {
-                        position = heightLeft - imgHeight + margin; // Recalculate position for next page
-                        pdf.addPage();
-                        pdf.addImage(canvas.toDataURL('image/png'), 'PNG', margin, position, imgWidth, imgHeight);
-                        heightLeft -= (pdfHeight - 2 * margin);
+                pdf.setFontSize(fontSize);
+                
+                // Add title
+                const titleElement = document.querySelector('.preview-title');
+                const title = titleElement ? titleElement.textContent.trim() : 'Payment Reminder';
+                pdf.setFont(undefined, 'bold');
+                pdf.text(title, margin, currentY);
+                currentY += lineHeight * 2;
+                
+                // Add invoice table
+                const invoiceTable = document.querySelector('.invoice-table');
+                if (invoiceTable) {
+                    const headerCell = invoiceTable.querySelector('th');
+                    if (headerCell) {
+                        pdf.text(headerCell.textContent.trim() + ':', margin, currentY);
+                        currentY += lineHeight;
                     }
                     
-                    const companyName = document.getElementById('companyName').value.trim() || 'Payment-Reminder';
-                    const lang = document.documentElement.lang.split('-')[0];
-                    const fileNames = {
-                        nl: "Betalingsherinnering", en: "Payment-Reminder", fr: "Rappel-de-Paiement", pt: "Lembrete-de-Pagamento", es: "Recordatorio-de-Pago"
-                    };
-                    const fileName = `${companyName.replace(/\s+/g, '-')}-${fileNames[lang] || fileNames['en']}.pdf`;
+                    const invoiceCells = invoiceTable.querySelectorAll('td');
+                    invoiceCells.forEach(cell => {
+                        if (currentY > pdfHeight - margin) {
+                            pdf.addPage();
+                            currentY = margin;
+                        }
+                        pdf.setFont(undefined, 'normal');
+                        pdf.text('- ' + cell.textContent.trim(), margin + 5, currentY);
+                        currentY += lineHeight;
+                    });
                     
-                    pdf.save(fileName);
-                } catch (error) {
-                    console.error('Error creating PDF:', error);
-                    alert('An error occurred while creating the PDF. Please try again.');
+                    currentY += lineHeight; // Add space after invoice list
+                } else {
+                    // Fallback if table not found - get invoice numbers directly
+                    const invoiceItems = document.querySelectorAll('#invoiceList > div > span');
+                    if (invoiceItems.length > 0) {
+                        const lang = document.documentElement.lang.split('-')[0];
+                        const headers = {
+                            nl: "Factuurnummer", en: "Invoice Number", fr: "Numéro de facture", 
+                            pt: "Número da Fatura", es: "Número de Factura"
+                        };
+                        pdf.text((headers[lang] || headers['en']) + ':', margin, currentY);
+                        currentY += lineHeight;
+                        
+                        Array.from(invoiceItems).forEach(item => {
+                            if (currentY > pdfHeight - margin) {
+                                pdf.addPage();
+                                currentY = margin;
+                            }
+                            pdf.setFont(undefined, 'normal');
+                            pdf.text('- ' + item.textContent.trim(), margin + 5, currentY);
+                            currentY += lineHeight;
+                        });
+                        
+                        currentY += lineHeight; // Add space after invoice list
+                    }
                 }
-            }).catch(error => {
-                document.body.removeChild(previewClone); // Clean up clone on error
-                console.error('Error generating PDF canvas:', error);
-                alert('An error occurred while generating the PDF. Please try again.');
-            });
+                
+                // Add letter content
+                const letterElement = document.getElementById('letterContent');
+                if (letterElement) {
+                    // Get the text content
+                    const letterText = letterElement.textContent || letterElement.innerText;
+                    
+                    // Split into paragraphs (double newlines)
+                    const paragraphs = letterText.split(/\n\s*\n/);
+                    
+                    // Process each paragraph
+                    paragraphs.forEach(paragraph => {
+                        if (paragraph.trim() === '') return; // Skip empty paragraphs
+                        
+                        // Split paragraph into lines that fit the PDF width
+                        const lines = pdf.splitTextToSize(paragraph.trim(), maxLineWidth);
+                        
+                        // Check if this paragraph would exceed the page
+                        if (currentY + (lines.length * lineHeight) > pdfHeight - margin) {
+                            pdf.addPage();
+                            currentY = margin;
+                        }
+                        
+                        // Add each line
+                        lines.forEach(line => {
+                            pdf.text(line, margin, currentY);
+                            currentY += lineHeight;
+                        });
+                        
+                        // Add space after paragraph
+                        currentY += lineHeight / 2;
+                    });
+                }
+                
+                // Save the PDF
+                const companyName = document.getElementById('companyName').value.trim() || 'Payment-Reminder';
+                const lang = document.documentElement.lang.split('-')[0];
+                const fileNames = {
+                    nl: "Betalingsherinnering", en: "Payment-Reminder", fr: "Rappel-de-Paiement", 
+                    pt: "Lembrete-de-Pagamento", es: "Recordatorio-de-Pago"
+                };
+                const fileName = `${companyName.replace(/\s+/g, '-')}-${fileNames[lang] || fileNames['en']}.pdf`;
+                
+                pdf.save(fileName);
+            } catch (error) {
+                console.error('Error creating PDF:', error);
+                alert('An error occurred while creating the PDF. Please try again.');
+            }
         }
         
         // Reset the form
