@@ -520,15 +520,15 @@
                     </div>
                     <div class="language-option" onclick="changeLanguage('gb')">
                         <img src="https://flagicons.lipis.dev/flags/4x3/gb.svg" class="flag-icon" alt="GB">
-                        <span class="language-name">Verenigd Koninkrijk</span>
+                        <span class="language-name">United Kingdom</span>
                     </div>
                     <div class="language-option" onclick="changeLanguage('us')">
                         <img src="https://flagicons.lipis.dev/flags/4x3/us.svg" class="flag-icon" alt="US">
-                        <span class="language-name">Verenigde Staten</span>
+                        <span class="language-name">United States</span>
                     </div>
                     <div class="language-option" onclick="changeLanguage('fr')">
                         <img src="https://flagicons.lipis.dev/flags/4x3/fr.svg" class="flag-icon" alt="FR">
-                        <span class="language-name">Frankrijk</span>
+                        <span class="language-name">France</span>
                     </div>
                     <div class="language-option" onclick="changeLanguage('pt')">
                         <img src="https://flagicons.lipis.dev/flags/4x3/pt.svg" class="flag-icon" alt="PT">
@@ -536,7 +536,7 @@
                     </div>
                     <div class="language-option" onclick="changeLanguage('es')">
                         <img src="https://flagicons.lipis.dev/flags/4x3/es.svg" class="flag-icon" alt="ES">
-                        <span class="language-name">Spanje</span>
+                        <span class="language-name">Spain</span>
                     </div>
                 </div>
             </div>
@@ -643,6 +643,8 @@
     </div>
 
     <script>
+        // --- UTILITY FUNCTIONS ---
+
         function formatInput(input) {
             let value = input.value.replace(/[^\d,]/g, '').replace(/,/g, '');
             if (!value) return input.value = '';
@@ -669,181 +671,17 @@
             button.classList.add('active');
         }
 
-        function calculateSavings(translations) {
-            const R_y = parseFormattedNumber(document.getElementById('revenue').value);
-            const DSO = parseFloat(document.getElementById('dso').value);
-            const EB = parseFloat(document.getElementById('eb').value) / 100;
-            const CF = parseFloat(document.getElementById('cf').value) / 100;
-            const I_m = parseFloat(document.getElementById('invoices').value);
-            const salary = parseFormattedNumber(document.getElementById('salary').value);
-
-            if (isNaN(R_y) || isNaN(DSO) || isNaN(EB) || isNaN(CF) || isNaN(I_m) || isNaN(salary)) {
-                alert(translations.alert_invalid_input);
-                return;
-            }
-
-            // Calculate accounts receivable
-            const AR = (R_y / 365) * DSO;
-            
-            // Calculate savings components
-            const cashFlowSavings = AR * CF;
-            const BDE = AR * EB;
-            const staffEfficiencySavings = (salary / (I_m * 12)) * CF * I_m;
-            
-            // Apply scaling factor to match example case (€21K for the example inputs)
-            const savingsScalingFactor = 0.1741;
-            const totalSavings = (cashFlowSavings + BDE + staffEfficiencySavings) * savingsScalingFactor;
-            
-            // Function to get confidence-based scaling factor for monthly cost of delay
-            function getConfidenceScalingFactor(confidenceValue) {
-                // confidenceValue is in decimal form (e.g., 0.45 for 45%)
-                if (confidenceValue === 0.45) {
-                    return 1.0; // 100% for Average
-                } else if (confidenceValue === 0.3) {
-                    return 0.7222; // 72.22% for Conservative
-                } else if (confidenceValue === 0.6) {
-                    return 1.3333; // 133.33% for High
-                } else {
-                    // For any other value, interpolate linearly
-                    return confidenceValue / 0.45; // Scale proportionally to the Average value
-                }
-            }
-            
-            // Calculate monthly cost of delay with scaling factor to match example case (€1,800)
-            const costOfDelayScalingFactor = 0.0809;
-            const confidenceScalingFactor = getConfidenceScalingFactor(CF);
-            const monthlyCostOfDelay = (R_y / 12) * (DSO / 365) * costOfDelayScalingFactor * confidenceScalingFactor;
-            
-            // Function to get confidence-based scaling factor for time saved
-            function getTimeScalingFactor(confidenceValue) {
-                // confidenceValue is in decimal form (e.g., 0.45 for 45%)
-                if (confidenceValue === 0.45) {
-                    return 1.0; // 100% for Average
-                } else if (confidenceValue === 0.3) {
-                    return 0.8001; // 80.01% for Conservative
-                } else if (confidenceValue === 0.6) {
-                    return 1.1999; // 119.99% for High
-                } else {
-                    // For any other value, interpolate linearly
-                    return 0.8001 + ((confidenceValue - 0.3) / (0.6 - 0.3)) * (1.1999 - 0.8001);
-                }
-            }
-            
-            // Calculate time saved in hours based on number of invoices
-            // For the example case: 36.11 hours for 50 invoices (0.7222 hours per invoice)
-            const hoursPerInvoice = 0.7222;
-            const timeScalingFactor = getTimeScalingFactor(CF);
-            const timeSavedHours = I_m * hoursPerInvoice * timeScalingFactor;
-            
-            // Function to get confidence-based scaling factor for new DSO
-            function getDsoScalingFactor(confidenceValue) {
-                // confidenceValue is in decimal form (e.g., 0.45 for 45%)
-                if (confidenceValue === 0.45) {
-                    return 1.0; // 100% for Average
-                } else if (confidenceValue === 0.3) {
-                    return 0.8333; // 83.33% for Conservative (to get 48.75 days)
-                } else if (confidenceValue === 0.6) {
-                    return 1.1667; // 116.67% for High (to get 19.50 days)
-                } else {
-                    // For any other value, interpolate linearly
-                    return 0.8333 + ((confidenceValue - 0.3) / (0.6 - 0.3)) * (1.1667 - 0.8333);
-                }
-            }
-            
-            // Calculate new DSO
-            const dsoScalingFactor = getDsoScalingFactor(CF);
-            const dsoReduction = DSO * CF * dsoScalingFactor;
-            const newDSO = DSO - dsoReduction;
-            
-            // Format and display results
-            let formattedSavings;
-            if (totalSavings >= 1000000000) {
-                formattedSavings = `€${(totalSavings / 1000000000).toFixed(2)}B`;
-            } else if (totalSavings >= 1000000) {
-                formattedSavings = `€${(totalSavings / 1000000).toFixed(2)}M`;
-            } else {
-                formattedSavings = `€${Math.round(totalSavings / 1000)}K`;
-            }
-            document.getElementById('totalSavings').innerText = formattedSavings;
-            document.getElementById('monthlyCost').innerText = `${translations.currency_symbol}${Math.round(monthlyCostOfDelay).toLocaleString(translations.locale)}`;
-            document.getElementById('timeSaved').innerText = `${timeSavedHours.toFixed(2)}${translations.unit_hours}`;
-            document.getElementById('estimatedDSO').innerText = `${newDSO.toFixed(2)}${translations.unit_days}`;
-
-            document.getElementById('resultsContainer').classList.remove('results-hidden');
-            
-            // Smooth scroll to results
-            document.getElementById('resultsContainer').scrollIntoView({
-                behavior: 'smooth'
-            });
-        }
-
-        // Keep country names in English for all languages
-        function updateCountryNames() {
-            const countryNames = {
-                nl: 'Netherlands',
-                gb: 'United Kingdom',
-                us: 'United States',
-                fr: 'France',
-                pt: 'Portugal',
-                es: 'Spain'
-            };
-            
-            const options = document.querySelectorAll('.language-option');
-            
-            options.forEach(option => {
-                const countryCode = option.getAttribute('onclick').match(/'([^']+)'/)[1];
-                const nameSpan = option.querySelector('.language-name');
-                nameSpan.textContent = countryNames[countryCode];
-            });
-        }
-
-        // Placeholder translations
+        // --- TRANSLATION DATA ---
+        
         const placeholderTranslations = {
-            nl: {
-                revenue_placeholder: "bijv. 1.000.000",
-                dso_placeholder: "bijv. 45",
-                eb_placeholder: "bijv. 3",
-                invoices_placeholder: "bijv. 100",
-                salary_placeholder: "bijv. 50.000"
-            },
-            en_gb: {
-                revenue_placeholder: "e.g. 1,000,000",
-                dso_placeholder: "e.g. 45",
-                eb_placeholder: "e.g. 3",
-                invoices_placeholder: "e.g. 100",
-                salary_placeholder: "e.g. 50,000"
-            },
-            en_us: {
-                revenue_placeholder: "e.g. 1,000,000",
-                dso_placeholder: "e.g. 45",
-                eb_placeholder: "e.g. 3",
-                invoices_placeholder: "e.g. 100",
-                salary_placeholder: "e.g. 50,000"
-            },
-            fr: {
-                revenue_placeholder: "ex. 1 000 000",
-                dso_placeholder: "ex. 45",
-                eb_placeholder: "ex. 3",
-                invoices_placeholder: "ex. 100",
-                salary_placeholder: "ex. 50 000"
-            },
-            pt: {
-                revenue_placeholder: "ex. 1.000.000",
-                dso_placeholder: "ex. 45",
-                eb_placeholder: "ex. 3",
-                invoices_placeholder: "ex. 100",
-                salary_placeholder: "ex. 50.000"
-            },
-            es: {
-                revenue_placeholder: "ej. 1.000.000",
-                dso_placeholder: "ej. 45",
-                eb_placeholder: "ej. 3",
-                invoices_placeholder: "ej. 100",
-                salary_placeholder: "ej. 50.000"
-            }
+            nl: { revenue_placeholder: "bijv. 1.000.000", dso_placeholder: "bijv. 45", eb_placeholder: "bijv. 3", invoices_placeholder: "bijv. 100", salary_placeholder: "bijv. 50.000" },
+            en_gb: { revenue_placeholder: "e.g. 1,000,000", dso_placeholder: "e.g. 45", eb_placeholder: "e.g. 3", invoices_placeholder: "e.g. 100", salary_placeholder: "e.g. 50,000" },
+            en_us: { revenue_placeholder: "e.g. 1,000,000", dso_placeholder: "e.g. 45", eb_placeholder: "e.g. 3", invoices_placeholder: "e.g. 100", salary_placeholder: "e.g. 50,000" },
+            fr: { revenue_placeholder: "ex. 1 000 000", dso_placeholder: "ex. 45", eb_placeholder: "ex. 3", invoices_placeholder: "ex. 100", salary_placeholder: "ex. 50 000" },
+            pt: { revenue_placeholder: "ex. 1.000.000", dso_placeholder: "ex. 45", eb_placeholder: "ex. 3", invoices_placeholder: "ex. 100", salary_placeholder: "ex. 50.000" },
+            es: { revenue_placeholder: "ej. 1.000.000", dso_placeholder: "ej. 45", eb_placeholder: "ej. 3", invoices_placeholder: "ej. 100", salary_placeholder: "ej. 50.000" }
         };
 
-        // Function to update placeholders based on language
         function updatePlaceholders(langKey) {
             const translations = placeholderTranslations[langKey];
             if (!translations) return;
@@ -857,597 +695,336 @@
             });
         }
         
-        // Toggle language dropdown
+        // --- CORE LOGIC ---
+
+        /**
+         * Main function to translate the page and get language-specific data.
+         * This replaces the multiple individual translation functions.
+         * @param {string} lang - The language code (e.g., 'nl', 'gb', 'us').
+         * @returns {object} A translations object for calculations.
+         */
+        function translatePage(lang) {
+            let translations;
+            let currencySymbol = '€';
+            
+            // --- Language Blocks ---
+            
+            if (lang === 'nl') {
+                translations = { alert_invalid_input: "Vul alle velden in met geldige nummers.", unit_hours: " uur", unit_days: " dagen", currency_symbol: "€", locale: "nl-NL" };
+                document.title = "Credit-IQ - ROI Calculator";
+                document.querySelector('.page-title').textContent = "ROI Calculator";
+                document.querySelector('.page-subtitle').textContent = "Ontdek hoeveel je kunt besparen met Credit-IQ";
+                document.querySelector('.form-title').textContent = "Voer je gegevens in";
+                document.querySelectorAll('label')[0].textContent = "Jaarlijkse omzet";
+                document.querySelectorAll('label')[1].textContent = "Huidige Days Sales Outstanding (DSO)";
+                document.querySelectorAll('label')[2].textContent = "Geschatte oninbare vorderingen";
+                document.querySelectorAll('label')[3].textContent = "Gemiddeld aantal maandelijkse facturen";
+                document.querySelectorAll('label')[4].textContent = "Jaarlijkse salariskosten AR-personeel";
+                document.querySelectorAll('label')[5].textContent = "Berekeningsvertrouwen";
+                document.querySelectorAll('.confidence-btn')[0].textContent = "Conservatief";
+                document.querySelectorAll('.confidence-btn')[1].textContent = "Gemiddeld";
+                document.querySelectorAll('.confidence-btn')[2].textContent = "Hoog";
+                document.querySelectorAll('.input-helper')[0].textContent = "Voer de jaarlijkse omzet van je bedrijf in";
+                document.querySelectorAll('.input-helper')[1].textContent = "Gemiddeld aantal dagen dat het duurt om betaling te ontvangen";
+                document.querySelectorAll('.input-helper')[2].textContent = "Percentage van de omzet dat je verwacht niet te kunnen innen";
+                document.querySelectorAll('.input-helper')[3].textContent = "Aantal facturen dat je maandelijks verstuurt";
+                document.querySelectorAll('.input-helper')[4].textContent = "Totale jaarlijkse kosten van debiteurenadministratie personeel";
+                document.querySelectorAll('.input-helper')[5].textContent = "Selecteer je gewenste betrouwbaarheidsniveau voor berekeningen";
+                document.querySelector('.calculate-btn').textContent = "Bereken mijn besparingen";
+                document.querySelector('.results-title').textContent = "Je 1-jarige besparingen";
+                document.querySelectorAll('.result-label')[0].textContent = "Totale geschatte besparingen";
+                document.querySelectorAll('.result-label')[1].textContent = "Maandelijkse kosten van vertraging";
+                document.querySelectorAll('.result-label')[2].textContent = "Tijd bespaard per maand";
+                document.querySelectorAll('.result-label')[3].textContent = "Geschatte nieuwe DSO";
+                document.querySelectorAll('.result-description')[0].textContent = "Gecombineerde waarde van verbeterde cashflow, verminderde oninbare vorderingen en verhoogde personeelsefficiëntie";
+                document.querySelectorAll('.result-description')[1].textContent = "Hoeveel je huidige DSO je elke maand kost";
+                document.querySelectorAll('.result-description')[2].textContent = "Vermindering in incassotijd met Credit-IQ";
+                document.querySelectorAll('.result-description')[3].textContent = "Je verwachte Days Sales Outstanding met Credit-IQ";
+                document.querySelector('.try-btn').textContent = "Probeer Credit-IQ gratis";
+                document.querySelector('footer p').innerHTML = 'Powered by <a href="https://www.atradiuscollections.com" target="_blank">Atradius Collections</a> | Credit-IQ &copy; 2025';
+                updatePlaceholders('nl');
+
+            } else if (lang === 'gb' || lang === 'us' || lang.startsWith('en')) {
+                const isUK = (lang === 'gb' || lang === 'en-GB');
+                currencySymbol = isUK ? '£' : '$';
+                const locale = isUK ? 'en-GB' : 'en-US';
+                translations = { alert_invalid_input: "Please fill in all fields with valid numbers.", unit_hours: " hours", unit_days: " days", currency_symbol: currencySymbol, locale: locale };
+
+                document.title = "Credit-IQ - ROI Calculator";
+                document.querySelector('.page-title').textContent = "ROI Calculator";
+                document.querySelector('.page-subtitle').textContent = "Discover how much you could save with Credit-IQ";
+                document.querySelector('.form-title').textContent = "Enter your details";
+                document.querySelectorAll('label')[0].textContent = "Yearly Revenue";
+                document.querySelectorAll('label')[1].textContent = "Current Days Sales Outstanding (DSO)";
+                document.querySelectorAll('label')[2].textContent = "Estimated Unrecoverable Debts";
+                document.querySelectorAll('label')[3].textContent = "Average Monthly Invoices Raised";
+                document.querySelectorAll('label')[4].textContent = "Yearly Salary of AR Staff";
+                document.querySelectorAll('label')[5].textContent = "Calculation Confidence";
+                document.querySelectorAll('.confidence-btn')[0].textContent = "Conservative";
+                document.querySelectorAll('.confidence-btn')[1].textContent = "Average";
+                document.querySelectorAll('.confidence-btn')[2].textContent = "High";
+                document.querySelectorAll('.input-helper')[0].textContent = "Enter your company's annual revenue";
+                document.querySelectorAll('.input-helper')[1].textContent = "Average number of days it takes to collect payment";
+                document.querySelectorAll('.input-helper')[2].textContent = "Percentage of revenue you expect to be unrecoverable";
+                document.querySelectorAll('.input-helper')[3].textContent = "Number of invoices you send each month";
+                document.querySelectorAll('.input-helper')[4].textContent = "Total annual cost of accounts receivable staff";
+                document.querySelectorAll('.input-helper')[5].textContent = "Select your preferred level of confidence for calculations";
+                document.querySelector('.calculate-btn').textContent = "Calculate My Savings";
+                document.querySelector('.results-title').textContent = "Your 1-Year Savings";
+                document.querySelectorAll('.result-label')[0].textContent = "Total Estimated Savings";
+                document.querySelectorAll('.result-label')[1].textContent = "Monthly Cost of Delay";
+                document.querySelectorAll('.result-label')[2].textContent = "Time Saved Each Month";
+                document.querySelectorAll('.result-label')[3].textContent = "Estimated New DSO";
+                document.querySelectorAll('.result-description')[0].textContent = "Combined value of improved cash flow, reduced bad debt, and increased staff efficiency";
+                document.querySelectorAll('.result-description')[1].textContent = "How much your current DSO costs you each month";
+                document.querySelectorAll('.result-description')[2].textContent = "Reduction in collection time with Credit-IQ";
+                document.querySelectorAll('.result-description')[3].textContent = "Your projected Days Sales Outstanding with Credit-IQ";
+                document.querySelector('.try-btn').textContent = "Try Credit-IQ for Free";
+                document.querySelector('footer p').innerHTML = 'Powered by <a href="https://www.atradiuscollections.com" target="_blank">Atradius Collections</a> | Credit-IQ &copy; 2025';
+                updatePlaceholders(isUK ? 'en_gb' : 'en_us');
+
+            } else if (lang === 'fr') {
+                translations = { alert_invalid_input: "Veuillez remplir tous les champs avec des nombres valides.", unit_hours: " heures", unit_days: " jours", currency_symbol: "€", locale: "fr-FR" };
+                document.title = "Credit-IQ - Calculateur de ROI";
+                document.querySelector('.page-title').textContent = "Calculateur de ROI";
+                document.querySelector('.page-subtitle').textContent = "Découvrez combien vous pourriez économiser avec Credit-IQ";
+                document.querySelector('.form-title').textContent = "Entrez vos détails";
+                document.querySelectorAll('label')[0].textContent = "Chiffre d'affaires annuel";
+                document.querySelectorAll('label')[1].textContent = "Délai moyen de paiement actuel (DSO)";
+                document.querySelectorAll('label')[2].textContent = "Créances irrécouvrables estimées";
+                document.querySelectorAll('label')[3].textContent = "Nombre moyen de factures émises mensuellement";
+                document.querySelectorAll('label')[4].textContent = "Salaire annuel du personnel des comptes clients";
+                document.querySelectorAll('label')[5].textContent = "Confiance du calcul";
+                document.querySelectorAll('.confidence-btn')[0].textContent = "Conservateur";
+                document.querySelectorAll('.confidence-btn')[1].textContent = "Moyen";
+                document.querySelectorAll('.confidence-btn')[2].textContent = "Élevé";
+                document.querySelectorAll('.input-helper')[0].textContent = "Entrez le chiffre d'affaires annuel de votre entreprise";
+                document.querySelectorAll('.input-helper')[1].textContent = "Nombre moyen de jours nécessaires pour recouvrer le paiement";
+                document.querySelectorAll('.input-helper')[2].textContent = "Pourcentage du chiffre d'affaires que vous prévoyez être irrécouvrable";
+                document.querySelectorAll('.input-helper')[3].textContent = "Nombre de factures que vous envoyez chaque mois";
+                document.querySelectorAll('.input-helper')[4].textContent = "Coût annuel total du personnel des comptes clients";
+                document.querySelectorAll('.input-helper')[5].textContent = "Sélectionnez votre niveau de confiance préféré pour les calculs";
+                document.querySelector('.calculate-btn').textContent = "Calculer mes économies";
+                document.querySelector('.results-title').textContent = "Vos économies sur 1 an";
+                document.querySelectorAll('.result-label')[0].textContent = "Économies totales estimées";
+                document.querySelectorAll('.result-label')[1].textContent = "Coût mensuel du retard";
+                document.querySelectorAll('.result-label')[2].textContent = "Temps économisé chaque mois";
+                document.querySelectorAll('.result-label')[3].textContent = "Nouveau DSO estimé";
+                document.querySelectorAll('.result-description')[0].textContent = "Valeur combinée de l'amélioration de la trésorerie, de la réduction des créances irrécouvrables et de l'augmentation de l'efficacité du personnel";
+                document.querySelectorAll('.result-description')[1].textContent = "Combien votre DSO actuel vous coûte chaque mois";
+                document.querySelectorAll('.result-description')[2].textContent = "Réduction du temps de recouvrement avec Credit-IQ";
+                document.querySelectorAll('.result-description')[3].textContent = "Votre délai moyen de paiement projeté avec Credit-IQ";
+                document.querySelector('.try-btn').textContent = "Essayez Credit-IQ gratuitement";
+                document.querySelector('footer p').innerHTML = 'Propulsé par <a href="https://www.atradiuscollections.com" target="_blank">Atradius Collections</a> | Credit-IQ &copy; 2025';
+                updatePlaceholders('fr');
+
+            } else if (lang === 'pt') {
+                translations = { alert_invalid_input: "Por favor, preencha todos os campos com números válidos.", unit_hours: " horas", unit_days: " dias", currency_symbol: "€", locale: "pt-PT" };
+                document.title = "Credit-IQ - Calculadora de ROI";
+                document.querySelector('.page-title').textContent = "Calculadora de ROI";
+                document.querySelector('.page-subtitle').textContent = "Descubra quanto você pode economizar com o Credit-IQ";
+                document.querySelector('.form-title').textContent = "Insira seus dados";
+                document.querySelectorAll('label')[0].textContent = "Receita anual";
+                document.querySelectorAll('label')[1].textContent = "Prazo médio de recebimento atual (DSO)";
+                document.querySelectorAll('label')[2].textContent = "Dívidas irrecuperáveis estimadas";
+                document.querySelectorAll('label')[3].textContent = "Média mensal de faturas emitidas";
+                document.querySelectorAll('label')[4].textContent = "Salário anual da equipe de contas a receber";
+                document.querySelectorAll('label')[5].textContent = "Confiança de cálculo";
+                document.querySelectorAll('.confidence-btn')[0].textContent = "Conservador";
+                document.querySelectorAll('.confidence-btn')[1].textContent = "Médio";
+                document.querySelectorAll('.confidence-btn')[2].textContent = "Alto";
+                document.querySelectorAll('.input-helper')[0].textContent = "Insira a receita anual da sua empresa";
+                document.querySelectorAll('.input-helper')[1].textContent = "Número médio de dias que leva para receber o pagamento";
+                document.querySelectorAll('.input-helper')[2].textContent = "Porcentagem da receita que você espera não conseguir recuperar";
+                document.querySelectorAll('.input-helper')[3].textContent = "Número de faturas que você envia por mês";
+                document.querySelectorAll('.input-helper')[4].textContent = "Custo anual total da equipe de contas a receber";
+                document.querySelectorAll('.input-helper')[5].textContent = "Selecione seu nível de confiança preferido para os cálculos";
+                document.querySelector('.calculate-btn').textContent = "Calcular minhas economias";
+                document.querySelector('.results-title').textContent = "Suas economias de 1 ano";
+                document.querySelectorAll('.result-label')[0].textContent = "Economia total estimada";
+                document.querySelectorAll('.result-label')[1].textContent = "Custo mensal do atraso";
+                document.querySelectorAll('.result-label')[2].textContent = "Tempo economizado por mês";
+                document.querySelectorAll('.result-label')[3].textContent = "Novo DSO estimado";
+                document.querySelectorAll('.result-description')[0].textContent = "Valor combinado de fluxo de caixa melhorado, redução de dívidas incobráveis e aumento da eficiência da equipe";
+                document.querySelectorAll('.result-description')[1].textContent = "Quanto seu DSO atual custa por mês";
+                document.querySelectorAll('.result-description')[2].textContent = "Redução no tempo de cobrança com o Credit-IQ";
+                document.querySelectorAll('.result-description')[3].textContent = "Seu prazo médio de recebimento projetado com o Credit-IQ";
+                document.querySelector('.try-btn').textContent = "Experimente o Credit-IQ gratuitamente";
+                document.querySelector('footer p').innerHTML = 'Desenvolvido por <a href="https://www.atradiuscollections.com" target="_blank">Atradius Collections</a> | Credit-IQ &copy; 2025';
+                updatePlaceholders('pt');
+
+            } else if (lang === 'es') {
+                translations = { alert_invalid_input: "Por favor, complete todos los campos con números válidos.", unit_hours: " horas", unit_days: " días", currency_symbol: "€", locale: "es-ES" };
+                document.title = "Credit-IQ - Calculadora de ROI";
+                document.querySelector('.page-title').textContent = "Calculadora de ROI";
+                document.querySelector('.page-subtitle').textContent = "Descubra cuánto podría ahorrar con Credit-IQ";
+                document.querySelector('.form-title').textContent = "Ingrese sus datos";
+                document.querySelectorAll('label')[0].textContent = "Ingresos anuales";
+                document.querySelectorAll('label')[1].textContent = "Días actuales de ventas pendientes (DSO)";
+                document.querySelectorAll('label')[2].textContent = "Deudas irrecuperables estimadas";
+                document.querySelectorAll('label')[3].textContent = "Promedio mensual de facturas emitidas";
+                document.querySelectorAll('label')[4].textContent = "Salario anual del personal de cuentas por cobrar";
+                document.querySelectorAll('label')[5].textContent = "Confianza de cálculo";
+                document.querySelectorAll('.confidence-btn')[0].textContent = "Conservador";
+                document.querySelectorAll('.confidence-btn')[1].textContent = "Promedio";
+                document.querySelectorAll('.confidence-btn')[2].textContent = "Alto";
+                document.querySelectorAll('.input-helper')[0].textContent = "Ingrese los ingresos anuales de su empresa";
+                document.querySelectorAll('.input-helper')[1].textContent = "Número promedio de días que tarda en recibir el pago";
+                document.querySelectorAll('.input-helper')[2].textContent = "Porcentaje de ingresos que espera no poder recuperar";
+                document.querySelectorAll('.input-helper')[3].textContent = "Número de facturas que envía cada mes";
+                document.querySelectorAll('.input-helper')[4].textContent = "Costo anual total del personal de cuentas por cobrar";
+                document.querySelectorAll('.input-helper')[5].textContent = "Seleccione su nivel de confianza preferido para los cálculos";
+                document.querySelector('.calculate-btn').textContent = "Calcular mis ahorros";
+                document.querySelector('.results-title').textContent = "Sus ahorros de 1 año";
+                document.querySelectorAll('.result-label')[0].textContent = "Ahorro total estimado";
+                document.querySelectorAll('.result-label')[1].textContent = "Costo mensual de la demora";
+                document.querySelectorAll('.result-label')[2].textContent = "Tiempo ahorrado cada mes";
+                document.querySelectorAll('.result-label')[3].textContent = "Nuevo DSO estimado";
+                document.querySelectorAll('.result-description')[0].textContent = "Valor combinado de flujo de caja mejorado, reducción de deudas incobrables y mayor eficiencia del personal";
+                document.querySelectorAll('.result-description')[1].textContent = "Cuánto le cuesta su DSO actual cada mes";
+                document.querySelectorAll('.result-description')[2].textContent = "Reducción en el tiempo de cobro con Credit-IQ";
+                document.querySelectorAll('.result-description')[3].textContent = "Sus días de ventas pendientes proyectados con Credit-IQ";
+                document.querySelector('.try-btn').textContent = "Pruebe Credit-IQ gratis";
+                document.querySelector('footer p').innerHTML = 'Desarrollado por <a href="https://www.atradiuscollections.com" target="_blank">Atradius Collections</a> | Credit-IQ &copy; 2025';
+                updatePlaceholders('es');
+            }
+            
+            // --- Common DOM updates ---
+            document.querySelectorAll('.currency-symbol').forEach(symbol => {
+                symbol.textContent = currencySymbol;
+            });
+            
+            return translations;
+        }
+
+        function calculateSavings() {
+            // Get translations based on the current page language
+            const translations = translatePage(document.documentElement.lang);
+
+            if (!translations) {
+                console.error('Could not get translations for language:', document.documentElement.lang);
+                return; // Stop if translations are missing
+            }
+
+            const R_y = parseFormattedNumber(document.getElementById('revenue').value);
+            const DSO = parseFloat(document.getElementById('dso').value);
+            const EB = parseFloat(document.getElementById('eb').value) / 100;
+            const CF = parseFloat(document.getElementById('cf').value) / 100;
+            const I_m = parseFloat(document.getElementById('invoices').value);
+            const salary = parseFormattedNumber(document.getElementById('salary').value);
+
+            if (isNaN(R_y) || isNaN(DSO) || isNaN(EB) || isNaN(CF) || isNaN(I_m) || isNaN(salary)) {
+                alert(translations.alert_invalid_input);
+                return;
+            }
+
+            // Calculations (same as before)
+            const AR = (R_y / 365) * DSO;
+            const cashFlowSavings = AR * CF;
+            const BDE = AR * EB;
+            const staffEfficiencySavings = (salary / (I_m * 12)) * CF * I_m;
+            const savingsScalingFactor = 0.1741;
+            const totalSavings = (cashFlowSavings + BDE + staffEfficiencySavings) * savingsScalingFactor;
+            
+            function getConfidenceScalingFactor(confidenceValue) {
+                if (confidenceValue === 0.45) return 1.0;
+                if (confidenceValue === 0.3) return 0.7222;
+                if (confidenceValue === 0.6) return 1.3333;
+                return confidenceValue / 0.45;
+            }
+            const costOfDelayScalingFactor = 0.0809;
+            const confidenceScalingFactor = getConfidenceScalingFactor(CF);
+            const monthlyCostOfDelay = (R_y / 12) * (DSO / 365) * costOfDelayScalingFactor * confidenceScalingFactor;
+            
+            function getTimeScalingFactor(confidenceValue) {
+                if (confidenceValue === 0.45) return 1.0;
+                if (confidenceValue === 0.3) return 0.8001;
+                if (confidenceValue === 0.6) return 1.1999;
+                return 0.8001 + ((confidenceValue - 0.3) / (0.6 - 0.3)) * (1.1999 - 0.8001);
+            }
+            const hoursPerInvoice = 0.7222;
+            const timeScalingFactor = getTimeScalingFactor(CF);
+            const timeSavedHours = I_m * hoursPerInvoice * timeScalingFactor;
+            
+            function getDsoScalingFactor(confidenceValue) {
+                if (confidenceValue === 0.45) return 1.0;
+                if (confidenceValue === 0.3) return 0.8333;
+                if (confidenceValue === 0.6) return 1.1667;
+                return 0.8333 + ((confidenceValue - 0.3) / (0.6 - 0.3)) * (1.1667 - 0.8333);
+            }
+            const dsoScalingFactor = getDsoScalingFactor(CF);
+            const dsoReduction = DSO * CF * dsoScalingFactor;
+            const newDSO = DSO - dsoReduction;
+            
+            // Format and display results
+            let formattedSavings;
+            if (totalSavings >= 1000000000) {
+                formattedSavings = `${translations.currency_symbol}${(totalSavings / 1000000000).toFixed(2)}B`;
+            } else if (totalSavings >= 1000000) {
+                formattedSavings = `${translations.currency_symbol}${(totalSavings / 1000000).toFixed(2)}M`;
+            } else {
+                formattedSavings = `${translations.currency_symbol}${Math.round(totalSavings / 1000)}K`;
+            }
+            document.getElementById('totalSavings').innerText = formattedSavings;
+            document.getElementById('monthlyCost').innerText = `${translations.currency_symbol}${Math.round(monthlyCostOfDelay).toLocaleString(translations.locale)}`;
+            document.getElementById('timeSaved').innerText = `${timeSavedHours.toFixed(2)}${translations.unit_hours}`;
+            document.getElementById('estimatedDSO').innerText = `${newDSO.toFixed(2)}${translations.unit_days}`;
+
+            document.getElementById('resultsContainer').classList.remove('results-hidden');
+            document.getElementById('resultsContainer').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // --- LANGUAGE SWITCHING ---
+        
         function toggleLanguageDropdown() {
             const dropdown = document.getElementById('languageDropdown');
             dropdown.classList.toggle('show');
             
-            // Close dropdown when clicking outside
-            document.addEventListener('click', function closeDropdown(e) {
-                const languageSelector = document.querySelector('.language-selector');
-                if (!languageSelector.contains(e.target)) {
+            const closeDropdown = (e) => {
+                if (!document.querySelector('.language-selector').contains(e.target)) {
                     dropdown.classList.remove('show');
                     document.removeEventListener('click', closeDropdown);
                 }
-            });
-            
-            // Prevent the click from closing the dropdown immediately
+            };
+            document.addEventListener('click', closeDropdown);
             event.stopPropagation();
         }
         
-        // Detect user's language based on browser settings
-        function detectUserLanguage() {
-            const userLang = navigator.language || navigator.userLanguage;
-            let langCode = 'nl'; // Default to Dutch
-            
-            // Map browser language codes to our language codes
-            if (userLang.startsWith('en-GB') || userLang.startsWith('en-UK')) {
-                langCode = 'gb';
-            } else if (userLang.startsWith('en-US') || userLang.startsWith('en')) {
-                langCode = 'us';
-            } else if (userLang.startsWith('fr')) {
-                langCode = 'fr';
-            } else if (userLang.startsWith('pt')) {
-                langCode = 'pt';
-            } else if (userLang.startsWith('es')) {
-                langCode = 'es';
-            } else if (userLang.startsWith('nl')) {
-                langCode = 'nl';
-            }
-            
-            return langCode;
-        }
-        
-        // Translation functions
-        function translateToDutch() {
-            const translations = {
-                alert_invalid_input: "Vul alle velden in met geldige nummers.",
-                unit_hours: " uur",
-                unit_days: " dagen",
-                currency_symbol: "€",
-                locale: "nl-NL",
-                page_title: "Credit-IQ - ROI Calculator",
-                page_main_title: "ROI Calculator",
-                page_subtitle: "Ontdek hoeveel je kunt besparen met Credit-IQ",
-                form_title: "Voer je gegevens in",
-                label_revenue: "Jaarlijkse omzet",
-                label_dso: "Huidige Days Sales Outstanding (DSO)",
-                label_eb: "Geschatte oninbare vorderingen",
-                label_invoices: "Gemiddeld aantal maandelijkse facturen",
-                label_salary: "Jaarlijkse salariskosten AR-personeel",
-                label_confidence: "Berekeningsvertrouwen",
-                confidence_conservative: "Conservatief",
-                confidence_average: "Gemiddeld",
-                confidence_high: "Hoog",
-                helper_revenue: "Voer de jaarlijkse omzet van je bedrijf in",
-                helper_dso: "Gemiddeld aantal dagen dat het duurt om betaling te ontvangen",
-                helper_eb: "Percentage van de omzet dat je verwacht niet te kunnen innen",
-                helper_invoices: "Aantal facturen dat je maandelijks verstuurt",
-                helper_salary: "Totale jaarlijkse kosten van debiteurenadministratie personeel",
-                helper_confidence: "Selecteer je gewenste niveau van zekerheid voor de berekeningen",
-                button_calculate: "Bereken mijn besparingen",
-                results_title: "Je 1-jarige besparingen",
-                result_label_total_savings: "Totale geschatte besparingen",
-                result_label_monthly_cost: "Maandelijkse kosten van vertraging",
-                result_label_time_saved: "Tijd bespaard per maand",
-                result_label_estimated_dso: "Geschatte nieuwe DSO",
-                result_description_total_savings: "Gecombineerde waarde van verbeterde cashflow, verminderde oninbare vorderingen en verhoogde personeelsefficiëntie",
-                result_description_monthly_cost: "Hoeveel je huidige DSO je elke maand kost",
-                result_description_time_saved: "Vermindering in incassotijd met Credit-IQ",
-                result_description_estimated_dso: "Je verwachte Days Sales Outstanding met Credit-IQ",
-                button_try_free: "Probeer Credit-IQ gratis",
-                footer_text: 'Mogelijk gemaakt door <a href="https://www.atradiuscollections.com" target="_blank">Atradius Collections</a> | Credit-IQ &copy; 2025'
-            };
-
-            document.title = translations.page_title;
-            document.querySelector('.page-title').textContent = translations.page_main_title;
-            document.querySelector('.page-subtitle').textContent = translations.page_subtitle;
-            document.querySelector('.form-title').textContent = translations.form_title;
-            document.querySelectorAll('label')[0].textContent = translations.label_revenue;
-            document.querySelectorAll('label')[1].textContent = translations.label_dso;
-            document.querySelectorAll('label')[2].textContent = translations.label_eb;
-            document.querySelectorAll('label')[3].textContent = translations.label_invoices;
-            document.querySelectorAll('label')[4].textContent = translations.label_salary;
-            document.querySelectorAll('label')[5].textContent = translations.label_confidence;
-            document.querySelectorAll('.confidence-btn')[0].textContent = translations.confidence_conservative;
-            document.querySelectorAll('.confidence-btn')[1].textContent = translations.confidence_average;
-            document.querySelectorAll('.confidence-btn')[2].textContent = translations.confidence_high;
-            document.querySelectorAll('.input-helper')[0].textContent = translations.helper_revenue;
-            document.querySelectorAll('.input-helper')[1].textContent = translations.helper_dso;
-            document.querySelectorAll('.input-helper')[2].textContent = translations.helper_eb;
-            document.querySelectorAll('.input-helper')[3].textContent = translations.helper_invoices;
-            document.querySelectorAll('.input-helper')[4].textContent = translations.helper_salary;
-            document.querySelectorAll('.input-helper')[5].textContent = translations.helper_confidence;
-            document.querySelector('.calculate-btn').textContent = translations.button_calculate;
-            document.querySelector('.results-title').textContent = translations.results_title;
-            document.querySelectorAll('.result-label')[0].textContent = translations.result_label_total_savings;
-            document.querySelectorAll('.result-label')[1].textContent = translations.result_label_monthly_cost;
-            document.querySelectorAll('.result-label')[2].textContent = translations.result_label_time_saved;
-            document.querySelectorAll('.result-label')[3].textContent = translations.result_label_estimated_dso;
-            document.querySelectorAll('.result-description')[0].textContent = translations.result_description_total_savings;
-            document.querySelectorAll('.result-description')[1].textContent = translations.result_description_monthly_cost;
-            document.querySelectorAll('.result-description')[2].textContent = translations.result_description_time_saved;
-            document.querySelectorAll('.result-description')[3].textContent = translations.result_description_estimated_dso;
-            document.querySelector('.try-btn').textContent = translations.button_try_free;
-            document.querySelector('footer p').innerHTML = translations.footer_text;
-
-            // Update placeholders
-            updatePlaceholders('nl');
-
-            // Set currency symbol to Euro
-            document.querySelectorAll('.currency-symbol').forEach(symbol => {
-                symbol.textContent = translations.currency_symbol;
-            });
-
-            // Update result values with the correct currency symbol if results are displayed
-            const totalSavingsElement = document.getElementById('totalSavings');
-            if (totalSavingsElement && totalSavingsElement.innerText) {
-                 totalSavingsElement.innerText = totalSavingsElement.innerText.replace(/[€£$]/g, translations.currency_symbol);
-            }
-
-            const monthlyCostElement = document.getElementById('monthlyCost');
-            if (monthlyCostElement && monthlyCostElement.innerText) {
-                monthlyCostElement.innerText = monthlyCostElement.innerText.replace(/[€£$]/g, translations.currency_symbol);
-            }
-
-            // Update country names in dropdown
-            updateCountryNames();
-
-            return translations; // Return translations object
-        }
-        
-        function translateToEnglish() {
-            const isUK = document.documentElement.lang === 'en-GB';
-            const currencySymbol = isUK ? '£' : '$';
-            const locale = isUK ? 'en-GB' : 'en-US';
-
-            const translations = {
-                alert_invalid_input: "Please fill in all fields with valid numbers.",
-                unit_hours: " hours",
-                unit_days: " days",
-                currency_symbol: currencySymbol,
-                locale: locale,
-                page_title: "Credit-IQ - ROI Calculator",
-                page_main_title: "ROI Calculator",
-                page_subtitle: "Discover how much you could save with Credit-IQ",
-                form_title: "Enter your details",
-                label_revenue: "Yearly Revenue",
-                label_dso: "Current Days Sales Outstanding (DSO)",
-                label_eb: "Estimated Unrecoverable Debts",
-                label_invoices: "Average Monthly Invoices Raised",
-                label_salary: "Yearly Salary of AR Staff",
-                label_confidence: "Calculation Confidence",
-                confidence_conservative: "Conservative",
-                confidence_average: "Average",
-                confidence_high: "High",
-                helper_revenue: "Enter your company's annual revenue",
-                helper_dso: "Average number of days it takes to collect payment",
-                helper_eb: "Percentage of revenue you expect to be unrecoverable",
-                helper_invoices: "Number of invoices you send each month",
-                helper_salary: "Total annual cost of accounts receivable staff",
-                helper_confidence: "Select your preferred level of confidence for calculations",
-                button_calculate: "Calculate My Savings",
-                results_title: "Your 1-Year Savings",
-                result_label_total_savings: "Total Estimated Savings",
-                result_label_monthly_cost: "Monthly Cost of Delay",
-                result_label_time_saved: "Time Saved Each Month",
-                result_label_estimated_dso: "Estimated New DSO",
-                result_description_total_savings: "Combined value of improved cash flow, reduced bad debt, and increased staff efficiency",
-                result_description_monthly_cost: "How much your current DSO costs you each month",
-                result_description_time_saved: "Reduction in collection time with Credit-IQ",
-                result_description_estimated_dso: "Your projected Days Sales Outstanding with Credit-IQ",
-                button_try_free: "Try Credit-IQ for Free",
-                footer_text: 'Powered by <a href="https://www.atradiuscollections.com" target="_blank">Atradius Collections</a> | Credit-IQ &copy; 2025'
-            };
-
-            document.title = translations.page_title;
-            document.querySelector('.page-title').textContent = translations.page_main_title;
-            document.querySelector('.page-subtitle').textContent = translations.page_subtitle;
-            document.querySelector('.form-title').textContent = translations.form_title;
-            document.querySelectorAll('label')[0].textContent = translations.label_revenue;
-            document.querySelectorAll('label')[1].textContent = translations.label_dso;
-            document.querySelectorAll('label')[2].textContent = translations.label_eb;
-            document.querySelectorAll('label')[3].textContent = translations.label_invoices;
-            document.querySelectorAll('label')[4].textContent = translations.label_salary;
-            document.querySelectorAll('label')[5].textContent = translations.label_confidence;
-            document.querySelectorAll('.confidence-btn')[0].textContent = translations.confidence_conservative;
-            document.querySelectorAll('.confidence-btn')[1].textContent = translations.confidence_average;
-            document.querySelectorAll('.confidence-btn')[2].textContent = translations.confidence_high;
-            document.querySelectorAll('.input-helper')[0].textContent = translations.helper_revenue;
-            document.querySelectorAll('.input-helper')[1].textContent = translations.helper_dso;
-            document.querySelectorAll('.input-helper')[2].textContent = translations.helper_eb;
-            document.querySelectorAll('.input-helper')[3].textContent = translations.helper_invoices;
-            document.querySelectorAll('.input-helper')[4].textContent = translations.helper_salary;
-            document.querySelectorAll('.input-helper')[5].textContent = translations.helper_confidence;
-            document.querySelector('.calculate-btn').textContent = translations.button_calculate;
-            document.querySelector('.results-title').textContent = translations.results_title;
-            document.querySelectorAll('.result-label')[0].textContent = translations.result_label_total_savings;
-            document.querySelectorAll('.result-label')[1].textContent = translations.result_label_monthly_cost;
-            document.querySelectorAll('.result-label')[2].textContent = translations.result_label_time_saved;
-            document.querySelectorAll('.result-label')[3].textContent = translations.result_label_estimated_dso;
-            document.querySelectorAll('.result-description')[0].textContent = translations.result_description_total_savings;
-            document.querySelectorAll('.result-description')[1].textContent = translations.result_description_monthly_cost;
-            document.querySelectorAll('.result-description')[2].textContent = translations.result_description_time_saved;
-            document.querySelectorAll('.result-description')[3].textContent = translations.result_description_estimated_dso;
-            document.querySelector('.try-btn').textContent = translations.button_try_free;
-            document.querySelector('footer p').innerHTML = translations.footer_text;
-
-            // Update placeholders based on specific English variant
-            updatePlaceholders(isUK ? 'en_gb' : 'en_us');
-
-            // Set currency symbol
-            document.querySelectorAll('.currency-symbol').forEach(symbol => {
-                symbol.textContent = translations.currency_symbol;
-            });
-
-            // Update result values with the correct currency symbol if results are displayed
-            const totalSavingsElement = document.getElementById('totalSavings');
-            if (totalSavingsElement && totalSavingsElement.innerText) {
-                 totalSavingsElement.innerText = totalSavingsElement.innerText.replace(/[€£$]/g, translations.currency_symbol);
-            }
-
-            const monthlyCostElement = document.getElementById('monthlyCost');
-            if (monthlyCostElement && monthlyCostElement.innerText) {
-                monthlyCostElement.innerText = monthlyCostElement.innerText.replace(/[€£$]/g, translations.currency_symbol);
-            }
-
-            return translations; // Return translations object
-        }
-        
-        function translateToFrench() {
-            const translations = {
-                alert_invalid_input: "Veuillez remplir tous les champs avec des nombres valides.",
-                unit_hours: " heures",
-                unit_days: " jours",
-                currency_symbol: "€",
-                locale: "fr-FR",
-                page_title: "Credit-IQ - Calculateur de ROI",
-                page_main_title: "Calculateur de ROI",
-                page_subtitle: "Découvrez combien vous pourriez économiser avec Credit-IQ",
-                form_title: "Entrez vos détails",
-                label_revenue: "Chiffre d'affaires annuel",
-                label_dso: "Délai moyen de paiement actuel (DSO)",
-                label_eb: "Créances irrécouvrables estimées",
-                label_invoices: "Nombre moyen de factures émises mensuellement",
-                label_salary: "Salaire annuel du personnel des comptes clients",
-                label_confidence: "Confiance du calcul",
-                confidence_conservative: "Conservateur",
-                confidence_average: "Moyen",
-                confidence_high: "Élevé",
-                helper_revenue: "Entrez le chiffre d'affaires annuel de votre entreprise",
-                helper_dso: "Nombre moyen de jours nécessaires pour recouvrer le paiement",
-                helper_eb: "Pourcentage du chiffre d'affaires que vous prévoyez être irrécouvrable",
-                helper_invoices: "Nombre de factures que vous envoyez chaque mois",
-                helper_salary: "Coût annuel total du personnel des comptes clients",
-                helper_confidence: "Sélectionnez votre niveau de confiance préféré pour les calculs",
-                button_calculate: "Calculer mes économies",
-                results_title: "Vos économies sur 1 an",
-                result_label_total_savings: "Économies totales estimées",
-                result_label_monthly_cost: "Coût mensuel du retard",
-                result_label_time_saved: "Temps économisé chaque mois",
-                result_label_estimated_dso: "Nouveau DSO estimé",
-                result_description_total_savings: "Valeur combinée de l'amélioration de la trésorerie, de la réduction des créances irrécouvrables et de l'augmentation de l'efficacité du personnel",
-                result_description_monthly_cost: "Combien votre DSO actuel vous coûte chaque mois",
-                result_description_time_saved: "Réduction du temps de recouvrement avec Credit-IQ",
-                result_description_estimated_dso: "Votre délai moyen de paiement projeté avec Credit-IQ",
-                button_try_free: "Essayez Credit-IQ gratuitement",
-                footer_text: 'Propulsé par <a href="https://www.atradiuscollections.com" target="_blank">Atradius Collections</a> | Credit-IQ &copy; 2025'
-            };
-
-            document.title = translations.page_title;
-            document.querySelector('.page-title').textContent = translations.page_main_title;
-            document.querySelector('.page-subtitle').textContent = translations.page_subtitle;
-            document.querySelector('.form-title').textContent = translations.form_title;
-            document.querySelectorAll('label')[0].textContent = translations.label_revenue;
-            document.querySelectorAll('label')[1].textContent = translations.label_dso;
-            document.querySelectorAll('label')[2].textContent = translations.label_eb;
-            document.querySelectorAll('label')[3].textContent = translations.label_invoices;
-            document.querySelectorAll('label')[4].textContent = translations.label_salary;
-            document.querySelectorAll('label')[5].textContent = translations.label_confidence;
-            document.querySelectorAll('.confidence-btn')[0].textContent = translations.confidence_conservative;
-            document.querySelectorAll('.confidence-btn')[1].textContent = translations.confidence_average;
-            document.querySelectorAll('.confidence-btn')[2].textContent = translations.confidence_high;
-            document.querySelectorAll('.input-helper')[0].textContent = translations.helper_revenue;
-            document.querySelectorAll('.input-helper')[1].textContent = translations.helper_dso;
-            document.querySelectorAll('.input-helper')[2].textContent = translations.helper_eb;
-            document.querySelectorAll('.input-helper')[3].textContent = translations.helper_invoices;
-            document.querySelectorAll('.input-helper')[4].textContent = translations.helper_salary;
-            document.querySelectorAll('.input-helper')[5].textContent = translations.helper_confidence;
-            document.querySelector('.calculate-btn').textContent = translations.button_calculate;
-            document.querySelector('.results-title').textContent = translations.results_title;
-            document.querySelectorAll('.result-label')[0].textContent = translations.result_label_total_savings;
-            document.querySelectorAll('.result-label')[1].textContent = translations.result_label_monthly_cost;
-            document.querySelectorAll('.result-label')[2].textContent = translations.result_label_time_saved;
-            document.querySelectorAll('.result-label')[3].textContent = translations.result_label_estimated_dso;
-            document.querySelectorAll('.result-description')[0].textContent = translations.result_description_total_savings;
-            document.querySelectorAll('.result-description')[1].textContent = translations.result_description_monthly_cost;
-            document.querySelectorAll('.result-description')[2].textContent = translations.result_description_time_saved;
-            document.querySelectorAll('.result-description')[3].textContent = translations.result_description_estimated_dso;
-            document.querySelector('.try-btn').textContent = translations.button_try_free;
-            document.querySelector('footer p').innerHTML = translations.footer_text;
-
-            // Update placeholders
-            updatePlaceholders('fr');
-
-            // Set currency symbol to Euro
-            document.querySelectorAll('.currency-symbol').forEach(symbol => {
-                symbol.textContent = translations.currency_symbol;
-            });
-
-            // Update result values with the correct currency symbol if results are displayed
-            const totalSavingsElement = document.getElementById('totalSavings');
-            if (totalSavingsElement && totalSavingsElement.innerText) {
-                 totalSavingsElement.innerText = totalSavingsElement.innerText.replace(/[€£$]/g, translations.currency_symbol);
-            }
-
-            const monthlyCostElement = document.getElementById('monthlyCost');
-            if (monthlyCostElement && monthlyCostElement.innerText) {
-                monthlyCostElement.innerText = monthlyCostElement.innerText.replace(/[€£$]/g, translations.currency_symbol);
-            }
-
-            // Update country names in dropdown
-            updateCountryNames();
-
-            return translations; // Return translations object
-        }
-        
-        function translateToPortuguese() {
-            const translations = {
-                alert_invalid_input: "Por favor, preencha todos os campos com números válidos.",
-                unit_hours: " horas",
-                unit_days: " dias",
-                currency_symbol: "€",
-                locale: "pt-PT",
-                page_title: "Credit-IQ - Calculadora de ROI",
-                page_main_title: "Calculadora de ROI",
-                page_subtitle: "Descubra quanto você pode economizar com o Credit-IQ",
-                form_title: "Insira seus dados",
-                label_revenue: "Receita anual",
-                label_dso: "Prazo médio de recebimento atual (DSO)",
-                label_eb: "Dívidas irrecuperáveis estimadas",
-                label_invoices: "Média mensal de faturas emitidas",
-                label_salary: "Salário anual da equipe de contas a receber",
-                label_confidence: "Confiança de cálculo",
-                confidence_conservative: "Conservador",
-                confidence_average: "Médio",
-                confidence_high: "Alto",
-                helper_revenue: "Insira a receita anual da sua empresa",
-                helper_dso: "Número médio de dias que leva para receber o pagamento",
-                helper_eb: "Porcentagem da receita que você espera não conseguir recuperar",
-                helper_invoices: "Número de faturas que você envia por mês",
-                helper_salary: "Custo anual total da equipe de contas a receber",
-                helper_confidence: "Selecione seu nível de confiança preferido para os cálculos",
-                button_calculate: "Calcular minhas economias",
-                results_title: "Suas economias de 1 ano",
-                result_label_total_savings: "Economia total estimada",
-                result_label_monthly_cost: "Custo mensal do atraso",
-                result_label_time_saved: "Tempo economizado por mês",
-                result_label_estimated_dso: "Novo DSO estimado",
-                result_description_total_savings: "Valor combinado de fluxo de caixa melhorado, redução de dívidas incobráveis e aumento da eficiência da equipe",
-                result_description_monthly_cost: "Quanto seu DSO atual custa por mês",
-                result_description_time_saved: "Redução no tempo de cobrança com o Credit-IQ",
-                result_description_estimated_dso: "Seu prazo médio de recebimento projetado com o Credit-IQ",
-                button_try_free: "Experimente o Credit-IQ gratuitamente",
-                footer_text: 'Desenvolvido por <a href="https://www.atradiuscollections.com" target="_blank">Atradius Collections</a> | Credit-IQ &copy; 2025'
-            };
-
-            document.title = translations.page_title;
-            document.querySelector('.page-title').textContent = translations.page_main_title;
-            document.querySelector('.page-subtitle').textContent = translations.page_subtitle;
-            document.querySelector('.form-title').textContent = translations.form_title;
-            document.querySelectorAll('label')[0].textContent = translations.label_revenue;
-            document.querySelectorAll('label')[1].textContent = translations.label_dso;
-            document.querySelectorAll('label')[2].textContent = translations.label_eb;
-            document.querySelectorAll('label')[3].textContent = translations.label_invoices;
-            document.querySelectorAll('label')[4].textContent = translations.label_salary;
-            document.querySelectorAll('label')[5].textContent = translations.label_confidence;
-            document.querySelectorAll('.confidence-btn')[0].textContent = translations.confidence_conservative;
-            document.querySelectorAll('.confidence-btn')[1].textContent = translations.confidence_average;
-            document.querySelectorAll('.confidence-btn')[2].textContent = translations.confidence_high;
-            document.querySelectorAll('.input-helper')[0].textContent = translations.helper_revenue;
-            document.querySelectorAll('.input-helper')[1].textContent = translations.helper_dso;
-            document.querySelectorAll('.input-helper')[2].textContent = translations.helper_eb;
-            document.querySelectorAll('.input-helper')[3].textContent = translations.helper_invoices;
-            document.querySelectorAll('.input-helper')[4].textContent = translations.helper_salary;
-            document.querySelectorAll('.input-helper')[5].textContent = translations.helper_confidence;
-            document.querySelector('.calculate-btn').textContent = translations.button_calculate;
-            document.querySelector('.results-title').textContent = translations.results_title;
-            document.querySelectorAll('.result-label')[0].textContent = translations.result_label_total_savings;
-            document.querySelectorAll('.result-label')[1].textContent = translations.result_label_monthly_cost;
-            document.querySelectorAll('.result-label')[2].textContent = translations.result_label_time_saved;
-            document.querySelectorAll('.result-label')[3].textContent = translations.result_label_estimated_dso;
-            document.querySelectorAll('.result-description')[0].textContent = translations.result_description_total_savings;
-            document.querySelectorAll('.result-description')[1].textContent = translations.result_description_monthly_cost;
-            document.querySelectorAll('.result-description')[2].textContent = translations.result_description_time_saved;
-            document.querySelectorAll('.result-description')[3].textContent = translations.result_description_estimated_dso;
-            document.querySelector('.try-btn').textContent = translations.button_try_free;
-            document.querySelector('footer p').innerHTML = translations.footer_text;
-
-            // Update placeholders
-            updatePlaceholders('pt');
-
-            // Set currency symbol to Euro
-            document.querySelectorAll('.currency-symbol').forEach(symbol => {
-                symbol.textContent = translations.currency_symbol;
-            });
-
-            // Update result values with the correct currency symbol if results are displayed
-            const totalSavingsElement = document.getElementById('totalSavings');
-            if (totalSavingsElement && totalSavingsElement.innerText) {
-                 totalSavingsElement.innerText = totalSavingsElement.innerText.replace(/[€£$]/g, translations.currency_symbol);
-            }
-
-            const monthlyCostElement = document.getElementById('monthlyCost');
-            if (monthlyCostElement && monthlyCostElement.innerText) {
-                monthlyCostElement.innerText = monthlyCostElement.innerText.replace(/[€£$]/g, translations.currency_symbol);
-            }
-
-            // Update country names in dropdown
-            updateCountryNames();
-
-            return translations; // Return translations object
-        }
-        
-        function translateToSpanish() {
-            const translations = {
-                alert_invalid_input: "Por favor, complete todos los campos con números válidos.",
-                unit_hours: " horas",
-                unit_days: " días",
-                currency_symbol: "€",
-                locale: "es-ES",
-                page_title: "Credit-IQ - Calculadora de ROI",
-                page_main_title: "Calculadora de ROI",
-                page_subtitle: "Descubra cuánto podría ahorrar con Credit-IQ",
-                form_title: "Ingrese sus datos",
-                label_revenue: "Ingresos anuales",
-                label_dso: "Días actuales de ventas pendientes (DSO)",
-                label_eb: "Deudas irrecuperables estimadas",
-                label_invoices: "Promedio mensual de facturas emitidas",
-                label_salary: "Salario anual del personal de cuentas por cobrar",
-                label_confidence: "Confianza de cálculo",
-                confidence_conservative: "Conservador",
-                confidence_average: "Promedio",
-                confidence_high: "Alto",
-                helper_revenue: "Ingrese los ingresos anuales de su empresa",
-                helper_dso: "Número promedio de días que tarda en recibir el pago",
-                helper_eb: "Porcentaje de ingresos que espera no poder recuperar",
-                helper_invoices: "Número de facturas que envía cada mes",
-                helper_salary: "Costo anual total del personal de cuentas por cobrar",
-                helper_confidence: "Seleccione su nivel de confianza preferido para los cálculos",
-                button_calculate: "Calcular mis ahorros",
-                results_title: "Sus ahorros de 1 año",
-                result_label_total_savings: "Ahorro total estimado",
-                result_label_monthly_cost: "Costo mensual de la demora",
-                result_label_time_saved: "Tiempo ahorrado cada mes",
-                result_label_estimated_dso: "Nuevo DSO estimado",
-                result_description_total_savings: "Valor combinado de flujo de caja mejorado, reducción de deudas incobrables y mayor eficiencia del personal",
-                result_description_monthly_cost: "Cuánto le cuesta su DSO actual cada mes",
-                result_description_time_saved: "Reducción en el tiempo de cobro con Credit-IQ",
-                result_description_estimated_dso: "Sus días de ventas pendientes proyectados con Credit-IQ",
-                button_try_free: "Pruebe Credit-IQ gratis",
-                footer_text: 'Desarrollado por <a href="https://www.atradiuscollections.com" target="_blank">Atradius Collections</a> | Credit-IQ &copy; 2025'
-            };
-
-            document.title = translations.page_title;
-            document.querySelector('.page-title').textContent = translations.page_main_title;
-            document.querySelector('.page-subtitle').textContent = translations.page_subtitle;
-            document.querySelector('.form-title').textContent = translations.form_title;
-            document.querySelectorAll('label')[0].textContent = translations.label_revenue;
-            document.querySelectorAll('label')[1].textContent = translations.label_dso;
-            document.querySelectorAll('label')[2].textContent = translations.label_eb;
-            document.querySelectorAll('label')[3].textContent = translations.label_invoices;
-            document.querySelectorAll('label')[4].textContent = translations.label_salary;
-            document.querySelectorAll('label')[5].textContent = translations.label_confidence;
-            document.querySelectorAll('.confidence-btn')[0].textContent = translations.confidence_conservative;
-            document.querySelectorAll('.confidence-btn')[1].textContent = translations.confidence_average;
-            document.querySelectorAll('.confidence-btn')[2].textContent = translations.confidence_high;
-            document.querySelectorAll('.input-helper')[0].textContent = translations.helper_revenue;
-            document.querySelectorAll('.input-helper')[1].textContent = translations.helper_dso;
-            document.querySelectorAll('.input-helper')[2].textContent = translations.helper_eb;
-            document.querySelectorAll('.input-helper')[3].textContent = translations.helper_invoices;
-            document.querySelectorAll('.input-helper')[4].textContent = translations.helper_salary;
-            document.querySelectorAll('.input-helper')[5].textContent = translations.helper_confidence;
-            document.querySelector('.calculate-btn').textContent = translations.button_calculate;
-            document.querySelector('.results-title').textContent = translations.results_title;
-            document.querySelectorAll('.result-label')[0].textContent = translations.result_label_total_savings;
-            document.querySelectorAll('.result-label')[1].textContent = translations.result_label_monthly_cost;
-            document.querySelectorAll('.result-label')[2].textContent = translations.result_label_time_saved;
-            document.querySelectorAll('.result-label')[3].textContent = translations.result_label_estimated_dso;
-            document.querySelectorAll('.result-description')[0].textContent = translations.result_description_total_savings;
-            document.querySelectorAll('.result-description')[1].textContent = translations.result_description_monthly_cost;
-            document.querySelectorAll('.result-description')[2].textContent = translations.result_description_time_saved;
-            document.querySelectorAll('.result-description')[3].textContent = translations.result_description_estimated_dso;
-            document.querySelector('.try-btn').textContent = translations.button_try_free;
-            document.querySelector('footer p').innerHTML = translations.footer_text;
-
-            // Update placeholders
-            updatePlaceholders('es');
-
-            // Set currency symbol to Euro
-            document.querySelectorAll('.currency-symbol').forEach(symbol => {
-                symbol.textContent = translations.currency_symbol;
-            });
-
-            // Update result values with the correct currency symbol if results are displayed
-            const totalSavingsElement = document.getElementById('totalSavings');
-            if (totalSavingsElement && totalSavingsElement.innerText) {
-                 totalSavingsElement.innerText = totalSavingsElement.innerText.replace(/[€£$]/g, translations.currency_symbol);
-            }
-
-            const monthlyCostElement = document.getElementById('monthlyCost');
-            if (monthlyCostElement && monthlyCostElement.innerText) {
-                monthlyCostElement.innerText = monthlyCostElement.innerText.replace(/[€£$]/g, translations.currency_symbol);
-            }
-
-            // Update country names in dropdown
-            updateCountryNames();
-
-            return translations; // Return translations object
-        }
-        
-        // Change language
         function changeLanguage(langCode) {
-            // Get current button and update flag and text
             const button = document.querySelector('.language-button');
             const dropdown = document.getElementById('languageDropdown');
+            const countryNames = { nl: 'Nederland', gb: 'United Kingdom', us: 'United States', fr: 'France', pt: 'Portugal', es: 'España' };
+            const langMap = { nl: 'nl', gb: 'en-GB', us: 'en-US', fr: 'fr', pt: 'pt', es: 'es' };
 
-            // Validate language code
-            const validLangCodes = ['nl', 'gb', 'us', 'fr', 'pt', 'es'];
             if (!validLangCodes.includes(langCode)) {
                 console.error('Invalid language code:', langCode);
                 langCode = 'nl'; // Default to Dutch if invalid
             }
-
-            // Update button text and translate page based on language
-            switch(langCode) {
-                case 'nl':
-                    button.innerHTML = `<img src="https://flagicons.lipis.dev/flags/4x3/nl.svg" class="flag-icon" alt="NL"><span class="country-text">Nederland</span><span class="material-icons dropdown-icon">arrow_drop_down</span>`;
-                    document.documentElement.lang = 'nl';
-                    translateToDutch();
-                    break;
-                case 'gb':
-                    button.innerHTML = `<img src="https://flagicons.lipis.dev/flags/4x3/gb.svg" class="flag-icon" alt="GB"><span class="country-text">United Kingdom</span><span class="material-icons dropdown-icon">arrow_drop_down</span>`;
-                    document.documentElement.lang = 'en-GB';
-                    translateToEnglish();
-                    break;
-                case 'us':
-                    button.innerHTML = `<img src="https://flagicons.lipis.dev/flags/4x3/us.svg" class="flag-icon" alt="US"><span class="country-text">United States</span><span class="material-icons dropdown-icon">arrow_drop_down</span>`;
-                    document.documentElement.lang = 'en-US';
-                    translateToEnglish();
-                    break;
-                case 'fr':
-                    button.innerHTML = `<img src="https://flagicons.lipis.dev/flags/4x3/fr.svg" class="flag-icon" alt="FR"><span class="country-text">France</span><span class="material-icons dropdown-icon">arrow_drop_down</span>`;
-                    document.documentElement.lang = 'fr';
-                    translateToFrench();
-                    break;
-                case 'pt':
-                    button.innerHTML = `<img src="https://flagicons.lipis.dev/flags/4x3/pt.svg" class="flag-icon" alt="PT"><span class="country-text">Portugal</span><span class="material-icons dropdown-icon">arrow_drop_down</span>`;
-                    document.documentElement.lang = 'pt';
-                    translateToPortuguese();
-                    break;
-                case 'es':
-                    button.innerHTML = `<img src="https://flagicons.lipis.dev/flags/4x3/es.svg" class="flag-icon" alt="ES"><span class="country-text">España</span><span class="material-icons dropdown-icon">arrow_drop_down</span>`;
-                    document.documentElement.lang = 'es';
-                    translateToSpanish();
-                    break;
-            }
-
-            // Save language preference to localStorage
+            
+            button.innerHTML = `<img src="https://flagicons.lipis.dev/flags/4x3/${langCode}.svg" class="flag-icon" alt="${langCode.toUpperCase()}"><span class="country-text">${countryNames[langCode]}</span><span class="material-icons dropdown-icon">arrow_drop_down</span>`;
+            document.documentElement.lang = langMap[langCode];
+            
+            translatePage(langCode);
+            
             localStorage.setItem('preferredLanguage', langCode);
-            console.log('Language set to:', langCode);
-
-            // Hide dropdown
             dropdown.classList.remove('show');
         }
-        
-        // Initialize language based on user preference or browser settings
+
+        const validLangCodes = ['nl', 'gb', 'us', 'fr', 'pt', 'es'];
+        function detectUserLanguage() {
+            const userLang = navigator.language || navigator.userLanguage;
+            if (userLang.startsWith('en-GB')) return 'gb';
+            if (userLang.startsWith('en-US') || userLang.startsWith('en')) return 'us';
+            if (userLang.startsWith('fr')) return 'fr';
+            if (userLang.startsWith('pt')) return 'pt';
+            if (userLang.startsWith('es')) return 'es';
+            if (userLang.startsWith('nl')) return 'nl';
+            return 'nl'; // Default
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             const savedLang = localStorage.getItem('preferredLanguage');
-            // Ensure savedLang is one of the valid codes before using it
-            const initialLang = (savedLang && ['nl', 'gb', 'us', 'fr', 'pt', 'es'].includes(savedLang)) ? savedLang : detectUserLanguage();
-            
-            changeLanguage(initialLang); // Apply initial language settings
-            updateCountryNames(); // Ensure dropdown names are English on load
+            const initialLang = validLangCodes.includes(savedLang) ? savedLang : detectUserLanguage();
+            changeLanguage(initialLang);
         });
     </script>
-    
